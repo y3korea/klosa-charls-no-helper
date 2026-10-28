@@ -1,0 +1,65 @@
+wave,definition,n,no_helper,pct,se,lo,hi,n70
+CN2013,A: any ADL/IADL need,1425,206,13.39,1.1,11.23,15.54,1052
+CN2013,B: ADL need only,587,79,12.86,1.76,9.41,16.32,454
+CN2013,Common 10 activities,1425,206,13.39,1.1,11.23,15.54,1052
+CN2013,D: any difficulty (China only),2154,744,31.76,1.27,29.27,34.25,1513
+CN2013,Matched five ADL items,587,79,12.86,1.76,9.41,16.32,454
+CN2013,Need on 2+ of the 5 matched ADL items,280,7,1.75,0.69,0.39,3.11,223
+CN2013,Need on 3+ of the 10 common activities,597,13,2.68,1.13,0.45,4.9,480
+CN2015,A: any ADL/IADL need,1776,302,16.78,1.36,14.12,19.44,1262
+CN2015,B: ADL need only,761,112,13.17,1.49,10.25,16.08,553
+CN2015,Common 10 activities,1776,302,16.78,1.36,14.12,19.44,1262
+CN2015,D: any difficulty (China only),2746,1036,37.33,1.38,34.62,40.03,1813
+CN2015,Matched five ADL items,761,112,13.17,1.49,10.25,16.08,553
+CN2015,Need on 2+ of the 5 matched ADL items,338,7,1.65,0.67,0.35,2.96,257
+CN2015,Need on 3+ of the 10 common activities,729,22,2.73,0.69,1.38,4.08,556
+CN2018,A: any ADL/IADL need,2082,320,14.88,1.0,12.92,16.84,1455
+CN2018,B: ADL need only,855,87,9.66,1.14,7.43,11.9,629
+CN2018,Common 10 activities,2082,320,14.88,1.0,12.92,16.84,1455
+CN2018,D: any difficulty (China only),3103,1090,33.24,1.13,31.03,35.44,2063
+CN2018,Matched five ADL items,855,87,9.66,1.14,7.43,11.9,629
+CN2018,Need on 2+ of the 5 matched ADL items,390,10,1.8,0.57,0.68,2.92,303
+CN2018,Need on 3+ of the 10 common activities,885,24,2.17,0.48,1.24,3.11,688
+CN2020,A: any ADL/IADL need,1869,235,11.23,0.94,9.39,13.07,1359
+CN2020,B: ADL need only,844,55,5.74,0.97,3.84,7.64,645
+CN2020,Common 10 activities,1869,235,11.23,0.94,9.39,13.07,1359
+CN2020,D: any difficulty (China only),3324,1398,40.94,1.72,37.58,44.31,2246
+CN2020,Matched five ADL items,844,55,5.74,0.97,3.84,7.64,645
+CN2020,Need on 2+ of the 5 matched ADL items,429,11,1.74,0.61,0.55,2.93,332
+CN2020,Need on 3+ of the 10 common activities,871,24,2.76,0.68,1.42,4.1,677
+KR2014,A: any ADL/IADL need,749,182,24.24,1.71,20.89,27.58,661
+KR2014,B: ADL need only,324,51,16.34,2.21,12.02,20.67,298
+KR2014,Common 10 activities,684,154,22.26,1.71,18.9,25.61,603
+KR2014,Matched five ADL items,322,50,16.11,2.2,11.79,20.42,297
+KR2014,Need on 2+ of the 5 matched ADL items,240,33,14.39,2.43,9.62,19.15,221
+KR2014,Need on 3+ of the 10 common activities,403,63,16.27,1.99,12.37,20.16,377
+KR2016,A: any ADL/IADL need,798,243,32.26,1.86,28.62,35.9,717
+KR2016,B: ADL need only,355,52,14.72,2.05,10.71,18.73,341
+KR2016,Common 10 activities,720,198,29.42,1.92,25.66,33.19,644
+KR2016,Matched five ADL items,352,50,14.33,2.04,10.34,18.33,338
+KR2016,Need on 2+ of the 5 matched ADL items,244,29,12.33,2.3,7.83,16.84,235
+KR2016,Need on 3+ of the 10 common activities,420,59,13.59,1.81,10.04,17.13,403
+KR2018,A: any ADL/IADL need,739,204,27.5,1.9,23.77,31.22,675
+KR2018,B: ADL need only,307,46,17.08,2.54,12.1,22.06,294
+KR2018,Common 10 activities,662,163,24.07,1.91,20.33,27.81,602
+KR2018,Matched five ADL items,304,44,15.92,2.42,11.18,20.66,291
+KR2018,Need on 2+ of the 5 matched ADL items,248,34,15.29,2.66,10.07,20.51,237
+KR2018,Need on 3+ of the 10 common activities,366,55,15.29,2.1,11.18,19.4,350
+KR2020,A: any ADL/IADL need,718,224,34.33,2.09,30.23,38.42,659
+KR2020,B: ADL need only,280,47,18.77,2.95,13.0,24.55,265
+KR2020,Common 10 activities,634,182,32.2,2.22,27.85,36.56,580
+KR2020,Matched five ADL items,276,44,17.85,2.93,12.12,23.59,261
+KR2020,Need on 2+ of the 5 matched ADL items,191,28,14.75,2.9,9.07,20.42,181
+KR2020,Need on 3+ of the 10 common activities,358,52,15.51,2.43,10.75,20.27,342
+KR2022,A: any ADL/IADL need,882,213,27.42,1.84,23.82,31.01,811
+KR2022,B: ADL need only,322,41,14.53,2.49,9.64,19.41,308
+KR2022,Common 10 activities,775,182,26.96,1.96,23.11,30.81,710
+KR2022,Matched five ADL items,315,38,13.18,2.4,8.47,17.88,303
+KR2022,Need on 2+ of the 5 matched ADL items,201,18,9.32,2.32,4.78,13.86,194
+KR2022,Need on 3+ of the 10 common activities,365,34,10.05,1.96,6.21,13.9,353
+KR2024,A: any ADL/IADL need,1109,289,29.14,1.65,25.92,32.37,963
+KR2024,B: ADL need only,472,84,22.17,2.5,17.26,27.07,432
+KR2024,Common 10 activities,934,219,26.54,1.78,23.06,30.02,818
+KR2024,Matched five ADL items,436,73,20.37,2.54,15.4,25.34,403
+KR2024,Need on 2+ of the 5 matched ADL items,256,21,8.23,1.9,4.5,11.95,246
+KR2024,Need on 3+ of the 10 common activities,446,39,9.11,1.55,6.08,12.15,427

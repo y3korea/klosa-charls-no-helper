@@ -1,0 +1,12 @@
+# Survey data are never committed (KLoSA and CHARLS terms of use)
+*.dta
+*.zip
+*.rar
+*.sav
+*.sas7bdat
+*.parquet
+*.xlsx
+KLoSA_CHARLS_data/
+CodeS2_outputs/
+.ipynb_checkpoints/
+.DS_Store
