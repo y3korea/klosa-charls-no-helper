@@ -3,8 +3,8 @@ Article: "Older adults with care needs and no helper in South Korea and China, 2
 
 CONTENTS
   CodeS2_reproduction_KLoSA_CHARLS.ipynb  Self-contained Jupyter / Google Colab notebook. Run this file.
-  codeS2_core.py      Same code as notebook cell 4 (file discovery, coding rules, estimators). For reading or local use.
-  codeS2_analysis.py  Same code as notebook cell 5 (point estimates, bootstrap, published values, comparison). For reading or local use.
+  codeS2_core.py      Same code as the first code cell of notebook Section 2 (file discovery, coding rules, estimators). For reading or local use.
+  codeS2_analysis.py  Same code as the second code cell of notebook Section 2 (point estimates, bootstrap, published values, comparison). For reading or local use.
   The notebook does not import the .py files.
 
 DATA (not included; register with the data providers and download the files yourself)
@@ -29,6 +29,8 @@ HOW TO RUN
 OUTPUT (written to OUT_DIR; aggregate values only)
   table_S1_no_helper_by_definition.csv, table2_characteristics.csv, table_S15_all_adults_65plus.csv, table4_gaps.csv,
   bootstrap_summary.csv, sensitivity_wide.csv, added_*.csv (additional analyses not in the published tables),
+  added_help_rule_variants.csv (post hoc gaps with Chinese help counted only on activities with need or also on
+  telephone calls, with 95% bootstrap intervals),
   klosa_diagnostics.csv (KLoSA checks for the authors, outside the automated comparison: C218_01 = 57, refresh-panel members aged 65+,
   LTCI use from C320n, institutional LTCI benefit users from C327n and the no-helper share without them, proxy interviews
   (C225 = 4) and the no-helper share without them, and design effects with SEs clustered by enumeration district, ed),
@@ -36,7 +38,7 @@ OUTPUT (written to OUT_DIR; aggregate values only)
   value with the reproduced value and a match flag. Point estimates should match at the published precision. Bootstrap
   limits use a different random-number stream from the original analysis (each replicate resamples communities in CHARLS and
   respondents in KLoSA among all respondents aged 65+ with valid items and a positive weight, then selects those with need)
-  and can differ by a few tenths of a percentage point. Only point estimates are flagged as matching; interval limits are shown
+  and in the authors' run on both surveys differed from the published limits by up to 1.1 percentage points (up to 0.3 on the CHARLS files alone). Only point estimates are flagged as matching; interval limits are shown
   for comparison. CHARLS 2011 is not recomputed.
 
 DATA PROTECTION

@@ -77,8 +77,8 @@ def all_adults_shares(W, needs=('needA',)):
 
 def klosa_diagnostics(W, wmean_ci):
     """Checks on the KLoSA files for the authors, outside the automated comparison with published values. Code 57 of C218_01 is listed
-    in the 2018 and 2020 codebooks but not offered by the questionnaire (the main rule counts only 56 as no helper); the 2014
-    refresh panel (oldnew = 2) should have nobody aged 65 or older; LTCI use (C320n = 1) among respondents with need was
+    in the 2018 and 2020 codebooks but not offered by the questionnaire (the main rule counts only 56 as no helper); members of
+    the refresh panel (oldnew = 2) aged 65 or older are counted for information; LTCI use (C320n = 1) among respondents with need was
     published as 4.3%, 7.9% and 14.0%, and C327n = 1 marks institutional LTCI benefits (institutional residents); C225 = 4 marks a
     proxy interview for the ADL and helper module (published without proxies: 26.0%, 29.0% and 36.4%); design effects compare SEs clustered by enumeration district (ed) with the published
     SEs, which treat respondents as independent. The unweighted share shows how much of a change between waves (for example
@@ -155,6 +155,47 @@ def bootstrap(W, gap, crude_gap, B=1000, seed=20261027, progress=None):
         if progress and (b + 1) % 100 == 0:
             progress(b + 1)
     return pd.DataFrame(reps)
+
+def help_rule_variants(W, Wave, gap, crude_gap, B=1000, seed=20261027):
+    """Post hoc (Supplementary Text S12): Korea-minus-China gaps with the Chinese help rule changed, with 95% bootstrap
+    intervals. 'needrule' counts Chinese help only on activities with need (rating 3 or 4), among respondents who answered a
+    help question on such an activity; 'needrule, common' adds Korean need on the 10 common activities (in China the common
+    definition equals A); 'phone' also counts help with telephone calls. The resampling uses the same seed and draw order as
+    bootstrap(), so the intervals are paired with the main ones; standardized gaps use each comparison's own standard."""
+    def variant(wave, kind):
+        d = wave.df.copy()
+        if kind == 'needrule':
+            d['nh'], d['hans'] = (~d['helped_need']).astype(int), d['hans_need']
+        else:
+            d['nh'] = ((d['nh'] == 1) & ~d['helped_phone']).astype(int)
+        return Wave(d, by_cluster=True)
+    cn_var = {(k, kind): variant(W[k], kind) for k in W if k.startswith('CN') for kind in ('needrule', 'phone')}
+    rows = [('main rule', 'needA', None), ('main rule, common', 'needC', None),
+            ('needrule', 'needA', 'needrule'), ('needrule, common', 'needC', 'needrule'), ('phone', 'needA', 'phone')]
+    def stats(M=None):
+        out = {}
+        for lab, (ky, cy, _) in PAIRS.items():
+            kk, cc = f'KR{ky}', f'CN{cy}'
+            if kk not in W or cc not in W:
+                continue
+            mk, mc = (M[kk], M[cc]) if M is not None else (None, None)
+            for name, need, kind in rows:
+                cn = W[cc] if kind is None else cn_var[(cc, kind)]
+                out[(name, lab, 'standardized')] = gap(W[kk], cn, need, mk, mc)[2]
+                out[(name, lab, 'crude')] = crude_gap(W[kk], cn, need, mk, mc)
+        return out
+    point = stats()
+    rng = np.random.default_rng(seed)
+    reps = []
+    for b in range(B):
+        M = {k: W[k].draw(rng) for k in BOOT_WAVES if k in W}
+        reps.append(stats(M))
+    reps = pd.DataFrame(reps)
+    res = [{'rule': k[0], 'pair': k[1], 'statistic': k[2], 'estimate': v,
+            'lo': reps[k].quantile(0.025), 'hi': reps[k].quantile(0.975)} for k, v in point.items()]
+    out = pd.DataFrame(res)
+    out['result'] = [f"{r.estimate:.1f} ({r.lo:.1f} to {r.hi:.1f})" for r in out.itertuples()]
+    return out
 
 def summarize(est, reps, W, gap):
     """Point estimates with 2.5th-97.5th percentile bootstrap intervals."""
@@ -332,7 +373,7 @@ PUB_POSTHOC = {
 
 def compare(summary, est, t2=None, t_all=None, ph=None):
     """Side-by-side table of reproduced and published values. Point estimates should match at the published
-    precision; bootstrap limits use a different random-number stream and can differ by a few tenths."""
+    precision; bootstrap limits use a different random-number stream (up to 1.1 points apart in the authors' run)."""
     rows = []
     t2_rows = {'t2_age': 'Mean age, years', 't2_female': 'Female, %', 't2_75plus': 'Aged 75 or older, %'}
     for key, pub in PUB_POINTS.items():
