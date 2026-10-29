@@ -43,7 +43,9 @@
 #     missing, every answered db001-db009 item = 1, at least one answered, and at least 4 of 5 IADL items
 #     valid; the ADL items are then coded 1 (no difficulty).
 #   - Need = item rating >= 3 (CHARLS) or code 3 or 5 (KLoSA). Respondents must have answered
-#     at least one help question. Weights: CHARLS INDV_weight_ad2; KLoSA wgt_ac (wgt_a if absent).
+#     at least one help question. KLoSA: a "don't know" answer to C218_01 (-9; 2 respondents with need
+#     in 2014) counts as answered and as having a helper, as in the published analysis (Supplementary
+#     Table S3). Weights: CHARLS INDV_weight_ad2; KLoSA wgt_ac (wgt_a if absent).
 #   - Standardization: 10 strata (five age bands by sex), stratum-specific weighted proportions,
 #     standard population = mean of the two countries' weighted stratum distributions.
 #
@@ -60,6 +62,14 @@
 #   str05_*.dta (KLoSA 2014), str07_*.dta (2018), str08_*.dta (2020)      KLoSA (keep the names; optional)
 #   Demographic_Background.dta                                            CHARLS 2015 (keep the name; optional, Part 2)
 #   2011_health_status_and_functioning.dta, 2011_weight.dta                CHARLS 2011 (add the prefix; optional, Part 3)
+# MD5 of the provider files with which this script reproduced the published values (October 2026):
+#   CHARLS2013_Dataset.zip cc5dab5ed1bac8dd638954a2b63fc6aa   CHARLS2015r.zip 26d096ddb5ec278aadab8c45035fcd28
+#   CHARLS2018r.zip add21d3da75de79dd81a3ac9d4981ef8          CHARLS2020r.zip 0128ff058b93f3cbdcf3440b81e18c77
+#   H_CHARLS_D_Data.zip 4ccd1cccab81cfa4ad0f9994ac02a549      (the .dta files above are taken from these archives)
+#   str05_20260413.dta 8c15507b30900c514056336cc85a1e38       str07_20260413.dta c9a65b363a2c8d0926697c524a3c2a83
+#   str08_20260827.dta d1dcb864fa091cfdec1c1ab5aa9daee6
+#   CHARLS 2011 health_status_and_functioning.dta 021d27ce1cab7977b460976ef6483a62, weight.dta 947891662df0c34ea4b6dca98e1debdb
+#     (from household_and_community_questionnaire_data.rar)
 # Packages: install.packages(c("haven", "dplyr", "survey")). Then run the whole script.
 # Colab (R runtime): upload the files to /content (DIR = "." is the current directory).
 # Keep the data in your own storage; the script prints only aggregate results.

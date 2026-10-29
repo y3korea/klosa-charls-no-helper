@@ -159,6 +159,11 @@ def load_charls(files, H, year):
         wv = {2013: 2, 2015: 3, 2018: 4}[year]
         out['inst'] = out[f'r{wv}nhmliv'] == 1
         out['agey'] = out[f'r{wv}agey']
+    # covariates of the models of Supplementary Table S11 (adjusted_models() only): low education (Harmonized raeducl = 1, less
+    # than lower secondary, which includes most middle-school graduates) and living alone (household residents = 1; 2013-2018 only)
+    out['loweduc'] = (out['raeducl'] == 1).astype(float).where(out['raeducl'].notna())
+    out['alone'] = ((out[f'h{wv}hhres'] == 1).astype(float).where(out[f'h{wv}hhres'].notna())
+                    if year != 2020 else np.nan)
     out['age'] = year - out['rabyear']
     out['fem'] = (out['ragender'] == 2).astype(int)
     out['nh'] = (~out['helped']).astype(int)
@@ -167,12 +172,25 @@ def load_charls(files, H, year):
     return base
 
 def load_harmonized(files):
-    extra = [f'r{w}{v}' for w in (2, 3, 4) for v in ('nhmliv', 'agey')]
+    extra = [f'r{w}{v}' for w in (2, 3, 4) for v in ('nhmliv', 'agey')] + [f'h{w}hhres' for w in (2, 3, 4)] + ['raeducl']
     H = read_dta(files['H'], columns=['ID', 'rabyear', 'ragender'] + extra)
     H['ID'] = fid(H['ID'])
     for c in ['rabyear', 'ragender'] + extra:
         H[c] = pd.to_numeric(H[c], errors='coerce')
     return H.drop_duplicates('ID')
+
+def input_checksums(files, data_dir):
+    """MD5 of every input file used (a zip archive counts once), so that a run can be matched to the provider releases."""
+    import hashlib
+    paths = sorted({os.path.join(data_dir, v[0].split('::')[0]) for v in files.values() if v})
+    rows = []
+    for p in paths:
+        h = hashlib.md5()
+        with open(p, 'rb') as f:
+            for chunk in iter(lambda: f.read(1 << 20), b''):
+                h.update(chunk)
+        rows.append({'file': os.path.basename(p), 'bytes': os.path.getsize(p), 'md5': h.hexdigest()})
+    return pd.DataFrame(rows)
 
 # ----------------------------------------------------------------------------- KLoSA
 KLOSA_WAVES = {2014: '05', 2016: '06', 2018: '07', 2020: '08', 2022: '09', 2024: '10'}
@@ -206,6 +224,9 @@ def load_klosa(files, year):
         # C320) and the enumeration district (ed) listed in the 2014-2022 codebooks; absent variables stay missing
         'helper': helper, 'oldnew': g('oldnew'), 'ltci': g('C320n'), 'ltci_type': g('C327n'), 'proxy_c2': g('C225'),
         'ed': d[cols['ed']] if 'ed' in cols else pd.Series(np.nan, index=d.index),
+        # covariates of the models of Supplementary Table S11 (adjusted_models() only): elementary school or less; living alone
+        'loweduc': (g('edu') == 1).astype(float).where(g('edu') > 0),
+        'alone': (g('hhsize') == 1).astype(float).where(g('hhsize') > 0),
     })
     out['needC3'] = out['n_common'] >= 3
     out['needM2'] = out['n_adl5'] >= 2

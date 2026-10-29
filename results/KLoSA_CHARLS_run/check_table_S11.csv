@@ -1,0 +1,22 @@
+pair,covariates,value,published,reproduced,match
+KR2014/CN2015,"age group, sex, low education, living alone",A gap,5.7,5.7,True
+KR2014/CN2015,"age group, sex, low education, living alone",B gap,4.8,4.8,True
+KR2014/CN2015,"age group, sex, low education, living alone",A minus B,0.9,0.9,True
+KR2014/CN2015,"age group, sex, low education, living alone",Korea % (A),22.5,22.55,True
+KR2014/CN2015,"age group, sex, low education, living alone",China % (A),16.8,16.81,True
+KR2018/CN2018,"age group, sex, low education, living alone",A gap,18.3,18.3,True
+KR2018/CN2018,"age group, sex, low education, living alone",B gap,9.4,9.4,True
+KR2018/CN2018,"age group, sex, low education, living alone",A minus B,8.9,8.9,True
+KR2018/CN2018,"age group, sex, low education, living alone",Korea % (A),33.1,33.12,True
+KR2018/CN2018,"age group, sex, low education, living alone",China % (A),14.8,14.84,True
+KR2020/CN2020,"age group, sex, low education",A gap,25.8,25.8,True
+KR2020/CN2020,"age group, sex, low education",B gap,14.7,14.7,True
+KR2020/CN2020,"age group, sex, low education",A minus B,11.0,11.0,True
+KR2020/CN2020,"age group, sex, low education",Korea % (A),37.0,36.97,True
+KR2020/CN2020,"age group, sex, low education",China % (A),11.2,11.21,True
+KR2014/CN2015,"age group, sex, living alone",A gap,8.8,8.8,True
+KR2014/CN2015,"age group, sex, living alone",B gap,4.8,4.8,True
+KR2014/CN2015,"age group, sex, living alone",A minus B,4.0,4.0,True
+KR2018/CN2018,"age group, sex, living alone",A gap,14.6,14.6,True
+KR2018/CN2018,"age group, sex, living alone",B gap,9.7,9.7,True
+KR2018/CN2018,"age group, sex, living alone",A minus B,4.8,4.8,True

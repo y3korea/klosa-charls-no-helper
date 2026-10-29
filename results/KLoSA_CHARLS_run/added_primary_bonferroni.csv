@@ -1,0 +1,5 @@
+pair,quantity,estimate,95% CI,"98.75% CI (Bonferroni, 4 quantities)"
+KR2014/CN2015,A gap,8.108027704108721,3.6 to 12.6,2.4 to 13.7
+KR2014/CN2015,A minus B,3.390859743417143,-1.8 to 8.5,-3.1 to 10.0
+KR2018/CN2018,A gap,13.501803647938306,9.0 to 18.3,7.9 to 19.8
+KR2018/CN2018,A minus B,4.167738290501877,-1.1 to 9.9,-2.7 to 11.4

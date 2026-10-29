@@ -10,9 +10,10 @@ No survey data are included. Both surveys are free to use but must be obtained f
 |---|---|
 | `code/CodeS2_reproduction_KLoSA_CHARLS.ipynb` | Supplementary Code S2: a Python notebook (Google Colab or local Jupyter) that recomputes the main tables from the original survey files and compares 219 recomputed values with the published ones. |
 | `code/codeS2_core.py`, `code/codeS2_analysis.py` | The code of the two code cells in Section 2 of the notebook, for reading or local use (the notebook does not import them). |
-| `code/README_CodeS2.txt` | Detailed instructions for Code S2 (files, settings, outputs). |
+| `code/README_CodeS2.txt` | Detailed instructions for Code S2 (files, settings, outputs, MD5 checksums of the provider files of the reproduction run). |
+| `code/make_figures.py`, `code/make_figS1.py` | The code that drew Figures 1 to 3 and Supplementary Figure S1 (values typed in from the published tables). |
 | `code/Supplementary_Code_S1.R` | Supplementary Code S1: a separate R re-analysis. Part 1: counts, weighted no-helper proportions and standardized gaps under definitions A and B. Part 2: the post hoc CHARLS values of Supplementary Text S12. Part 3 (optional): the CHARLS 2011 sample and no-helper shares. |
-| `results/2026-10-29_KLoSA_CHARLS_run/` | Aggregate outputs of one run of Code S2 on both surveys (no individual-level data). `comparison_with_published.csv` lists each published value with the recomputed one. |
+| `results/KLoSA_CHARLS_run/` | Aggregate outputs of the latest run of Code S2 on both surveys (no individual-level data). `comparison_with_published.csv` lists each published value with the recomputed one; `check_table_S11.csv` does the same for Supplementary Table S11. |
 
 ## Data
 
@@ -28,13 +29,14 @@ Put the files in one folder (subfolders and the original zip archives are fine) 
 
 All outputs are aggregate. Do not upload the survey files or any individual-level output to public repositories, shared links or external services.
 
-## Verification status (2026-10-29)
+## Verification status (2026-10-30)
 
 - Code S2 run on both surveys (KLoSA structure-converted files released by KEIS in 2026) reproduced all 219 published values it checks at the published precision. These are point estimates; its bootstrap intervals use their own random numbers and differ from the published limits by up to 1.1 percentage points. On the CHARLS files alone it reproduces 109 values: 58 first computed with the original analysis scripts and 51 post hoc values that Code S2 computed itself.
 - Code S1: Part 1 reproduces the Korean and Chinese counts, shares and standardized gaps under definitions A and B; Part 2 reproduces all 63 CHARLS values it checks (the 51 post hoc values of Supplementary Text S12, four main-rule shares of Supplementary Table S10, the numbers excluded from the narrower help rule and the comparison of birth-year sources) and Part 3 18 of 18 CHARLS 2011 values.
-- `added_help_rule_variants.csv` (post hoc, added after the first run with the same seed; all other outputs unchanged): Korea-minus-China gaps when Chinese help is counted only on activities with need, or also on telephone calls, with 95% bootstrap intervals.
+- Code S2 also reproduces the 21 point estimates of Supplementary Table S11 (models with the survey weights as supplied) and writes the post hoc analyses reported in the article (`added_*.csv`): help-counting rules, prevalence-matched population shares, Table S11 with equal survey weights, Bonferroni-adjusted intervals for the primary quantities, county resampling, coding checks (first CHARLS coding, CHARLS help answers on activities rated as no difficulty, KLoSA "don't know" helper answers) and descriptive values (interview months, counts). `input_files_md5.csv` lists the provider files of the run.
+- A pre-submission integrity audit (2026-10-30) compared every number in the submission with the raw data and these outputs; the article reports its corrections.
 
-The original analysis scripts used for the published estimates will be added to this repository.
+The original analysis scripts used for the published estimates (including the published bootstrap intervals and the multiple imputation of Supplementary Table S6) will be added to this repository.
 
 ## Acknowledgments
 

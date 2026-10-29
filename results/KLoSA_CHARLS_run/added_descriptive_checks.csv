@@ -1,0 +1,60 @@
+topic,item,value
+"interview months, aged 65+",KR2014 2014-09,95
+"interview months, aged 65+",KR2014 2014-10,1823
+"interview months, aged 65+",KR2014 2014-11,2341
+"interview months, aged 65+",KR2018 2018-09,572
+"interview months, aged 65+",KR2018 2018-10,1893
+"interview months, aged 65+",KR2018 2018-11,1864
+"interview months, aged 65+",KR2018 2018-12,23
+"interview months, aged 65+",KR2020 2020-08,191
+"interview months, aged 65+",KR2020 2020-09,653
+"interview months, aged 65+",KR2020 2020-10,1512
+"interview months, aged 65+",KR2020 2020-11,1979
+"interview months, aged 65+",KR2020 2020-12,70
+"interview months, aged 65+",CN2013 2013-07,2653
+"interview months, aged 65+",CN2013 2013-08,2075
+"interview months, aged 65+",CN2013 2013-09,299
+"interview months, aged 65+",CN2013 2013-10,155
+"interview months, aged 65+",CN2013 2013-11,145
+"interview months, aged 65+",CN2015 2015-07,3783
+"interview months, aged 65+",CN2015 2015-08,2576
+"interview months, aged 65+",CN2015 2016-01,10
+"interview months, aged 65+",CN2018 2018-07,4490
+"interview months, aged 65+",CN2018 2018-08,2713
+"interview months, aged 65+",CN2018 2018-09,9
+"interview months, aged 65+",CN2020 2020-07,4255
+"interview months, aged 65+",CN2020 2020-08,3750
+"interview months, aged 65+",CN2020 2020-09,20
+"interview months, aged 65+",CN2020 2020-11,1
+"interview months, aged 65+",CN2020 2020-12,1
+Table S3,CN2013 help answers on items rated 1 (all ages),50
+Table S3,CN2013 definition A respondents helped only through such answers,2
+Text S12,CN2013 need with an unanswered help question and no yes / narrower-rule exclusions / both,3 / 2 / 1
+Table S6,"CN2013 IADL need, asked, unweighted %",29.46
+Table S6,"CN2013 IADL need, skipped, unweighted %",4.11
+Table S6,"CN2013 asked, no reported mobility difficulty / all nine items answered / with ADL need",89 / 0 / 0
+Table S6,CN2013 other incomplete: mean mobility score over answered items (n with an answered item),10.50 (40)
+Table S6,"CN2013 skipped respondents in the analytic base without a help answer, %",93.1
+Table S3,CN2015 help answers on items rated 1 (all ages),193
+Table S3,CN2015 definition A respondents helped only through such answers,6
+Text S12,CN2015 need with an unanswered help question and no yes / narrower-rule exclusions / both,4 / 4 / 3
+Table S6,"CN2015 IADL need, asked, unweighted %",30.42
+Table S6,"CN2015 IADL need, skipped, unweighted %",3.14
+Table S6,"CN2015 asked, no reported mobility difficulty / all nine items answered / with ADL need",71 / 0 / 1
+Table S6,CN2015 other incomplete: mean mobility score over answered items (n with an answered item),11.03 (40)
+Table S6,"CN2015 skipped respondents in the analytic base without a help answer, %",92.5
+Table S3,CN2018 help answers on items rated 1 (all ages),0
+Table S3,CN2018 definition A respondents helped only through such answers,0
+Table S6,"CN2018 IADL need, asked, unweighted %",31.54
+Table S6,"CN2018 IADL need, skipped, unweighted %",3.94
+Table S6,"CN2018 asked, no reported mobility difficulty / all nine items answered / with ADL need",0 / 0 / 0
+Table S6,CN2018 other incomplete: mean mobility score over answered items (n with an answered item),15.00 (1)
+Table S6,"CN2018 skipped respondents in the analytic base without a help answer, %",93.2
+Table S3,CN2020 help answers on items rated 1 (all ages),0
+Table S3,CN2020 definition A respondents helped only through such answers,0
+Table S4,KR2016 all respondents / aged 65+ with valid items and weight / need A / need A without help answer,7490 / 4337 / 798 / 0
+Table S4,KR2022 all respondents / aged 65+ with valid items and weight / need A / need A without help answer,6057 / 4491 / 882 / 0
+Table S4,KR2024 all respondents / aged 65+ with valid items and weight / need A / need A without help answer,5562 / 4504 / 1109 / 0
+Text S12,KR2014 proxy interviews among respondents with need: n / unweighted % / weighted %,107 / 14.3 / 13.0
+Text S12,KR2018 proxy interviews among respondents with need: n / unweighted % / weighted %,91 / 12.3 / 11.3
+Text S12,KR2020 proxy interviews among respondents with need: n / unweighted % / weighted %,67 / 9.3 / 9.5

@@ -3,6 +3,10 @@
 # Pairs or waves whose files are absent (for example, a run with the CHARLS files only) are skipped.
 import numpy as np
 import pandas as pd
+try:   # outside the notebook (local use of the .py files), take the shared objects from codeS2_core.py
+    from codeS2_core import AGE_CUTS, CHARLS_YEARS, KLOSA_WAVES, charls_items, read_dta, fid, load_klosa, _members
+except ImportError:   # in the notebook they come from the first code cell of Section 2
+    pass
 
 PAIRS = {  # label: (Korean wave, Chinese wave, role)
     'KR2014/CN2015': (2014, 2015, 'main'),
@@ -90,6 +94,7 @@ def klosa_diagnostics(W, wmean_ci):
         r = {'n with need (A)': len(m),
              '% no helper (A), unweighted': 100 * float(m['nh'].mean()),
              'C218_01 = 57 among them': int((m['helper'] == 57).sum()),
+             'C218_01 "don\'t know" or refused (< 0) among them, counted as answered and helped': int((m['helper'] < 0).sum()),
              'refresh panel (oldnew = 2), aged 65+': int((d['oldnew'] == 2).sum()),
              'LTCI use (C320n = 1) among those with need, weighted %':
                  100 * float((m['w'] * (m['ltci'] == 1)).sum() / m['w'].sum()) if m['ltci'].notna().any() else np.nan,
@@ -196,6 +201,374 @@ def help_rule_variants(W, Wave, gap, crude_gap, B=1000, seed=20261027):
     out = pd.DataFrame(res)
     out['result'] = [f"{r.estimate:.1f} ({r.lo:.1f} to {r.hi:.1f})" for r in out.itertuples()]
     return out
+
+MAIN_PAIRS = ('KR2014/CN2015', 'KR2018/CN2018')
+
+def _pq(x, level):
+    a = (1 - level) / 2
+    return np.nanpercentile(x, 100 * a), np.nanpercentile(x, 100 * (1 - a))
+
+def prevalence_matched(W, B=1000, seed=20261027):
+    """Post hoc (Section 3.5; Supplementary Text S12): crude Korea-minus-China difference in the share of all adults aged 65+
+    with need and no helper when Chinese need is set to two or more (or three or more) of the 10 items, thresholds that bring
+    Chinese need prevalence close to the Korean prevalence under definition A. Denominator as in Table 5 (respondents with need
+    who answered no help question left out). 95% bootstrap intervals; same resampling scheme and seed as bootstrap()."""
+    def parts(wave):
+        d = wave.df
+        keep = ~(d['needA'] & ~d['hans']).to_numpy()
+        if d['country'].iloc[0] == 'KR':
+            ys = {'A': (d['needA'] & d['hans']).to_numpy() & (d['nh'] == 1).to_numpy()}
+        else:
+            nl, hp = d['n_lim'].to_numpy(), d['helped'].to_numpy(bool)
+            ys = {t: (nl >= t) & ~hp for t in (2, 3)}
+        return wave.w * keep, ys
+    P = {k: parts(W[k]) for k in W if k in BOOT_WAVES}
+    def stats(M=None):
+        out = {}
+        for lab, (ky, cy, _) in PAIRS.items():
+            kk, cc = f'KR{ky}', f'CN{cy}'
+            if kk not in P or cc not in P:
+                continue
+            (wk, yk), (wc, yc) = P[kk], P[cc]
+            mk = M[kk] if M is not None else 1.0
+            mc = M[cc] if M is not None else 1.0
+            sk = 100 * (wk * mk * yk['A']).sum() / (wk * mk).sum()
+            for thr in (2, 3):
+                sc = 100 * (wc * mc * yc[thr]).sum() / (wc * mc).sum()
+                out[(lab, thr)] = (sk, sc, sk - sc)
+        return out
+    point = stats()
+    rng = np.random.default_rng(seed)
+    reps = []
+    for _ in range(B):
+        M = {k: W[k].draw(rng) for k in BOOT_WAVES if k in W}
+        reps.append({k: v[2] for k, v in stats(M).items()})
+    reps = pd.DataFrame(reps)
+    rows = []
+    for (lab, thr), (sk, sc, dif) in point.items():
+        lo, hi = _pq(reps[(lab, thr)], 0.95)
+        rows.append({'pair': lab, 'Chinese need threshold': f'{thr}+ of 10 items', 'Korea %': sk, 'China %': sc,
+                     'difference': dif, 'lo': lo, 'hi': hi, 'result': f'{dif:.1f} ({lo:.1f} to {hi:.1f})'})
+    return pd.DataFrame(rows)
+
+def adjusted_models(W, B=1000, seed=20261027, progress=None):
+    """Post hoc check of Supplementary Table S11: weighted logistic model of no helper on country, five age groups, sex, low
+    education and living alone (low education only in 2020, where living alone was not derived for CHARLS); the adjusted gap is
+    the difference in mean predicted probability with country set to Korea and to China. 'as supplied' pools the two surveys'
+    weights unchanged, which reproduces the published Table S11; CHARLS weights then make up about 98% of the pooled weight, so the
+    model and the margins are in effect those of the Chinese covariate distribution. 'equal' rescales each survey's weights to the
+    same total, an equal mix of the two countries as in the age-sex standard of the headline gaps. Intervals: 95% bootstrap,
+    same resampling scheme and seed as bootstrap()."""
+    import statsmodels.api as sm
+    import warnings
+    specs = [('KR2014/CN2015', ('loweduc', 'alone')), ('KR2018/CN2018', ('loweduc', 'alone')), ('KR2020/CN2020', ('loweduc',)),
+             ('KR2014/CN2015', ('alone',)), ('KR2018/CN2018', ('alone',))]
+    def design(lab, covs, need):
+        ky, cy, _ = PAIRS[lab]
+        parts = []
+        for key in (f'KR{ky}', f'CN{cy}'):
+            d = W[key].df
+            m = (d[need] & d['hans']).to_numpy()
+            for c in covs:
+                m &= d[c].notna().to_numpy()
+            parts.append((key, m))
+        if min(m.sum() for _, m in parts) < 20:   # covariates absent from the files (e.g. synthetic test data)
+            return None
+        X, y, w, kr, idx = [], [], [], [], []
+        for key, m in parts:
+            d = W[key].df[m]
+            band = pd.cut(d['age'], AGE_CUTS, labels=False).to_numpy()
+            cols = [np.ones(len(d)), np.full(len(d), float(key.startswith('KR')))] + [(band == j).astype(float) for j in range(1, 5)] \
+                   + [d['fem'].to_numpy(float)] + [d[c].to_numpy(float) for c in covs]
+            X.append(np.column_stack(cols)); y.append(d['nh'].to_numpy(float)); w.append(d['w'].to_numpy(float))
+            kr.append(np.full(len(d), key.startswith('KR'))); idx.append((key, m))
+        return np.vstack(X), np.concatenate(y), np.concatenate(w), np.concatenate(kr), idx
+    D = {(lab, covs, need): design(lab, covs, need) for lab, covs in specs if f'KR{PAIRS[lab][0]}' in W and f'CN{PAIRS[lab][1]}' in W
+         for need in ('needA', 'needB')}
+    D = {k: v for k, v in D.items() if v is not None and D.get((k[0], k[1], 'needB' if k[2] == 'needA' else 'needA')) is not None}
+    if not D:
+        return pd.DataFrame(columns=['pair', 'covariates', 'weights', 'Korea % (A)', 'China % (A)', 'A gap', 'B gap', 'A minus B'])
+    def fit(X, y, w, kr, mode):
+        if mode == 'equal':
+            w = w.copy()
+            for g in (kr, ~kr):
+                w[g] = w[g] / w[g].sum()
+        keep = w > 0
+        with warnings.catch_warnings():
+            warnings.simplefilter('ignore')
+            r = sm.GLM(y[keep], X[keep], family=sm.families.Binomial(), freq_weights=w[keep] / w[keep].mean()).fit()
+        X1, X0 = X[keep].copy(), X[keep].copy()
+        X1[:, 1], X0[:, 1] = 1.0, 0.0
+        p1, p0 = r.predict(X1), r.predict(X0)
+        return 100 * np.average(p1, weights=w[keep]), 100 * np.average(p0, weights=w[keep])
+    def stats(M=None):
+        out = {}
+        for (lab, covs, need), (X, y, w, kr, idx) in D.items():
+            ww = w if M is None else w * np.concatenate([M[key][m] for key, m in idx])
+            for mode in ('as supplied', 'equal'):
+                a, b = fit(X, y, ww, kr, mode)
+                out[(lab, '+'.join(covs), mode, need)] = (a, b, a - b)
+        return out
+    point = stats()
+    rng = np.random.default_rng(seed)
+    reps = []
+    for i in range(B):
+        M = {k: W[k].draw(rng) for k in BOOT_WAVES if k in W}
+        s = stats(M)
+        r = {k: v[2] for k, v in s.items()}
+        for (lab, covs, mode, need) in list(s):
+            if need == 'needA':
+                r[(lab, covs, mode, 'A-B')] = s[(lab, covs, mode, 'needA')][2] - s[(lab, covs, mode, 'needB')][2]
+        reps.append(r)
+        if progress and (i + 1) % 100 == 0:
+            progress(i + 1)
+    reps = pd.DataFrame(reps)
+    rows = []
+    for (lab, covs, mode, need), (a, b, g) in point.items():
+        if need != 'needA':
+            continue
+        gb = point[(lab, covs, mode, 'needB')][2]
+        row = {'pair': lab, 'covariates': 'age group, sex, ' + covs.replace('loweduc', 'low education').replace('alone', 'living alone').replace('+', ', '),
+               'weights': mode, 'Korea % (A)': a, 'China % (A)': b}
+        for nm, est, key in (('A gap', g, 'needA'), ('B gap', gb, 'needB'), ('A minus B', g - gb, 'A-B')):
+            lo, hi = _pq(reps[(lab, covs, mode, key)], 0.95)
+            row[nm] = f'{est:.1f} ({lo:.1f} to {hi:.1f})'
+        rows.append(row)
+    return pd.DataFrame(rows)
+
+def primary_adjusted(W, gap, B=10000, seed=20261027):
+    """Post hoc: the four primary quantities (definition A gaps and A-minus-B differences in the two main pairs) with 95% and
+    Bonferroni-adjusted 98.75% bootstrap intervals from 10,000 replicates (same resampling scheme and seed as bootstrap())."""
+    rng = np.random.default_rng(seed)
+    reps = []
+    for _ in range(B):
+        M = {k: W[k].draw(rng) for k in BOOT_WAVES if k in W}
+        r = {}
+        for lab in MAIN_PAIRS:
+            ky, cy, _ = PAIRS[lab]
+            a = gap(W[f'KR{ky}'], W[f'CN{cy}'], 'needA', M[f'KR{ky}'], M[f'CN{cy}'])[2]
+            b = gap(W[f'KR{ky}'], W[f'CN{cy}'], 'needB', M[f'KR{ky}'], M[f'CN{cy}'])[2]
+            r[(lab, 'A gap')], r[(lab, 'A minus B')] = a, a - b
+        reps.append(r)
+    reps = pd.DataFrame(reps)
+    rows = []
+    for lab in MAIN_PAIRS:
+        ky, cy, _ = PAIRS[lab]
+        a = gap(W[f'KR{ky}'], W[f'CN{cy}'], 'needA')[2]
+        b = gap(W[f'KR{ky}'], W[f'CN{cy}'], 'needB')[2]
+        for nm, est in (('A gap', a), ('A minus B', a - b)):
+            l95, h95 = _pq(reps[(lab, nm)], 0.95)
+            l99, h99 = _pq(reps[(lab, nm)], 0.9875)
+            rows.append({'pair': lab, 'quantity': nm, 'estimate': est, '95% CI': f'{l95:.1f} to {h95:.1f}',
+                         '98.75% CI (Bonferroni, 4 quantities)': f'{l99:.1f} to {h99:.1f}'})
+    return pd.DataFrame(rows)
+
+def county_clustering(W, Wave, gap, B=1000, seed=20261027):
+    """Post hoc: bootstrap standard errors of the four primary quantities when Chinese counties (the first six digits of the
+    community identifier, which group the communities in threes as in the CHARLS county sample) instead of communities are
+    resampled. Korean respondents are resampled independently, with the same draws in both runs."""
+    cty = {}
+    for k in W:
+        if k.startswith('CN'):
+            d = W[k].df.copy()
+            d['cl'] = d['cl'].astype(str).str[:6]
+            cty[k] = Wave(d, by_cluster=True)
+    out = []
+    for name, WW in (('communities', W), ('counties', {**W, **cty})):
+        rng_cn, rng_kr = np.random.default_rng(seed), np.random.default_rng(seed + 1)   # Korean resamples identical in both runs
+        reps = []
+        for _ in range(B):
+            M = {k: WW[k].draw(rng_kr if k.startswith('KR') else rng_cn) for k in BOOT_WAVES if k in WW}
+            r = {}
+            for lab in MAIN_PAIRS:
+                ky, cy, _ = PAIRS[lab]
+                a = gap(WW[f'KR{ky}'], WW[f'CN{cy}'], 'needA', M[f'KR{ky}'], M[f'CN{cy}'])[2]
+                b = gap(WW[f'KR{ky}'], WW[f'CN{cy}'], 'needB', M[f'KR{ky}'], M[f'CN{cy}'])[2]
+                r[(lab, 'A gap')], r[(lab, 'A minus B')] = a, a - b
+            reps.append(r)
+        out.append(pd.DataFrame(reps).std().rename(f'bootstrap SE, {name} resampled'))
+    res = pd.concat(out, axis=1)
+    res.index = [f'{p} {q}' for p, q in res.index]
+    res['ratio'] = res.iloc[:, 1] / res.iloc[:, 0]
+    res.attrs['clusters (communities, counties)'] = {k: (W[k].ncl, cty[k].ncl) for k in cty}
+    return res
+
+def coding_checks(files, H, W, Wave, gap):
+    """Post hoc checks of three coding rules, for the four pairs (standardized gaps, percentage points):
+    (1) first-estimate coding of CHARLS (continence counted as need; ADL items skipped by design treated as missing, so those
+        respondents are excluded) against the revised coding used for all reported estimates, for definitions A and B and A minus B;
+    (2) CHARLS 2013 and 2015 files contain help answers on activities rated 1 (no difficulty), contrary to the routing; the main
+        rule counts them; here help is counted only on activities rated 2 or higher;
+    (3) KLoSA 2014: 'don't know' answers to C218_01 (code -9) are counted as answered and as having a helper; here as unanswered."""
+    rows = []
+    def charls_variant(year, continence=False, skip_fill=True, help_on_difficulty=False):
+        adl6, iadl, helpv = charls_items(year)
+        d = read_dta(files[f'CN{year}_hsf']); d['ID'] = fid(d['ID']); d = d.drop_duplicates('ID').reset_index(drop=True)
+        num = lambda c: pd.to_numeric(d[c], errors='coerce') if c in d.columns else pd.Series(np.nan, index=d.index)
+        x = pd.DataFrame({c: num(c).where(num(c).between(1, 4)) for c in adl6 + iadl})
+        if skip_fill and year != 2020:
+            mob = pd.DataFrame({f'db00{i}': num(f'db00{i}') for i in range(1, 10)})
+            skip = ((x[adl6].notna().sum(axis=1) == 0) & (mob.isna() | (mob == 1)).all(axis=1) & mob.notna().any(axis=1)
+                    & (x[iadl].notna().sum(axis=1) >= len(iadl) - 1))
+            x.loc[skip, adl6] = 1
+        valid = x.notna().sum(axis=1) >= len(adl6 + iadl) - 1
+        A = adl6 + iadl if continence else adl6[:5] + iadl
+        Bi = adl6 if continence else adl6[:5]
+        h = pd.DataFrame({c: num(c) for c in helpv}).to_numpy()
+        r = x[adl6[:5] + iadl].to_numpy()
+        ok = (r >= 2) if help_on_difficulty else np.ones_like(h, dtype=bool)
+        out = pd.DataFrame({'ID': d['ID'], 'valid': valid, 'needA': (x[A] >= 3).any(axis=1), 'needB': (x[Bi] >= 3).any(axis=1),
+                            'nh': (~((h == 1) & ok).any(axis=1)).astype(int), 'hans': (np.isin(h, [1, 2]) & ok).any(axis=1)})
+        base = W[f'CN{year}'].df[['ID', 'w', 'cl', 'age', 'fem']]
+        o = out.merge(base, on='ID', how='inner') if skip_fill else None
+        if not skip_fill:   # rebuild the base: skipped respondents are not valid here, everyone else as in load_charls
+            Wt = read_dta(files[f'CN{year}_wt'], columns=['ID', 'INDV_weight_ad2', 'communityID']); Wt['ID'] = fid(Wt['ID'])
+            Wt = Wt.drop_duplicates('ID').rename(columns={'INDV_weight_ad2': 'w', 'communityID': 'cl'})
+            Wt['w'] = pd.to_numeric(Wt['w'], errors='coerce'); Wt['cl'] = Wt['cl'].astype(str).str.strip()
+            age = pd.concat([W[f'CN{year}'].df[['ID', 'age', 'fem']]])
+            o = out.merge(Wt, on='ID', how='left').merge(age, on='ID', how='inner')
+        o = o[o['valid'] & o['w'].notna() & (o['w'] > 0)]
+        return Wave(o.copy(), by_cluster=True)
+    for lab, (ky, cy, _) in PAIRS.items():
+        kk = f'KR{ky}'
+        if kk not in W or f'CN{cy}' not in W:
+            continue
+        base = {n: gap(W[kk], W[f'CN{cy}'], n)[2] for n in ('needA', 'needB')}
+        first = charls_variant(cy, continence=True, skip_fill=False)
+        fe = {n: gap(W[kk], first, n)[2] for n in ('needA', 'needB')}
+        rows.append({'check': 'first-estimate CHARLS coding', 'pair': lab, 'A gap': fe['needA'], 'B gap': fe['needB'],
+                     'A minus B': fe['needA'] - fe['needB'], 'A gap, reported coding': base['needA'], 'B gap, reported coding': base['needB'],
+                     'A minus B, reported coding': base['needA'] - base['needB']})
+        if cy in (2013, 2015):
+            hv = charls_variant(cy, help_on_difficulty=True)
+            m = hv.df[hv.df['needA'] & hv.df['hans']]
+            rows.append({'check': 'CHARLS help counted only on activities rated 2+', 'pair': lab, 'A gap': gap(W[kk], hv, 'needA')[2],
+                         'A gap, reported coding': base['needA'],
+                         'Chinese % no helper (A)': 100 * float((m['w'] * m['nh']).sum() / m['w'].sum())})
+        if ky == 2014:
+            d = W[kk].df.copy()
+            n_dk = int((d['needA'] & d['hans'] & (d['helper'] < 0)).sum())
+            d['hans'] = d['hans'] & ~(d['helper'] < 0)
+            dk = Wave(d, by_cluster=False)
+            m = d[d['needA'] & d['hans']]
+            rows.append({'check': f"KLoSA 2014 'don't know' helper answers as unanswered ({n_dk} respondents)", 'pair': lab,
+                         'A gap': gap(dk, W[f'CN{cy}'], 'needA')[2], 'A gap, reported coding': base['needA'],
+                         'Korean % no helper (A)': 100 * float((m['w'] * m['nh']).sum() / m['w'].sum())})
+    return pd.DataFrame(rows)
+
+def descriptive_checks(files, H, W, data_dir):
+    """Descriptive values reported in the article and supplement that come from the files directly (counts and unweighted shares
+    unless stated): interview months of respondents aged 65+ (Section 2.1); CHARLS help answers on activities rated 1 and the
+    respondents they reclassify (Supplementary Table S3); KLoSA context-wave sample sizes (Table S4); Table S6 facts (IADL need of
+    asked and skipped respondents, asked respondents with no reported mobility difficulty, mobility score of other-incomplete
+    respondents, skipped respondents without a help answer); KLoSA proxy shares, weighted and unweighted (Text S12); overlap of
+    two small CHARLS groups (Text S12)."""
+    import re
+    rows = []
+    add = lambda topic, item, value: rows.append({'topic': topic, 'item': item, 'value': value})
+    # interview months, respondents aged 65+ with valid items and a positive weight
+    for y in (2014, 2018, 2020):
+        if f'KR{y}' not in W:
+            continue
+        wv = 'w' + KLOSA_WAVES[y]
+        base = load_klosa(files, y)                      # keeps the row index of the file
+        try:
+            d = read_dta(files[f'KR{y}'], columns=[wv + 'mniw_y', wv + 'mniw_m']).loc[base.index]
+        except (ValueError, KeyError):                   # interview-date variables absent (e.g. synthetic test files)
+            add('interview months, aged 65+', f'KR{y}', 'not in file')
+            continue
+        for (yy, mm), n in d.groupby([wv + 'mniw_y', wv + 'mniw_m']).size().items():
+            add('interview months, aged 65+', f'KR{y} {int(yy)}-{int(mm):02d}', int(n))
+    parts = lambda n: re.split(r'[/\\]|::', n)
+    for y in CHARLS_YEARS:
+        member = 'weights.dta' if y == 2013 else 'sample_infor.dta'
+        hits = [(n, o) for n, o in _members(data_dir) if parts(n)[-1].lower() == member and len(parts(n)) > 1 and str(y) in parts(n)[-2]]
+        if len(hits) != 1:
+            add('interview months, aged 65+', f'CN{y}', 'file not found')
+            continue
+        try:
+            d = read_dta(hits[0], columns=['ID', 'iyear', 'imonth']); d['ID'] = fid(d['ID'])
+        except (ValueError, KeyError):
+            add('interview months, aged 65+', f'CN{y}', 'not in file')
+            continue
+        a = W[f'CN{y}'].df[['ID']].merge(d.drop_duplicates('ID'), on='ID', how='left')
+        for (yy, mm), n in a.groupby(['iyear', 'imonth']).size().items():
+            add('interview months, aged 65+', f'CN{y} {int(yy)}-{int(mm):02d}', int(n))
+    # CHARLS: Table S6 facts, help answers on items rated 1, overlap of two groups
+    for y in CHARLS_YEARS:
+        adl6, iadl, helpv = charls_items(y)
+        d = read_dta(files[f'CN{y}_hsf']); d['ID'] = fid(d['ID']); d = d.drop_duplicates('ID').reset_index(drop=True)
+        num = lambda c: pd.to_numeric(d[c], errors='coerce')
+        x = pd.DataFrame({c: num(c).where(num(c).between(1, 4)) for c in adl6 + iadl})
+        items = adl6[:5] + iadl
+        r, h = x[items].to_numpy(), np.column_stack([num(c) for c in helpv])
+        q = pd.DataFrame({'ID': d['ID'].values, 'helped_diff': ((h == 1) & (r >= 2)).any(axis=1),
+                          'need_unans': ((r >= 3) & ~np.isin(h, [1, 2])).any(axis=1), 'anyyes': (h == 1).any(axis=1)})
+        b = W[f'CN{y}'].df.merge(q, on='ID', how='left'); s = b[b['needA'] & b['hans']]
+        add('Table S3', f'CN{y} help answers on items rated 1 (all ages)', int((np.isin(h, [1, 2]) & (r == 1)).sum()))
+        add('Table S3', f'CN{y} definition A respondents helped only through such answers', int((s['helped'] & ~s['helped_diff']).sum()))
+        if y in (2013, 2015):
+            g1, g2 = s['need_unans'] & ~s['anyyes'], ~s['hans_need']
+            add('Text S12', f'CN{y} need with an unanswered help question and no yes / narrower-rule exclusions / both',
+                f'{int(g1.sum())} / {int(g2.sum())} / {int((g1 & g2).sum())}')
+        if y == 2020:
+            continue
+        mob = pd.DataFrame({f'db00{i}': num(f'db00{i}') for i in range(1, 10)})
+        all_one, any_mob = (mob.isna() | (mob == 1)).all(axis=1), mob.notna().any(axis=1)
+        skip = (x[adl6].notna().sum(axis=1) == 0) & all_one & any_mob & (x[iadl].notna().sum(axis=1) >= len(iadl) - 1)
+        xf = x.copy(); xf.loc[skip, adl6] = 1
+        valid = xf.notna().sum(axis=1) >= len(adl6 + iadl) - 1
+        age65 = ((y - pd.DataFrame({'ID': d['ID']}).merge(H[['ID', 'rabyear']], on='ID', how='left')['rabyear']) >= 65).to_numpy()
+        asked, skipped, other = valid & ~skip & age65, valid & skip & age65, ~valid & age65
+        iadl_need, adl_need = (x[iadl] >= 3).any(axis=1), (x[adl6[:5]] >= 3).any(axis=1)
+        score = (mob - 1).clip(lower=0).sum(axis=1, min_count=1)
+        pos = asked & all_one & any_mob
+        add('Table S6', f'CN{y} IADL need, asked, unweighted %', round(100 * float(iadl_need[asked].mean()), 2))
+        add('Table S6', f'CN{y} IADL need, skipped, unweighted %', round(100 * float(iadl_need[skipped].mean()), 2))
+        add('Table S6', f'CN{y} asked, no reported mobility difficulty / all nine items answered / with ADL need',
+            f'{int(pos.sum())} / {int((pos & (mob == 1).all(axis=1)).sum())} / {int((pos & adl_need).sum())}')
+        add('Table S6', f'CN{y} other incomplete: mean mobility score over answered items (n with an answered item)',
+            f'{float(score[other].mean()):.2f} ({int(score[other].notna().sum())})')
+        sk = W[f'CN{y}'].df[W[f'CN{y}'].df['skipped']]
+        add('Table S6', f'CN{y} skipped respondents in the analytic base without a help answer, %', round(100 * float((~sk['hans']).mean()), 1))
+    # KLoSA context waves and proxy interviews
+    for y in (2016, 2022, 2024):
+        if f'KR{y}' in W:
+            wv = 'w' + KLOSA_WAVES[y]
+            try:
+                n_all = len(read_dta(files[f'KR{y}'], columns=[wv + 'C201']))
+            except (ValueError, KeyError):
+                continue
+            d = W[f'KR{y}'].df
+            add('Table S4', f'KR{y} all respondents / aged 65+ with valid items and weight / need A / need A without help answer',
+                f'{n_all} / {len(d)} / {int(d["needA"].sum())} / {int((d["needA"] & ~d["hans"]).sum())}')
+    for y in (2014, 2018, 2020):
+        if f'KR{y}' in W:
+            m = W[f'KR{y}'].df; m = m[m['needA'] & m['hans']]; pr = (m['proxy_c2'] == 4).to_numpy()
+            add('Text S12', f'KR{y} proxy interviews among respondents with need: n / unweighted % / weighted %',
+                f'{int(pr.sum())} / {100 * pr.mean():.1f} / {100 * float((m["w"] * pr).sum() / m["w"].sum()):.1f}')
+    return pd.DataFrame(rows)
+
+# Supplementary Table S11 as published (original Python scripts, weights pooled as supplied): A gap, B gap, A minus B, Korea % (A),
+# China % (A); the models with living alone only report the three gaps
+PUB_S11 = {('KR2014/CN2015', 'age group, sex, low education, living alone'): ('5.7', '4.8', '0.9', '22.5', '16.8'),
+           ('KR2018/CN2018', 'age group, sex, low education, living alone'): ('18.3', '9.4', '8.9', '33.1', '14.8'),
+           ('KR2020/CN2020', 'age group, sex, low education'): ('25.8', '14.7', '11.0', '37.0', '11.2'),
+           ('KR2014/CN2015', 'age group, sex, living alone'): ('8.8', '4.8', '4.0'),
+           ('KR2018/CN2018', 'age group, sex, living alone'): ('14.6', '9.7', '4.8')}
+
+def check_s11(am):
+    """Compare the 'as supplied' point estimates of adjusted_models() with the published Table S11 (21 values)."""
+    rows = []
+    for _, r in am[am['weights'] == 'as supplied'].iterrows() if len(am) else []:
+        pub = PUB_S11.get((r['pair'], r['covariates']))
+        if pub is None:
+            continue
+        got = [float(r[c].split(' ')[0]) for c in ('A gap', 'B gap', 'A minus B')] + [r['Korea % (A)'], r['China % (A)']]
+        for name, p, g in zip(('A gap', 'B gap', 'A minus B', 'Korea % (A)', 'China % (A)'), pub, got):
+            rows.append({'pair': r['pair'], 'covariates': r['covariates'], 'value': name, 'published': p,
+                         'reproduced': round(g, 2), 'match': _matches(g, p)})
+    return pd.DataFrame(rows)
 
 def summarize(est, reps, W, gap):
     """Point estimates with 2.5th-97.5th percentile bootstrap intervals."""
