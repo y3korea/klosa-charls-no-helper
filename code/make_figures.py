@@ -35,19 +35,19 @@ S1 = {
 }
 PAIRS = ['KR 2014 / CN 2015', 'KR 2018 / CN 2018', 'KR 2014 / CN 2013', 'KR 2020 / CN 2020']
 ROLE = ['main', 'main', 'sensitivity', 'sensitivity']
-# Table 4 / Table 5 / Supplementary Table S5: Korea-minus-China gaps among those with need, pp (95% CI)
+# Table 4 / Table 5 / Supplementary Table S5: Korea-minus-China gaps among those with need, pp (95% CI; Code S2, 10,000 replicates)
 GAP = {
- 'A crude':        [(7.5, 3.0, 11.7), (12.6, 8.1, 17.0), (10.8, 7.0, 14.8), (23.1, 18.7, 27.5)],
- 'A standardized': [(8.1, 3.5, 12.8), (13.5, 8.7, 18.2), (11.8, 8.0, 15.8), (24.3, 19.7, 29.3)],
- 'Common items':   [(6.4, 1.8, 11.2), (9.8, 5.3, 14.9), (10.1, 5.8, 14.4), (21.8, 16.4, 26.9)],
- 'B standardized': [(4.7, -0.7, 10.2), (9.3, 3.3, 15.5), (5.6, 0.3, 11.3), (14.7, 8.9, 21.4)],
+ 'A crude':        [(7.5, 3.2, 11.6), (12.6, 8.4, 16.8), (10.8, 6.9, 14.8), (23.1, 18.6, 27.5)],
+ 'A standardized': [(8.1, 3.6, 12.6), (13.5, 9.0, 18.3), (11.8, 7.9, 15.7), (24.3, 19.6, 29.3)],
+ 'Common items':   [(6.4, 1.8, 11.0), (9.8, 5.4, 14.8), (10.1, 6.1, 14.1), (21.8, 16.7, 26.9)],
+ 'B standardized': [(4.7, -0.8, 10.4), (9.3, 3.0, 15.6), (5.6, 0.1, 11.3), (14.7, 8.3, 21.3)],
 }
 # Supplementary Table S7, Panel A (Table 4 note): standardized gap under A minus that under B, paired bootstrap, pp (95% CI)
-DIFF = [(3.4, -1.8, 8.7), (4.2, -1.7, 9.9), (6.2, 1.5, 10.6), (9.6, 4.6, 15.5)]
+DIFF = [(3.4, -1.8, 8.5), (4.2, -1.1, 9.9), (6.2, 1.5, 10.7), (9.6, 4.1, 15.4)]
 # Table 5: differences in the population share with need and no helper among all adults 65+, pp (95% CI)
 POP = {
- 'crude':        [(-0.6, -1.6, 0.4), (-0.5, -1.3, 0.4), (0.4, -0.5, 1.2), (2.3, 1.4, 3.2)],
- 'standardized': [(-1.0, -2.0, 0.0), (-0.7, -1.5, 0.1), (0.0, -0.8, 0.9), (2.2, 1.4, 3.1)],
+ 'crude':        [(-0.6, -1.6, 0.3), (-0.5, -1.3, 0.4), (0.4, -0.5, 1.2), (2.3, 1.5, 3.2)],
+ 'standardized': [(-1.0, -2.0, -0.04), (-0.7, -1.5, 0.2), (0.0, -0.8, 0.9), (2.2, 1.4, 3.1)],
 }
 
 
@@ -269,7 +269,7 @@ def figure1():
                 'Post hoc (China): need on 2+ or 3+ of 10 items to match Korean prevalence'])
     e2 = c.box(X[3], e1 - 6, cw, 'Korea minus China gaps',
                ['Weighted percentages; direct age-sex standardization (10 strata)',
-                '95% CI: 1,000 bootstrap replicates (communities in China, persons in Korea); A minus B within replicates'])
+                '95% CI: 10,000 bootstrap replicates (communities in China, persons in Korea); A minus B within replicates'])
     c.arrow(X[3] + cw / 2, e1, X[3] + cw / 2, e1 - 6)
     e3 = c.box(X[3], e2 - 6, cw, 'Checks',
                ['Sensitivity analyses (Supplementary Tables S5–S15, Texts S12–S13)', 'Re-analyses in R and Python (Supplementary Code S1, S2)'])

@@ -1,220 +1,220 @@
-statistic,item,definition,published,reproduced,match,published_CI,reproduced_CI
-pct,KR2014,needA,24.24,24.236,True,,
-pct,KR2018,needA,27.50,27.496,True,,
-pct,KR2020,needA,34.33,34.326,True,,
-pct,CN2013,needA,13.39,13.386,True,,
-pct,CN2015,needA,16.78,16.781,True,,
-pct,CN2018,needA,14.88,14.879,True,,
-pct,CN2020,needA,11.23,11.228,True,,
-pct,KR2014,needB,16.34,16.344,True,,
-pct,KR2018,needB,17.08,17.08,True,,
-pct,KR2020,needB,18.77,18.773,True,,
-pct,CN2013,needB,12.86,12.863,True,,
-pct,CN2015,needB,13.17,13.166,True,,
-pct,CN2018,needB,9.66,9.663,True,,
-pct,CN2020,needB,5.74,5.738,True,,
-pct,CN2013,needD,31.8,31.758,True,,
-pct,CN2015,needD,37.3,37.325,True,,
-pct,CN2018,needD,33.2,33.237,True,,
-pct,CN2020,needD,40.9,40.941,True,,
-pct,KR2014,needC,22.3,22.255,True,,
-pct,KR2018,needC,24.1,24.07,True,,
-pct,KR2020,needC,32.2,32.203,True,,
-se,KR2014,needA,1.71,1.708,True,,
-se,KR2018,needA,1.90,1.899,True,,
-se,KR2020,needA,2.09,2.088,True,,
-se,CN2013,needA,1.10,1.098,True,,
-se,CN2015,needA,1.36,1.357,True,,
-se,CN2018,needA,1.00,1.002,True,,
-se,CN2020,needA,0.94,0.938,True,,
-se,KR2014,needB,2.21,2.206,True,,
-se,KR2018,needB,2.54,2.542,True,,
-se,KR2020,needB,2.95,2.947,True,,
-n,KR2014,needA,749,749.0,True,,
-n,KR2018,needA,739,739.0,True,,
-n,KR2020,needA,718,718.0,True,,
-n,CN2013,needA,1425,1425.0,True,,
-n,CN2015,needA,1776,1776.0,True,,
-n,CN2018,needA,2082,2082.0,True,,
-n,CN2020,needA,1869,1869.0,True,,
-n,KR2014,needB,324,324.0,True,,
-n,KR2018,needB,307,307.0,True,,
-n,KR2020,needB,280,280.0,True,,
-n,CN2013,needB,587,587.0,True,,
-n,CN2015,needB,761,761.0,True,,
-n,CN2018,needB,855,855.0,True,,
-n,CN2020,needB,844,844.0,True,,
-n,KR2014,needC,684,684.0,True,,
-n,KR2018,needC,662,662.0,True,,
-n,KR2020,needC,634,634.0,True,,
-n70,KR2014,needA,661,661.0,True,,
-n70,KR2018,needA,675,675.0,True,,
-n70,KR2020,needA,659,659.0,True,,
-n70,CN2015,needA,1262,1262.0,True,,
-n70,CN2018,needA,1455,1455.0,True,,
-n70,CN2020,needA,1359,1359.0,True,,
-nohelp,KR2014,needA,182,182.0,True,,
-nohelp,KR2018,needA,204,204.0,True,,
-nohelp,KR2020,needA,224,224.0,True,,
-nohelp,CN2013,needA,206,206.0,True,,
-nohelp,CN2015,needA,302,302.0,True,,
-nohelp,CN2018,needA,320,320.0,True,,
-nohelp,CN2020,needA,235,235.0,True,,
-nohelp,KR2014,needB,51,51.0,True,,
-nohelp,KR2018,needB,46,46.0,True,,
-nohelp,KR2020,needB,47,47.0,True,,
-nohelp,CN2013,needB,79,79.0,True,,
-nohelp,CN2015,needB,112,112.0,True,,
-nohelp,CN2018,needB,87,87.0,True,,
-nohelp,CN2020,needB,55,55.0,True,,
-kr_std,KR2014/CN2015,needA,24.37,24.368,True,,
-kr_std,KR2018/CN2018,needA,27.49,27.492,True,,
-kr_std,KR2020/CN2020,needA,35.08,35.082,True,,
-kr_std,KR2014/CN2013,needA,24.44,24.443,True,,
-kr_std,KR2014/CN2015,needB,17.20,17.202,True,,
-kr_std,KR2018/CN2018,needB,18.21,18.209,True,,
-kr_std,KR2020/CN2020,needB,19.95,19.954,True,,
-kr_std,KR2014/CN2013,needB,17.19,17.193,True,,
-cn_std,KR2014/CN2015,needA,16.26,16.26,True,,
-cn_std,KR2018/CN2018,needA,13.99,13.99,True,,
-cn_std,KR2020/CN2020,needA,10.74,10.742,True,,
-cn_std,KR2014/CN2013,needA,12.63,12.625,True,,
-cn_std,KR2014/CN2015,needB,12.49,12.485,True,,
-cn_std,KR2018/CN2018,needB,8.87,8.875,True,,
-cn_std,KR2020/CN2020,needB,5.21,5.208,True,,
-cn_std,KR2014/CN2013,needB,11.56,11.562,True,,
-t2_age,KR2014,,78.5,78.524,True,,
-t2_age,CN2015,,76.0,75.996,True,,
-t2_age,KR2018,,78.8,78.768,True,,
-t2_age,CN2018,,76.3,76.264,True,,
-t2_age,KR2020,,79.8,79.764,True,,
-t2_age,CN2020,,77.2,77.208,True,,
-t2_female,KR2014,,58.2,58.244,True,,
-t2_female,CN2015,,61.6,61.581,True,,
-t2_female,KR2018,,55.8,55.823,True,,
-t2_female,CN2018,,59.5,59.451,True,,
-t2_female,KR2020,,55.1,55.138,True,,
-t2_female,CN2020,,60.1,60.145,True,,
-t2_75plus,KR2014,,67.3,67.282,True,,
-t2_75plus,CN2015,,52.3,52.302,True,,
-t2_75plus,KR2018,,67.8,67.817,True,,
-t2_75plus,CN2018,,54.2,54.213,True,,
-t2_75plus,KR2020,,70.8,70.838,True,,
-t2_75plus,CN2020,,58.6,58.621,True,,
-all_need,KR2014,,16.6,16.581,True,,
-all_need,KR2018,,14.2,14.192,True,,
-all_need,KR2020,,14.4,14.35,True,,
-all_need,CN2013,,27.3,27.312,True,,
-all_need,CN2015,,27.7,27.652,True,,
-all_need,CN2018,,29.3,29.311,True,,
-all_need,CN2020,,23.3,23.311,True,,
-all_nohelp,KR2014,,4.0,4.018,True,,
-all_nohelp,KR2018,,3.9,3.902,True,,
-all_nohelp,KR2020,,4.9,4.926,True,,
-all_nohelp,CN2013,,3.7,3.656,True,,
-all_nohelp,CN2015,,4.6,4.64,True,,
-all_nohelp,CN2018,,4.4,4.361,True,,
-all_nohelp,CN2020,,2.6,2.617,True,,
-gap,KR2014/CN2015,needA,8.11,8.108,True,3.5 to 12.8,3.7 to 12.5
-gap,KR2018/CN2018,needA,13.50,13.502,True,8.7 to 18.2,9.2 to 18.1
-gap,KR2020/CN2020,needA,24.34,24.34,True,19.7 to 29.3,19.7 to 29.5
-gap,KR2014/CN2013,needA,11.82,11.818,True,8.0 to 15.8,7.8 to 15.9
-crude,KR2014/CN2015,needA,7.5,7.454,True,3.0 to 11.7,3.1 to 11.4
-crude,KR2018/CN2018,needA,12.6,12.617,True,8.1 to 17.0,8.5 to 16.5
-crude,KR2020/CN2020,needA,23.1,23.098,True,18.7 to 27.5,18.8 to 27.4
-crude,KR2014/CN2013,needA,10.8,10.85,True,7.0 to 14.8,6.8 to 14.8
-gap,KR2014/CN2015,needB,4.72,4.717,True,-0.7 to 10.2,-1.0 to 10.3
-gap,KR2018/CN2018,needB,9.33,9.334,True,3.3 to 15.5,2.8 to 15.0
-gap,KR2020/CN2020,needB,14.75,14.746,True,8.9 to 21.4,8.2 to 21.0
-gap,KR2014/CN2013,needB,5.63,5.631,True,0.3 to 11.3,0.0 to 11.4
-gap,KR2014/CN2015,needC,6.4,6.36,True,1.8 to 11.2,1.8 to 11.2
-gap,KR2018/CN2018,needC,9.8,9.801,True,5.3 to 14.9,5.5 to 14.7
-gap,KR2020/CN2020,needC,21.8,21.754,True,16.4 to 26.9,16.9 to 27.0
-gap,KR2014/CN2013,needC,10.1,10.071,True,5.8 to 14.4,6.3 to 14.1
-gap,KR2014/CN2015,needM,4.1,4.063,True,-1.0 to 9.8,-1.4 to 9.5
-gap,KR2018/CN2018,needM,8.0,8.04,True,1.9 to 14.7,1.6 to 13.7
-gap,KR2020/CN2020,needM,13.7,13.672,True,7.6 to 20.2,7.4 to 19.8
-A-B,KR2014/CN2015,,3.4,3.391,True,-1.8 to 8.7,-1.9 to 8.5
-A-B,KR2018/CN2018,,4.2,4.168,True,-1.7 to 9.9,-1.4 to 10.0
-A-B,KR2020/CN2020,,9.6,9.594,True,4.6 to 15.5,4.1 to 15.7
-A-B,KR2014/CN2013,,6.2,6.187,True,1.5 to 10.6,1.5 to 10.6
-A-common,KR2014/CN2015,,1.7,1.748,True,0.0 to 3.4,0.2 to 3.4
-A-common,KR2018/CN2018,,3.7,3.701,True,2.0 to 5.6,1.9 to 5.6
-A-common,KR2020/CN2020,,2.6,2.587,True,0.8 to 4.5,0.9 to 4.5
-pairing,CN2013 vs CN2015,needA,3.7,3.71,True,0.2 to 7.3,0.3 to 6.9
-pairing,CN2013 vs CN2015,needB,0.9,0.914,True,-3.0 to 5.1,-3.4 to 5.2
-gap70,KR2014/CN2015,needA,11.7,11.651,True,7.0 to 15.9,7.0 to 15.7
-gap70,KR2018/CN2018,needA,14.8,14.78,True,10.8 to 19.2,10.8 to 19.0
-gap70,KR2020/CN2020,needA,20.4,20.382,True,15.7 to 24.9,15.7 to 25.0
-gap70,KR2014/CN2013,needA,14.1,14.146,True,9.8 to 18.5,9.6 to 18.4
-gap_men,KR2014/CN2015,needA,2.2,2.178,True,-5.2 to 8.9,-4.7 to 9.0
-gap_men,KR2018/CN2018,needA,9.9,9.91,True,3.9 to 16.1,4.1 to 16.3
-gap_men,KR2020/CN2020,needA,30.6,30.639,True,23.8 to 37.4,24.2 to 37.2
-gap_women,KR2014/CN2015,needA,12.1,12.113,True,6.2 to 17.6,6.8 to 17.5
-gap_women,KR2018/CN2018,needA,16.2,16.199,True,10.3 to 22.8,10.0 to 23.5
-gap_women,KR2020/CN2020,needA,19.6,19.631,True,13.3 to 26.0,13.6 to 26.5
-all65,KR2014/CN2015,needA,-1.0,-0.984,True,-2.0 to 0.0,-2.0 to -0.1
-all65,KR2018/CN2018,needA,-0.7,-0.672,True,-1.5 to 0.1,-1.6 to 0.2
-all65,KR2020/CN2020,needA,2.2,2.227,True,1.4 to 3.1,1.4 to 3.1
-all65,KR2014/CN2013,needA,0.0,0.044,True,-0.8 to 0.9,-0.9 to 0.9
-change,CN2013->2015,needA,3.1,3.071,True,-0.1 to 6.6,-0.3 to 6.3
-change,CN2015->2018,needA,-1.6,-1.612,True,-4.7 to 1.5,-4.6 to 1.5
-change,CN2018->2020,needA,-3.3,-3.271,True,-5.7 to -0.6,-5.9 to -0.8
-change,KR2014->2018,needA,3.8,3.831,True,-1.1 to 8.7,-0.8 to 8.5
-change,KR2018->2020,needA,7.8,7.782,True,2.5 to 12.9,2.2 to 13.5
-change,CN2013->2015,needB,0.0,0.003,True,-4.4 to 4.2,-4.0 to 4.3
-change,CN2015->2018,needB,-3.0,-3.035,True,-6.5 to 0.1,-6.6 to 0.7
-change,CN2018->2020,needB,-3.6,-3.629,True,-6.5 to -0.7,-6.5 to -0.8
-change,KR2014->2018,needB,1.1,1.067,True,-5.3 to 8.0,-5.2 to 6.9
-change,KR2018->2020,needB,1.5,1.515,True,-5.9 to 8.8,-6.0 to 8.5
-ph_nohelp_A_needrule,CN2013,,14.8,14.814,True,,
-ph_nohelp_A_needrule,CN2015,,18.7,18.736,True,,
-ph_nohelp_A_needrule,CN2018,,16.6,16.65,True,,
-ph_nohelp_A_needrule,CN2020,,12.4,12.391,True,,
-ph_nohelp_B_needrule,CN2013,,13.8,13.778,True,,
-ph_nohelp_B_needrule,CN2015,,15.6,15.597,True,,
-ph_nohelp_B_needrule,CN2018,,11.4,11.409,True,,
-ph_nohelp_B_needrule,CN2020,,6.4,6.431,True,,
-ph_mean_questions_1,CN2015,,2.3,2.26,True,,
-ph_mean_questions_2,CN2015,,3.6,3.627,True,,
-ph_mean_questions_3+,CN2015,,6.5,6.521,True,,
-ph_nohelp_needrule_1,CN2015,,38.8,38.819,True,,
-ph_nohelp_needrule_2,CN2015,,11.9,11.932,True,,
-ph_nohelp_needrule_3+,CN2015,,3.0,3.001,True,,
-ph_nohelp_needrule_1,CN2018,,34.6,34.624,True,,
-ph_nohelp_Donly,CN2015,,75.4,75.448,True,,
-ph_nohelp_Donly,CN2018,,75.4,75.438,True,,
-ph_qstar,CN2015,,0.27,0.27,True,,
-ph_qstar,CN2018,,0.61,0.605,True,,
-ph_n_all,CN2013,,5326,5326.0,True,,
-ph_n_all,CN2015,,6365,6365.0,True,,
-ph_n_all,CN2018,,7212,7212.0,True,,
-ph_n_all,CN2020,,8027,8027.0,True,,
-ph_prev_ge2,CN2013,,17.5,17.462,True,,
-ph_prev_ge2,CN2015,,16.7,16.682,True,,
-ph_prev_ge2,CN2018,,18.5,18.548,True,,
-ph_prev_ge2,CN2020,,15.6,15.611,True,,
-ph_prev_ge3,CN2013,,12.4,12.368,True,,
-ph_prev_ge3,CN2015,,11.9,11.881,True,,
-ph_prev_ge3,CN2018,,13.2,13.199,True,,
-ph_prev_ge3,CN2020,,11.9,11.94,True,,
-ph_pop_ge2,CN2013,,0.8,0.81,True,,
-ph_pop_ge2,CN2015,,0.8,0.811,True,,
-ph_pop_ge2,CN2018,,1.1,1.101,True,,
-ph_pop_ge2,CN2020,,0.7,0.685,True,,
-ph_pop_ge3,CN2013,,0.3,0.331,True,,
-ph_pop_ge3,CN2015,,0.3,0.324,True,,
-ph_pop_ge3,CN2018,,0.3,0.287,True,,
-ph_pop_ge3,CN2020,,0.3,0.33,True,,
-ph_pop_ge2_needrule,CN2015,,0.9,0.929,True,,
-ph_pop_ge2_needrule,CN2018,,1.2,1.154,True,,
-ph_pop_ge3_needrule,CN2015,,0.4,0.357,True,,
-ph_pop_ge3_needrule,CN2018,,0.3,0.305,True,,
-ph_nohelp_A_phone,CN2015,,14.6,14.641,True,,
-ph_nohelp_A_phone,CN2018,,13.4,13.432,True,,
-ph_n_inst,CN2015,,21,21.0,True,,
-ph_n_inst,CN2018,,29,29.0,True,,
-ph_nohelp_A_noinst,CN2015,,17.1,17.137,True,,
-ph_nohelp_A_noinst,CN2018,,14.9,14.916,True,,
-ph_nohelp_A_agey,CN2015,,16.7,16.651,True,,
-ph_nohelp_A_agey,CN2018,,14.8,14.757,True,,
+statistic,item,definition,published,reproduced,match,published_CI,reproduced_CI,CI_match
+pct,KR2014,needA,24.24,24.236,True,,,
+pct,KR2018,needA,27.50,27.496,True,,,
+pct,KR2020,needA,34.33,34.326,True,,,
+pct,CN2013,needA,13.39,13.386,True,,,
+pct,CN2015,needA,16.78,16.781,True,,,
+pct,CN2018,needA,14.88,14.879,True,,,
+pct,CN2020,needA,11.23,11.228,True,,,
+pct,KR2014,needB,16.34,16.344,True,,,
+pct,KR2018,needB,17.08,17.08,True,,,
+pct,KR2020,needB,18.77,18.773,True,,,
+pct,CN2013,needB,12.86,12.863,True,,,
+pct,CN2015,needB,13.17,13.166,True,,,
+pct,CN2018,needB,9.66,9.663,True,,,
+pct,CN2020,needB,5.74,5.738,True,,,
+pct,CN2013,needD,31.8,31.758,True,,,
+pct,CN2015,needD,37.3,37.325,True,,,
+pct,CN2018,needD,33.2,33.237,True,,,
+pct,CN2020,needD,40.9,40.941,True,,,
+pct,KR2014,needC,22.3,22.255,True,,,
+pct,KR2018,needC,24.1,24.07,True,,,
+pct,KR2020,needC,32.2,32.203,True,,,
+se,KR2014,needA,1.71,1.708,True,,,
+se,KR2018,needA,1.90,1.899,True,,,
+se,KR2020,needA,2.09,2.088,True,,,
+se,CN2013,needA,1.10,1.098,True,,,
+se,CN2015,needA,1.36,1.357,True,,,
+se,CN2018,needA,1.00,1.002,True,,,
+se,CN2020,needA,0.94,0.938,True,,,
+se,KR2014,needB,2.21,2.206,True,,,
+se,KR2018,needB,2.54,2.542,True,,,
+se,KR2020,needB,2.95,2.947,True,,,
+n,KR2014,needA,749,749.0,True,,,
+n,KR2018,needA,739,739.0,True,,,
+n,KR2020,needA,718,718.0,True,,,
+n,CN2013,needA,1425,1425.0,True,,,
+n,CN2015,needA,1776,1776.0,True,,,
+n,CN2018,needA,2082,2082.0,True,,,
+n,CN2020,needA,1869,1869.0,True,,,
+n,KR2014,needB,324,324.0,True,,,
+n,KR2018,needB,307,307.0,True,,,
+n,KR2020,needB,280,280.0,True,,,
+n,CN2013,needB,587,587.0,True,,,
+n,CN2015,needB,761,761.0,True,,,
+n,CN2018,needB,855,855.0,True,,,
+n,CN2020,needB,844,844.0,True,,,
+n,KR2014,needC,684,684.0,True,,,
+n,KR2018,needC,662,662.0,True,,,
+n,KR2020,needC,634,634.0,True,,,
+n70,KR2014,needA,661,661.0,True,,,
+n70,KR2018,needA,675,675.0,True,,,
+n70,KR2020,needA,659,659.0,True,,,
+n70,CN2015,needA,1262,1262.0,True,,,
+n70,CN2018,needA,1455,1455.0,True,,,
+n70,CN2020,needA,1359,1359.0,True,,,
+nohelp,KR2014,needA,182,182.0,True,,,
+nohelp,KR2018,needA,204,204.0,True,,,
+nohelp,KR2020,needA,224,224.0,True,,,
+nohelp,CN2013,needA,206,206.0,True,,,
+nohelp,CN2015,needA,302,302.0,True,,,
+nohelp,CN2018,needA,320,320.0,True,,,
+nohelp,CN2020,needA,235,235.0,True,,,
+nohelp,KR2014,needB,51,51.0,True,,,
+nohelp,KR2018,needB,46,46.0,True,,,
+nohelp,KR2020,needB,47,47.0,True,,,
+nohelp,CN2013,needB,79,79.0,True,,,
+nohelp,CN2015,needB,112,112.0,True,,,
+nohelp,CN2018,needB,87,87.0,True,,,
+nohelp,CN2020,needB,55,55.0,True,,,
+kr_std,KR2014/CN2015,needA,24.37,24.368,True,,,
+kr_std,KR2018/CN2018,needA,27.49,27.492,True,,,
+kr_std,KR2020/CN2020,needA,35.08,35.082,True,,,
+kr_std,KR2014/CN2013,needA,24.44,24.443,True,,,
+kr_std,KR2014/CN2015,needB,17.20,17.202,True,,,
+kr_std,KR2018/CN2018,needB,18.21,18.209,True,,,
+kr_std,KR2020/CN2020,needB,19.95,19.954,True,,,
+kr_std,KR2014/CN2013,needB,17.19,17.193,True,,,
+cn_std,KR2014/CN2015,needA,16.26,16.26,True,,,
+cn_std,KR2018/CN2018,needA,13.99,13.99,True,,,
+cn_std,KR2020/CN2020,needA,10.74,10.742,True,,,
+cn_std,KR2014/CN2013,needA,12.63,12.625,True,,,
+cn_std,KR2014/CN2015,needB,12.49,12.485,True,,,
+cn_std,KR2018/CN2018,needB,8.87,8.875,True,,,
+cn_std,KR2020/CN2020,needB,5.21,5.208,True,,,
+cn_std,KR2014/CN2013,needB,11.56,11.562,True,,,
+t2_age,KR2014,,78.5,78.524,True,,,
+t2_age,CN2015,,76.0,75.996,True,,,
+t2_age,KR2018,,78.8,78.768,True,,,
+t2_age,CN2018,,76.3,76.264,True,,,
+t2_age,KR2020,,79.8,79.764,True,,,
+t2_age,CN2020,,77.2,77.208,True,,,
+t2_female,KR2014,,58.2,58.244,True,,,
+t2_female,CN2015,,61.6,61.581,True,,,
+t2_female,KR2018,,55.8,55.823,True,,,
+t2_female,CN2018,,59.5,59.451,True,,,
+t2_female,KR2020,,55.1,55.138,True,,,
+t2_female,CN2020,,60.1,60.145,True,,,
+t2_75plus,KR2014,,67.3,67.282,True,,,
+t2_75plus,CN2015,,52.3,52.302,True,,,
+t2_75plus,KR2018,,67.8,67.817,True,,,
+t2_75plus,CN2018,,54.2,54.213,True,,,
+t2_75plus,KR2020,,70.8,70.838,True,,,
+t2_75plus,CN2020,,58.6,58.621,True,,,
+all_need,KR2014,,16.6,16.581,True,,,
+all_need,KR2018,,14.2,14.192,True,,,
+all_need,KR2020,,14.4,14.35,True,,,
+all_need,CN2013,,27.3,27.312,True,,,
+all_need,CN2015,,27.7,27.652,True,,,
+all_need,CN2018,,29.3,29.311,True,,,
+all_need,CN2020,,23.3,23.311,True,,,
+all_nohelp,KR2014,,4.0,4.018,True,,,
+all_nohelp,KR2018,,3.9,3.902,True,,,
+all_nohelp,KR2020,,4.9,4.926,True,,,
+all_nohelp,CN2013,,3.7,3.656,True,,,
+all_nohelp,CN2015,,4.6,4.64,True,,,
+all_nohelp,CN2018,,4.4,4.361,True,,,
+all_nohelp,CN2020,,2.6,2.617,True,,,
+gap,KR2014/CN2015,needA,8.11,8.108,True,3.6 to 12.6,3.58 to 12.60,True
+gap,KR2018/CN2018,needA,13.50,13.502,True,9.0 to 18.3,9.01 to 18.33,True
+gap,KR2020/CN2020,needA,24.34,24.34,True,19.6 to 29.3,19.62 to 29.34,True
+gap,KR2014/CN2013,needA,11.82,11.818,True,7.9 to 15.7,7.88 to 15.72,True
+crude,KR2014/CN2015,needA,7.5,7.454,True,3.2 to 11.6,3.17 to 11.62,True
+crude,KR2018/CN2018,needA,12.6,12.617,True,8.4 to 16.8,8.45 to 16.76,True
+crude,KR2020/CN2020,needA,23.1,23.098,True,18.6 to 27.5,18.64 to 27.54,True
+crude,KR2014/CN2013,needA,10.8,10.85,True,6.9 to 14.8,6.91 to 14.75,True
+gap,KR2014/CN2015,needB,4.72,4.717,True,-0.8 to 10.4,-0.78 to 10.43,True
+gap,KR2018/CN2018,needB,9.33,9.334,True,3.0 to 15.6,2.98 to 15.60,True
+gap,KR2020/CN2020,needB,14.75,14.746,True,8.3 to 21.3,8.25 to 21.30,True
+gap,KR2014/CN2013,needB,5.63,5.631,True,0.1 to 11.3,0.11 to 11.29,True
+gap,KR2014/CN2015,needC,6.4,6.36,True,1.8 to 11.0,1.75 to 11.05,True
+gap,KR2018/CN2018,needC,9.8,9.801,True,5.4 to 14.8,5.41 to 14.75,True
+gap,KR2020/CN2020,needC,21.8,21.754,True,16.7 to 26.9,16.72 to 26.89,True
+gap,KR2014/CN2013,needC,10.1,10.071,True,6.1 to 14.1,6.08 to 14.11,True
+gap,KR2014/CN2015,needM,4.1,4.063,True,-1.3 to 9.6,-1.28 to 9.57,True
+gap,KR2018/CN2018,needM,8.0,8.04,True,1.9 to 14.2,1.92 to 14.16,True
+gap,KR2020/CN2020,needM,13.7,13.672,True,7.3 to 20.1,7.35 to 20.08,True
+A-B,KR2014/CN2015,,3.4,3.391,True,-1.8 to 8.5,-1.82 to 8.49,True
+A-B,KR2018/CN2018,,4.2,4.168,True,-1.1 to 9.9,-1.09 to 9.91,True
+A-B,KR2020/CN2020,,9.6,9.594,True,4.1 to 15.4,4.09 to 15.37,True
+A-B,KR2014/CN2013,,6.2,6.187,True,1.5 to 10.7,1.53 to 10.69,True
+A-common,KR2014/CN2015,,1.7,1.748,True,0.1 to 3.4,0.11 to 3.44,True
+A-common,KR2018/CN2018,,3.7,3.701,True,1.9 to 5.7,1.93 to 5.66,True
+A-common,KR2020/CN2020,,2.6,2.587,True,0.8 to 4.5,0.84 to 4.52,True
+pairing,CN2013 vs CN2015,needA,3.7,3.71,True,0.4 to 7.2,0.35 to 7.20,True
+pairing,CN2013 vs CN2015,needB,0.9,0.914,True,-3.4 to 5.2,-3.42 to 5.23,True
+gap70,KR2014/CN2015,needA,11.7,11.651,True,7.2 to 16.0,7.19 to 15.99,True
+gap70,KR2018/CN2018,needA,14.8,14.78,True,10.4 to 19.1,10.40 to 19.11,True
+gap70,KR2020/CN2020,needA,20.4,20.382,True,15.8 to 25.0,15.79 to 25.03,True
+gap70,KR2014/CN2013,needA,14.1,14.146,True,9.9 to 18.4,9.86 to 18.41,True
+gap_men,KR2014/CN2015,needA,2.2,2.178,True,-4.7 to 9.0,-4.67 to 8.96,True
+gap_men,KR2018/CN2018,needA,9.9,9.91,True,3.8 to 16.1,3.80 to 16.15,True
+gap_men,KR2020/CN2020,needA,30.6,30.639,True,23.7 to 37.5,23.66 to 37.52,True
+gap_women,KR2014/CN2015,needA,12.1,12.113,True,6.5 to 17.7,6.46 to 17.73,True
+gap_women,KR2018/CN2018,needA,16.2,16.199,True,10.0 to 23.4,10.01 to 23.36,True
+gap_women,KR2020/CN2020,needA,19.6,19.631,True,13.3 to 26.3,13.28 to 26.27,True
+all65,KR2014/CN2015,needA,-1.0,-0.984,True,-2.0 to -0.04,-1.99 to -0.04,True
+all65,KR2018/CN2018,needA,-0.7,-0.672,True,-1.5 to 0.2,-1.53 to 0.16,True
+all65,KR2020/CN2020,needA,2.2,2.227,True,1.4 to 3.1,1.37 to 3.10,True
+all65,KR2014/CN2013,needA,0.0,0.044,True,-0.8 to 0.9,-0.83 to 0.90,True
+change,CN2013->2015,needA,3.1,3.071,True,-0.2 to 6.4,-0.17 to 6.39,True
+change,CN2015->2018,needA,-1.6,-1.612,True,-4.8 to 1.5,-4.80 to 1.50,True
+change,CN2018->2020,needA,-3.3,-3.271,True,-5.9 to -0.7,-5.88 to -0.68,True
+change,KR2014->2018,needA,3.8,3.831,True,-1.0 to 8.8,-1.05 to 8.79,True
+change,KR2018->2020,needA,7.8,7.782,True,2.3 to 13.1,2.28 to 13.14,True
+change,CN2013->2015,needB,0.0,0.003,True,-4.2 to 4.3,-4.18 to 4.26,True
+change,CN2015->2018,needB,-3.0,-3.035,True,-6.6 to 0.5,-6.64 to 0.46,True
+change,CN2018->2020,needB,-3.6,-3.629,True,-6.5 to -0.7,-6.50 to -0.73,True
+change,KR2014->2018,needB,1.1,1.067,True,-5.6 to 7.6,-5.58 to 7.60,True
+change,KR2018->2020,needB,1.5,1.515,True,-6.0 to 8.8,-5.97 to 8.79,True
+ph_nohelp_A_needrule,CN2013,,14.8,14.814,True,,,
+ph_nohelp_A_needrule,CN2015,,18.7,18.736,True,,,
+ph_nohelp_A_needrule,CN2018,,16.6,16.65,True,,,
+ph_nohelp_A_needrule,CN2020,,12.4,12.391,True,,,
+ph_nohelp_B_needrule,CN2013,,13.8,13.778,True,,,
+ph_nohelp_B_needrule,CN2015,,15.6,15.597,True,,,
+ph_nohelp_B_needrule,CN2018,,11.4,11.409,True,,,
+ph_nohelp_B_needrule,CN2020,,6.4,6.431,True,,,
+ph_mean_questions_1,CN2015,,2.3,2.26,True,,,
+ph_mean_questions_2,CN2015,,3.6,3.627,True,,,
+ph_mean_questions_3+,CN2015,,6.5,6.521,True,,,
+ph_nohelp_needrule_1,CN2015,,38.8,38.819,True,,,
+ph_nohelp_needrule_2,CN2015,,11.9,11.932,True,,,
+ph_nohelp_needrule_3+,CN2015,,3.0,3.001,True,,,
+ph_nohelp_needrule_1,CN2018,,34.6,34.624,True,,,
+ph_nohelp_Donly,CN2015,,75.4,75.448,True,,,
+ph_nohelp_Donly,CN2018,,75.4,75.438,True,,,
+ph_qstar,CN2015,,0.27,0.27,True,,,
+ph_qstar,CN2018,,0.61,0.605,True,,,
+ph_n_all,CN2013,,5326,5326.0,True,,,
+ph_n_all,CN2015,,6365,6365.0,True,,,
+ph_n_all,CN2018,,7212,7212.0,True,,,
+ph_n_all,CN2020,,8027,8027.0,True,,,
+ph_prev_ge2,CN2013,,17.5,17.462,True,,,
+ph_prev_ge2,CN2015,,16.7,16.682,True,,,
+ph_prev_ge2,CN2018,,18.5,18.548,True,,,
+ph_prev_ge2,CN2020,,15.6,15.611,True,,,
+ph_prev_ge3,CN2013,,12.4,12.368,True,,,
+ph_prev_ge3,CN2015,,11.9,11.881,True,,,
+ph_prev_ge3,CN2018,,13.2,13.199,True,,,
+ph_prev_ge3,CN2020,,11.9,11.94,True,,,
+ph_pop_ge2,CN2013,,0.8,0.81,True,,,
+ph_pop_ge2,CN2015,,0.8,0.811,True,,,
+ph_pop_ge2,CN2018,,1.1,1.101,True,,,
+ph_pop_ge2,CN2020,,0.7,0.685,True,,,
+ph_pop_ge3,CN2013,,0.3,0.331,True,,,
+ph_pop_ge3,CN2015,,0.3,0.324,True,,,
+ph_pop_ge3,CN2018,,0.3,0.287,True,,,
+ph_pop_ge3,CN2020,,0.3,0.33,True,,,
+ph_pop_ge2_needrule,CN2015,,0.9,0.929,True,,,
+ph_pop_ge2_needrule,CN2018,,1.2,1.154,True,,,
+ph_pop_ge3_needrule,CN2015,,0.4,0.357,True,,,
+ph_pop_ge3_needrule,CN2018,,0.3,0.305,True,,,
+ph_nohelp_A_phone,CN2015,,14.6,14.641,True,,,
+ph_nohelp_A_phone,CN2018,,13.4,13.432,True,,,
+ph_n_inst,CN2015,,21,21.0,True,,,
+ph_n_inst,CN2018,,29,29.0,True,,,
+ph_nohelp_A_noinst,CN2015,,17.1,17.137,True,,,
+ph_nohelp_A_noinst,CN2018,,14.9,14.916,True,,,
+ph_nohelp_A_agey,CN2015,,16.7,16.651,True,,,
+ph_nohelp_A_agey,CN2018,,14.8,14.757,True,,,

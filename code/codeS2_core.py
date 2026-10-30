@@ -23,6 +23,15 @@ def _members(data_dir):
                     if m.lower().endswith('.dta') and not m.startswith('__MACOSX'):
                         yield f'{os.path.relpath(p, data_dir)}::{m}', (lambda z=z, m=m: io.BytesIO(z.read(m)))
 
+def find_member(data_dir, year, member):
+    """One CHARLS file of a given wave that index_files() does not map (e.g. Sample_Infor.dta): inside a zip or folder whose
+    name contains the year, or with a year prefix (2018_Sample_Infor.dta). Returns (name, opener) or None."""
+    parts = lambda n: re.split(r'[/\\]|::', n)
+    m = member.lower()
+    hits = [(n, o) for n, o in _members(data_dir)
+            if parts(n)[-1].lower() == f'{year}_{m}' or (parts(n)[-1].lower() == m and len(parts(n)) > 1 and str(year) in parts(n)[-2])]
+    return hits[0] if len(hits) == 1 else None
+
 def index_files(data_dir, require_klosa=True):
     """Map each needed input to one file. Raises an error that lists candidates when a match is ambiguous."""
     if not os.path.isdir(data_dir):
@@ -95,7 +104,7 @@ def charls_items(year):
         helpv = [v + '_w2' for v in adl6[:5] + iadl]
     return adl6, iadl, helpv
 
-def load_charls(files, H, year):
+def load_charls(files, H, year, keep_all=False):
     adl6, iadl, helpv = charls_items(year)
     mobv = [f'db00{i}' for i in range(1, 10)] if year != 2020 else []
     phonev = 'db019' if year == 2020 else 'db035_w2'   # help with telephone calls (not part of the main help rule)
@@ -108,11 +117,13 @@ def load_charls(files, H, year):
     num = lambda c: pd.to_numeric(d[c], errors='coerce') if c in d.columns else pd.Series(np.nan, index=d.index)
     x = pd.DataFrame({c: num(c).where(num(c).between(1, 4)) for c in adl6 + iadl})
     skip = pd.Series(False, index=d.index)
+    mobscore = pd.Series(np.nan, index=d.index)
     if year != 2020:   # ADL block skipped by design: every answered mobility item db001-db009 is 1 (db002 and db003
                        # are asked only after difficulty on the previous item, so they are missing by design)
         mob = pd.DataFrame({c: num(c) for c in mobv if c in d.columns})
         all_one = (mob.isna() | (mob == 1)).all(axis=1)
         any_mob = mob.notna().any(axis=1)
+        mobscore = (mob - 1).clip(lower=0).sum(axis=1, min_count=1)    # summed difficulty on answered items (Table S6)
         skip = (x[adl6].notna().sum(axis=1) == 0) & all_one & any_mob & (x[iadl].notna().sum(axis=1) >= len(iadl) - 1)
         x.loc[skip, adl6] = 1
     items10 = adl6[:5] + iadl
@@ -131,9 +142,17 @@ def load_charls(files, H, year):
         'hans_need': (h.isin([1, 2]).to_numpy() & (x[items10] >= 3).to_numpy()).any(axis=1),
         'nq': h.isin([1, 2]).sum(axis=1).values,
         'helped_phone': (num(phonev) == 1).values,
+        # descriptive values (original_points() only): proxy respondent (reason for proxy recorded, db034; db047 in 2020),
+        # summed mobility difficulty, IADL difficulty and need
+        'proxy': num('db047' if year == 2020 else 'db034').notna().values, 'mobscore': mobscore.values,
+        'iadl_diff': (x[iadl] >= 2).any(axis=1).values, 'iadl_need': (x[iadl] >= 3).any(axis=1).values,
     })
+    # first-estimate continence variants (Supplementary Table S9): continence (the sixth ADL item, no help question) counted as need
+    out['needA11'] = (x[adl6 + iadl] >= 3).any(axis=1).values
+    out['needB6'] = (x[adl6] >= 3).any(axis=1).values
     out['needC'] = out['needA']      # common activities: all 10 CHARLS items have a KLoSA counterpart
     out['needM'] = out['needB']      # matched five ADL items: same five items in CHARLS
+    out['needBk6'] = out['needB']    # Table S9 (Korean ADL need without continence): Chinese main definition B
     # severity on scales shared by both surveys: number of the 10 common activities, and of the
     # five matched ADL items, with need
     out['n_common'] = (x[items10] >= 3).sum(axis=1).values
@@ -168,6 +187,8 @@ def load_charls(files, H, year):
     out['fem'] = (out['ragender'] == 2).astype(int)
     out['nh'] = (~out['helped']).astype(int)
     out['country'], out['year'] = 'CN', year
+    if keep_all:      # every respondent of the health file (original_points() only)
+        return out
     base = out[out['valid'] & (out['age'] >= 65) & out['w'].notna() & (out['w'] > 0)].copy()
     return base
 
@@ -197,7 +218,7 @@ KLOSA_WAVES = {2014: '05', 2016: '06', 2018: '07', 2020: '08', 2022: '09', 2024:
 KR_COMMON = [1, 3, 4, 5, 6, 9, 10, 14, 15, 17]   # C2xx items matched to the 10 CHARLS activities (Table S3)
 KR_MATCHED_ADL = [1, 3, 4, 5, 6]                 # dressing, bathing, eating, bed, toilet
 
-def load_klosa(files, year):
+def load_klosa(files, year, keep_all=False):
     wv = 'w' + KLOSA_WAVES[year]
     d = read_dta(files[f'KR{year}'])
     cols = {c.lower(): c for c in d.columns}
@@ -220,6 +241,7 @@ def load_klosa(files, year):
         'needD': False, 'n_lim': need.sum(axis=1),
         'nh': (helper == 56).astype(int), 'hans': helper.notna(),
         'n_common': need[KR_COMMON].sum(axis=1), 'n_adl5': need[KR_MATCHED_ADL].sum(axis=1),
+        'n_adl7': need[list(range(1, 8))].sum(axis=1),       # ADL items with need (Text S12: respondents with no helper)
         # for klosa_diagnostics() only: raw helper code, 2014 refresh-panel flag, LTCI use (C320n, not the hospital item
         # C320) and the enumeration district (ed) listed in the 2014-2022 codebooks; absent variables stay missing
         'helper': helper, 'oldnew': g('oldnew'), 'ltci': g('C320n'), 'ltci_type': g('C327n'), 'proxy_c2': g('C225'),
@@ -230,8 +252,13 @@ def load_klosa(files, year):
     })
     out['needC3'] = out['n_common'] >= 3
     out['needM2'] = out['n_adl5'] >= 2
+    out['needA11'], out['needB6'] = out['needA'], out['needB']   # the CHARLS continence variants leave the Korean definitions unchanged
+    out['needBk6'] = need[list(range(1, 7))].any(axis=1)        # Table S9: Korean ADL need without continence (C201-C206)
+    out['hh'] = d[cols['hhid']].astype(str).values if 'hhid' in cols else np.arange(len(out)).astype(str)   # household (Table S7, Panel E)
     out['cl'] = np.arange(len(out)).astype(str)     # respondents independent, as in the published analysis (ed: klosa_diagnostics only)
     out['country'], out['year'] = 'KR', year
+    if keep_all:      # every respondent of the wave file (original_points() only)
+        return out
     return out[out['valid'] & (out['age'] >= 65) & out['w'].notna() & (out['w'] > 0)].copy()
 
 # ----------------------------------------------------------------------------- estimation

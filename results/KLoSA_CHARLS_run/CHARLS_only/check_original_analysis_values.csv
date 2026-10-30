@@ -1,0 +1,220 @@
+topic,item,position,published,reproduced,match
+Table S4,CN2013 aged 65+ / valid items / need A / help answer / positive weight,1,5489,5489.0,True
+Table S4,CN2013 aged 65+ / valid items / need A / help answer / positive weight,2,5427,5427.0,True
+Table S4,CN2013 aged 65+ / valid items / need A / help answer / positive weight,3,1455,1455.0,True
+Table S4,CN2013 aged 65+ / valid items / need A / help answer / positive weight,4,1454,1454.0,True
+Table S4,CN2013 aged 65+ / valid items / need A / help answer / positive weight,5,1425,1425.0,True
+Table S4,CN2013 fewer than 10 valid items,1,62,62.0,True
+Text S12,CN2013 only need is continence: n / with a help answer and positive weight,1,16,16.0,True
+Text S12,CN2013 only need is continence: n / with a help answer and positive weight,2,9,9.0,True
+Text S12,CN2013 need A without a help answer (positive weight),1,1,1.0,True
+Table S9,CN2013 added by continence (n; no helper n) / only need continence (n; no helper n) / continence plus IADL need only (n; no helper n),1,33,33.0,True
+Table S9,CN2013 added by continence (n; no helper n) / only need continence (n; no helper n) / continence plus IADL need only (n; no helper n),2,11,11.0,True
+Table S9,CN2013 added by continence (n; no helper n) / only need continence (n; no helper n) / continence plus IADL need only (n; no helper n),3,9,9.0,True
+Table S9,CN2013 added by continence (n; no helper n) / only need continence (n; no helper n) / continence plus IADL need only (n; no helper n),4,7,7.0,True
+Table S9,CN2013 added by continence (n; no helper n) / only need continence (n; no helper n) / continence plus IADL need only (n; no helper n),5,24,24.0,True
+Table S9,CN2013 added by continence (n; no helper n) / only need continence (n; no helper n) / continence plus IADL need only (n; no helper n),6,4,4.0,True
+Text S12,"CN2013 % no helper (A), main / skipped respondents excluded",1,13.4,13.3857,True
+Text S12,"CN2013 % no helper (A), main / skipped respondents excluded",2,13.3,13.2809,True
+Text S12,CN2013 skipped respondents with need (IADL need): n / positive weight,1,39,39.0,True
+Text S12,CN2013 skipped respondents with need (IADL need): n / positive weight,2,39,39.0,True
+Table S6,CN2013 asked: n / mean age / % female / mean mobility score / % IADL difficulty / % IADL need / n IADL need / % no help among IADL need,1,4478,4478.0,True
+Table S6,CN2013 asked: n / mean age / % female / mean mobility score / % IADL difficulty / % IADL need / n IADL need / % no help among IADL need,2,72.9,72.8904,True
+Table S6,CN2013 asked: n / mean age / % female / mean mobility score / % IADL difficulty / % IADL need / n IADL need / % no help among IADL need,3,53.3,53.2604,True
+Table S6,CN2013 asked: n / mean age / % female / mean mobility score / % IADL difficulty / % IADL need / n IADL need / % no help among IADL need,4,7.47,7.4697,True
+Table S6,CN2013 asked: n / mean age / % female / mean mobility score / % IADL difficulty / % IADL need / n IADL need / % no help among IADL need,5,38.6,38.6333,True
+Table S6,CN2013 asked: n / mean age / % female / mean mobility score / % IADL difficulty / % IADL need / n IADL need / % no help among IADL need,6,29.5,29.4551,True
+Table S6,CN2013 asked: n / mean age / % female / mean mobility score / % IADL difficulty / % IADL need / n IADL need / % no help among IADL need,7,1319,1319.0,True
+Table S6,CN2013 asked: n / mean age / % female / mean mobility score / % IADL difficulty / % IADL need / n IADL need / % no help among IADL need,8,10.8,10.8498,True
+Table S6,CN2013 skipped: n / mean age / % female / mean mobility score / % IADL difficulty / % IADL need / n IADL need / % no help among IADL need,1,949,949.0,True
+Table S6,CN2013 skipped: n / mean age / % female / mean mobility score / % IADL difficulty / % IADL need / n IADL need / % no help among IADL need,2,70.0,69.9852,True
+Table S6,CN2013 skipped: n / mean age / % female / mean mobility score / % IADL difficulty / % IADL need / n IADL need / % no help among IADL need,3,31.0,30.98,True
+Table S6,CN2013 skipped: n / mean age / % female / mean mobility score / % IADL difficulty / % IADL need / n IADL need / % no help among IADL need,4,0.00,0.0,True
+Table S6,CN2013 skipped: n / mean age / % female / mean mobility score / % IADL difficulty / % IADL need / n IADL need / % no help among IADL need,5,6.0,6.0063,True
+Table S6,CN2013 skipped: n / mean age / % female / mean mobility score / % IADL difficulty / % IADL need / n IADL need / % no help among IADL need,6,4.1,4.1096,True
+Table S6,CN2013 skipped: n / mean age / % female / mean mobility score / % IADL difficulty / % IADL need / n IADL need / % no help among IADL need,7,39,39.0,True
+Table S6,CN2013 skipped: n / mean age / % female / mean mobility score / % IADL difficulty / % IADL need / n IADL need / % no help among IADL need,8,20.5,20.5128,True
+Table S6,CN2013 other incomplete: n / mean age / % female / mean mobility score / % IADL difficulty / % IADL need / n IADL need / % no help among IADL need,1,62,62.0,True
+Table S6,CN2013 other incomplete: n / mean age / % female / mean mobility score / % IADL difficulty / % IADL need / n IADL need / % no help among IADL need,2,76.3,76.3226,True
+Table S6,CN2013 other incomplete: n / mean age / % female / mean mobility score / % IADL difficulty / % IADL need / n IADL need / % no help among IADL need,3,51.6,51.6129,True
+Table S6,CN2013 other incomplete: n / mean age / % female / mean mobility score / % IADL difficulty / % IADL need / n IADL need / % no help among IADL need,4,10.50,10.5,True
+Table S6,CN2013 other incomplete: n / mean age / % female / mean mobility score / % IADL difficulty / % IADL need / n IADL need / % no help among IADL need,5,38.7,38.7097,True
+Table S6,CN2013 other incomplete: n / mean age / % female / mean mobility score / % IADL difficulty / % IADL need / n IADL need / % no help among IADL need,6,32.3,32.2581,True
+Table S6,CN2013 other incomplete: n / mean age / % female / mean mobility score / % IADL difficulty / % IADL need / n IADL need / % no help among IADL need,7,20,20.0,True
+Table S6,CN2013 other incomplete: n / mean age / % female / mean mobility score / % IADL difficulty / % IADL need / n IADL need / % no help among IADL need,8,5.0,5.0,True
+Text S12,CN2013 need A with a help answer but no positive weight: n,1,29,29.0,True
+Table S4,CN2015 aged 65+ / valid items / need A / help answer / positive weight,1,6466,6466.0,True
+Table S4,CN2015 aged 65+ / valid items / need A / help answer / positive weight,2,6414,6414.0,True
+Table S4,CN2015 aged 65+ / valid items / need A / help answer / positive weight,3,1796,1796.0,True
+Table S4,CN2015 aged 65+ / valid items / need A / help answer / positive weight,4,1792,1792.0,True
+Table S4,CN2015 aged 65+ / valid items / need A / help answer / positive weight,5,1776,1776.0,True
+Table S4,CN2015 fewer than 10 valid items,1,52,52.0,True
+Text S12,CN2015 only need is continence: n / with a help answer and positive weight,1,26,26.0,True
+Text S12,CN2015 only need is continence: n / with a help answer and positive weight,2,15,15.0,True
+Text S12,CN2015 need A without a help answer (positive weight),1,4,4.0,True
+Table S9,CN2015 added by continence (n; no helper n) / only need continence (n; no helper n) / continence plus IADL need only (n; no helper n),1,50,50.0,True
+Table S9,CN2015 added by continence (n; no helper n) / only need continence (n; no helper n) / continence plus IADL need only (n; no helper n),2,20,20.0,True
+Table S9,CN2015 added by continence (n; no helper n) / only need continence (n; no helper n) / continence plus IADL need only (n; no helper n),3,15,15.0,True
+Table S9,CN2015 added by continence (n; no helper n) / only need continence (n; no helper n) / continence plus IADL need only (n; no helper n),4,12,12.0,True
+Table S9,CN2015 added by continence (n; no helper n) / only need continence (n; no helper n) / continence plus IADL need only (n; no helper n),5,35,35.0,True
+Table S9,CN2015 added by continence (n; no helper n) / only need continence (n; no helper n) / continence plus IADL need only (n; no helper n),6,8,8.0,True
+Text S12,"CN2015 % no helper (A), main / skipped respondents excluded",1,16.8,16.7811,True
+Text S12,"CN2015 % no helper (A), main / skipped respondents excluded",2,16.7,16.69,True
+Text S12,CN2015 difficulty only: % of definition D respondents / % of them with no helper,2,75.4,75.4475,True
+Text S12,"CN2015 proxy respondents among need A, % / % no helper (A) without them",1,7.7,7.7037,True
+Text S12,"CN2015 proxy respondents among need A, % / % no helper (A) without them",2,17.7,17.7096,True
+Text S12,CN2015 skipped respondents with need (IADL need): n / positive weight,1,37,37.0,True
+Text S12,CN2015 skipped respondents with need (IADL need): n / positive weight,2,36,36.0,True
+Table S6,CN2015 asked: n / mean age / % female / mean mobility score / % IADL difficulty / % IADL need / n IADL need / % no help among IADL need,1,5237,5237.0,True
+Table S6,CN2015 asked: n / mean age / % female / mean mobility score / % IADL difficulty / % IADL need / n IADL need / % no help among IADL need,2,72.8,72.8421,True
+Table S6,CN2015 asked: n / mean age / % female / mean mobility score / % IADL difficulty / % IADL need / n IADL need / % no help among IADL need,3,54.6,54.6305,True
+Table S6,CN2015 asked: n / mean age / % female / mean mobility score / % IADL difficulty / % IADL need / n IADL need / % no help among IADL need,4,7.77,7.7735,True
+Table S6,CN2015 asked: n / mean age / % female / mean mobility score / % IADL difficulty / % IADL need / n IADL need / % no help among IADL need,5,40.9,40.9204,True
+Table S6,CN2015 asked: n / mean age / % female / mean mobility score / % IADL difficulty / % IADL need / n IADL need / % no help among IADL need,6,30.4,30.4182,True
+Table S6,CN2015 asked: n / mean age / % female / mean mobility score / % IADL difficulty / % IADL need / n IADL need / % no help among IADL need,7,1593,1593.0,True
+Table S6,CN2015 asked: n / mean age / % female / mean mobility score / % IADL difficulty / % IADL need / n IADL need / % no help among IADL need,8,13.4,13.3962,True
+Table S6,CN2015 skipped: n / mean age / % female / mean mobility score / % IADL difficulty / % IADL need / n IADL need / % no help among IADL need,1,1177,1177.0,True
+Table S6,CN2015 skipped: n / mean age / % female / mean mobility score / % IADL difficulty / % IADL need / n IADL need / % no help among IADL need,2,70.2,70.1759,True
+Table S6,CN2015 skipped: n / mean age / % female / mean mobility score / % IADL difficulty / % IADL need / n IADL need / % no help among IADL need,3,28.5,28.5472,True
+Table S6,CN2015 skipped: n / mean age / % female / mean mobility score / % IADL difficulty / % IADL need / n IADL need / % no help among IADL need,4,0.00,0.0,True
+Table S6,CN2015 skipped: n / mean age / % female / mean mobility score / % IADL difficulty / % IADL need / n IADL need / % no help among IADL need,5,7.0,6.9669,True
+Table S6,CN2015 skipped: n / mean age / % female / mean mobility score / % IADL difficulty / % IADL need / n IADL need / % no help among IADL need,6,3.1,3.1436,True
+Table S6,CN2015 skipped: n / mean age / % female / mean mobility score / % IADL difficulty / % IADL need / n IADL need / % no help among IADL need,7,37,37.0,True
+Table S6,CN2015 skipped: n / mean age / % female / mean mobility score / % IADL difficulty / % IADL need / n IADL need / % no help among IADL need,8,24.3,24.3243,True
+Table S6,CN2015 other incomplete: n / mean age / % female / mean mobility score / % IADL difficulty / % IADL need / n IADL need / % no help among IADL need,1,52,52.0,True
+Table S6,CN2015 other incomplete: n / mean age / % female / mean mobility score / % IADL difficulty / % IADL need / n IADL need / % no help among IADL need,2,75.9,75.8846,True
+Table S6,CN2015 other incomplete: n / mean age / % female / mean mobility score / % IADL difficulty / % IADL need / n IADL need / % no help among IADL need,3,48.1,48.0769,True
+Table S6,CN2015 other incomplete: n / mean age / % female / mean mobility score / % IADL difficulty / % IADL need / n IADL need / % no help among IADL need,4,11.03,11.025,True
+Table S6,CN2015 other incomplete: n / mean age / % female / mean mobility score / % IADL difficulty / % IADL need / n IADL need / % no help among IADL need,5,34.6,34.6154,True
+Table S6,CN2015 other incomplete: n / mean age / % female / mean mobility score / % IADL difficulty / % IADL need / n IADL need / % no help among IADL need,6,26.9,26.9231,True
+Table S6,CN2015 other incomplete: n / mean age / % female / mean mobility score / % IADL difficulty / % IADL need / n IADL need / % no help among IADL need,7,14,14.0,True
+Table S6,CN2015 other incomplete: n / mean age / % female / mean mobility score / % IADL difficulty / % IADL need / n IADL need / % no help among IADL need,8,28.6,28.5714,True
+Text S12,CN2015 need A with a help answer but no positive weight: n,1,16,16.0,True
+Text S12,CN2015 need A with a help answer but no positive weight: n,3,16,16.0,True
+Table S4,CN2018 aged 65+ / valid items / need A / help answer / positive weight,1,7627,7627.0,True
+Table S4,CN2018 aged 65+ / valid items / need A / help answer / positive weight,2,7619,7619.0,True
+Table S4,CN2018 aged 65+ / valid items / need A / help answer / positive weight,3,2203,2203.0,True
+Table S4,CN2018 aged 65+ / valid items / need A / help answer / positive weight,4,2203,2203.0,True
+Table S4,CN2018 aged 65+ / valid items / need A / help answer / positive weight,5,2082,2082.0,True
+Table S4,CN2018 fewer than 10 valid items,1,8,8.0,True
+Text S12,CN2018 only need is continence: n / with a help answer and positive weight,1,21,21.0,True
+Text S12,CN2018 only need is continence: n / with a help answer and positive weight,2,12,12.0,True
+Text S12,CN2018 need A without a help answer (positive weight),1,0,0.0,True
+Table S9,CN2018 added by continence (n; no helper n) / only need continence (n; no helper n) / continence plus IADL need only (n; no helper n),1,46,46.0,True
+Table S9,CN2018 added by continence (n; no helper n) / only need continence (n; no helper n) / continence plus IADL need only (n; no helper n),2,15,15.0,True
+Table S9,CN2018 added by continence (n; no helper n) / only need continence (n; no helper n) / continence plus IADL need only (n; no helper n),3,12,12.0,True
+Table S9,CN2018 added by continence (n; no helper n) / only need continence (n; no helper n) / continence plus IADL need only (n; no helper n),4,11,11.0,True
+Table S9,CN2018 added by continence (n; no helper n) / only need continence (n; no helper n) / continence plus IADL need only (n; no helper n),5,34,34.0,True
+Table S9,CN2018 added by continence (n; no helper n) / only need continence (n; no helper n) / continence plus IADL need only (n; no helper n),6,4,4.0,True
+Text S12,"CN2018 % no helper (A), main / skipped respondents excluded",1,14.9,14.8794,True
+Text S12,"CN2018 % no helper (A), main / skipped respondents excluded",2,14.4,14.3631,True
+Text S12,CN2018 difficulty only: % of definition D respondents / % of them with no helper,1,30.3,30.3141,True
+Text S12,CN2018 difficulty only: % of definition D respondents / % of them with no helper,2,75.4,75.4375,True
+Text S12,"CN2018 proxy respondents among need A, % / % no helper (A) without them",1,14.5,14.4639,True
+Text S12,"CN2018 proxy respondents among need A, % / % no helper (A) without them",2,16.6,16.6001,True
+Text S12,CN2018 skipped respondents with need (IADL need): n / positive weight,1,52,52.0,True
+Text S12,CN2018 skipped respondents with need (IADL need): n / positive weight,2,50,50.0,True
+Table S6,CN2018 asked: n / mean age / % female / mean mobility score / % IADL difficulty / % IADL need / n IADL need / % no help among IADL need,1,6300,6300.0,True
+Table S6,CN2018 asked: n / mean age / % female / mean mobility score / % IADL difficulty / % IADL need / n IADL need / % no help among IADL need,2,73.0,72.9938,True
+Table S6,CN2018 asked: n / mean age / % female / mean mobility score / % IADL difficulty / % IADL need / n IADL need / % no help among IADL need,3,55.8,55.7778,True
+Table S6,CN2018 asked: n / mean age / % female / mean mobility score / % IADL difficulty / % IADL need / n IADL need / % no help among IADL need,4,8.15,8.1529,True
+Table S6,CN2018 asked: n / mean age / % female / mean mobility score / % IADL difficulty / % IADL need / n IADL need / % no help among IADL need,5,42.2,42.1746,True
+Table S6,CN2018 asked: n / mean age / % female / mean mobility score / % IADL difficulty / % IADL need / n IADL need / % no help among IADL need,6,31.5,31.5397,True
+Table S6,CN2018 asked: n / mean age / % female / mean mobility score / % IADL difficulty / % IADL need / n IADL need / % no help among IADL need,7,1987,1987.0,True
+Table S6,CN2018 asked: n / mean age / % female / mean mobility score / % IADL difficulty / % IADL need / n IADL need / % no help among IADL need,8,12.9,12.8837,True
+Table S6,CN2018 skipped: n / mean age / % female / mean mobility score / % IADL difficulty / % IADL need / n IADL need / % no help among IADL need,1,1319,1319.0,True
+Table S6,CN2018 skipped: n / mean age / % female / mean mobility score / % IADL difficulty / % IADL need / n IADL need / % no help among IADL need,2,70.3,70.2972,True
+Table S6,CN2018 skipped: n / mean age / % female / mean mobility score / % IADL difficulty / % IADL need / n IADL need / % no help among IADL need,3,30.6,30.6293,True
+Table S6,CN2018 skipped: n / mean age / % female / mean mobility score / % IADL difficulty / % IADL need / n IADL need / % no help among IADL need,4,0.00,0.0,True
+Table S6,CN2018 skipped: n / mean age / % female / mean mobility score / % IADL difficulty / % IADL need / n IADL need / % no help among IADL need,5,6.8,6.8234,True
+Table S6,CN2018 skipped: n / mean age / % female / mean mobility score / % IADL difficulty / % IADL need / n IADL need / % no help among IADL need,6,3.9,3.9424,True
+Table S6,CN2018 skipped: n / mean age / % female / mean mobility score / % IADL difficulty / % IADL need / n IADL need / % no help among IADL need,7,52,52.0,True
+Table S6,CN2018 skipped: n / mean age / % female / mean mobility score / % IADL difficulty / % IADL need / n IADL need / % no help among IADL need,8,30.8,30.7692,True
+Table S6,CN2018 other incomplete: n / mean age / % female / mean mobility score / % IADL difficulty / % IADL need / n IADL need / % no help among IADL need,1,8,8.0,True
+Table S6,CN2018 other incomplete: n / mean age / % female / mean mobility score / % IADL difficulty / % IADL need / n IADL need / % no help among IADL need,2,74.0,74.0,True
+Table S6,CN2018 other incomplete: n / mean age / % female / mean mobility score / % IADL difficulty / % IADL need / n IADL need / % no help among IADL need,3,37.5,37.5,True
+Table S6,CN2018 other incomplete: n / mean age / % female / mean mobility score / % IADL difficulty / % IADL need / n IADL need / % no help among IADL need,4,15.00,15.0,True
+Table S6,CN2018 other incomplete: n / mean age / % female / mean mobility score / % IADL difficulty / % IADL need / n IADL need / % no help among IADL need,5,0.0,0.0,True
+Table S6,CN2018 other incomplete: n / mean age / % female / mean mobility score / % IADL difficulty / % IADL need / n IADL need / % no help among IADL need,6,0.0,0.0,True
+Table S6,CN2018 other incomplete: n / mean age / % female / mean mobility score / % IADL difficulty / % IADL need / n IADL need / % no help among IADL need,7,0,0.0,True
+Text S12,CN2018 need A with a help answer but no positive weight: n,1,121,121.0,True
+Text S12,CN2018 need A with a help answer but no positive weight: n,3,121,121.0,True
+Text S12,CN2018 no positive weight vs analytic sample: mean limitations / % ADL need / unweighted % no helper / change in unweighted % if included,1,3.5,3.4876,True
+Text S12,CN2018 no positive weight vs analytic sample: mean limitations / % ADL need / unweighted % no helper / change in unweighted % if included,2,3.0,3.0312,True
+Text S12,CN2018 no positive weight vs analytic sample: mean limitations / % ADL need / unweighted % no helper / change in unweighted % if included,3,52.9,52.8926,True
+Text S12,CN2018 no positive weight vs analytic sample: mean limitations / % ADL need / unweighted % no helper / change in unweighted % if included,4,41.1,41.0663,True
+Text S12,CN2018 no positive weight vs analytic sample: mean limitations / % ADL need / unweighted % no helper / change in unweighted % if included,5,9.1,9.0909,True
+Text S12,CN2018 no positive weight vs analytic sample: mean limitations / % ADL need / unweighted % no helper / change in unweighted % if included,6,15.4,15.3698,True
+Text S12,CN2018 no positive weight vs analytic sample: mean limitations / % ADL need / unweighted % no helper / change in unweighted % if included,7,-0.3,-0.3449,True
+Table S4,CN2020 aged 65+ / valid items / need A / help answer / positive weight,1,8561,8561.0,True
+Table S4,CN2020 aged 65+ / valid items / need A / help answer / positive weight,2,8553,8553.0,True
+Table S4,CN2020 aged 65+ / valid items / need A / help answer / positive weight,3,1999,1999.0,True
+Table S4,CN2020 aged 65+ / valid items / need A / help answer / positive weight,4,1999,1999.0,True
+Table S4,CN2020 aged 65+ / valid items / need A / help answer / positive weight,5,1869,1869.0,True
+Table S4,CN2020 fewer than 10 valid items,1,8,8.0,True
+Text S12,CN2020 only need is continence: n / with a help answer and positive weight,1,10,10.0,True
+Text S12,CN2020 only need is continence: n / with a help answer and positive weight,2,6,6.0,True
+Text S12,CN2020 need A without a help answer (positive weight),1,0,0.0,True
+Table S9,CN2020 added by continence (n; no helper n) / only need continence (n; no helper n) / continence plus IADL need only (n; no helper n),1,18,18.0,True
+Table S9,CN2020 added by continence (n; no helper n) / only need continence (n; no helper n) / continence plus IADL need only (n; no helper n),2,7,7.0,True
+Table S9,CN2020 added by continence (n; no helper n) / only need continence (n; no helper n) / continence plus IADL need only (n; no helper n),3,6,6.0,True
+Table S9,CN2020 added by continence (n; no helper n) / only need continence (n; no helper n) / continence plus IADL need only (n; no helper n),4,4,4.0,True
+Table S9,CN2020 added by continence (n; no helper n) / only need continence (n; no helper n) / continence plus IADL need only (n; no helper n),5,12,12.0,True
+Table S9,CN2020 added by continence (n; no helper n) / only need continence (n; no helper n) / continence plus IADL need only (n; no helper n),6,3,3.0,True
+Text S12,CN2020 difficulty only: % of definition D respondents / % of them with no helper,1,42.7,42.7387,True
+Text S12,CN2020 difficulty only: % of definition D respondents / % of them with no helper,2,80.7,80.7497,True
+Text S12,"CN2020 proxy respondents among need A, % / % no helper (A) without them",1,22.2,22.2427,True
+Text S12,"CN2020 proxy respondents among need A, % / % no helper (A) without them",2,13.8,13.7837,True
+Text S12,CN2020 need A with a help answer but no positive weight: n,1,130,130.0,True
+Text S12,CN2020 need A with a help answer but no positive weight: n,3,130,130.0,True
+Text S12,CN2020 no positive weight vs analytic sample: mean limitations / % ADL need / unweighted % no helper / change in unweighted % if included,1,3.7,3.7,True
+Text S12,CN2020 no positive weight vs analytic sample: mean limitations / % ADL need / unweighted % no helper / change in unweighted % if included,2,3.4,3.3505,True
+Text S12,CN2020 no positive weight vs analytic sample: mean limitations / % ADL need / unweighted % no helper / change in unweighted % if included,3,56.2,56.1538,True
+Text S12,CN2020 no positive weight vs analytic sample: mean limitations / % ADL need / unweighted % no helper / change in unweighted % if included,4,45.2,45.1578,True
+Text S12,CN2020 no positive weight vs analytic sample: mean limitations / % ADL need / unweighted % no helper / change in unweighted % if included,5,4.6,4.6154,True
+Text S12,CN2020 no positive weight vs analytic sample: mean limitations / % ADL need / unweighted % no helper / change in unweighted % if included,6,12.6,12.5736,True
+Text S12,CN2020 no positive weight vs analytic sample: mean limitations / % ADL need / unweighted % no helper / change in unweighted % if included,7,-0.5,-0.5175,True
+Text S12,"CN2013 and CN2015 need with an unanswered help question and no yes, set aside: largest change in % no helper (A and B)",1,0.1,0.1201,True
+Table S6,CN2013-2018 asked respondents with no reported mobility difficulty: n / more than half with no answer to DB001 (1 = yes),1,160,160.0,True
+Table S6,CN2013-2018 asked respondents with no reported mobility difficulty: n / more than half with no answer to DB001 (1 = yes),2,1,1.0,True
+Figure S1,CN2013 respondents of any age in the health-status file,1,18455,18455.0,True
+Figure S1,CN2015 respondents of any age in the health-status file,1,20967,20967.0,True
+Figure S1,CN2018 respondents of any age in the health-status file,1,19752,19752.0,True
+Figure S1,CN2020 respondents of any age in the health-status file,1,19367,19367.0,True
+Table S8,CN2015 weighted % no helper with INDV_weight_ad2 / with r3wtrespb (11 items; B; A),1,17.44,17.4429,True
+Table S8,CN2015 weighted % no helper with INDV_weight_ad2 / with r3wtrespb (11 items; B; A),2,17.44,17.4429,True
+Table S8,CN2015 weighted % no helper with INDV_weight_ad2 / with r3wtrespb (11 items; B; A),3,13.17,13.1664,True
+Table S8,CN2015 weighted % no helper with INDV_weight_ad2 / with r3wtrespb (11 items; B; A),4,13.17,13.1664,True
+Table S8,CN2015 weighted % no helper with INDV_weight_ad2 / with r3wtrespb (11 items; B; A),5,16.78,16.7811,True
+Table S8,CN2015 weighted % no helper with INDV_weight_ad2 / with r3wtrespb (11 items; B; A),6,16.78,16.7811,True
+Section 2.3,CN2013 communities among respondents with need A (analytic sample),1,394,394.0,True
+Section 2.3,CN2015 communities among respondents with need A (analytic sample),1,408,408.0,True
+Section 2.3,CN2018 communities among respondents with need A (analytic sample),1,412,412.0,True
+Section 2.3,CN2020 communities among respondents with need A (analytic sample),1,411,411.0,True
+Text S12,"CN2013 no helper vs helper: mean age, mean ADL items with need, % proxy, % living alone",1,73.4,73.4041,True
+Text S12,"CN2013 no helper vs helper: mean age, mean ADL items with need, % proxy, % living alone",2,0.5,0.4788,True
+Text S12,"CN2013 no helper vs helper: mean age, mean ADL items with need, % proxy, % living alone",3,4.7,4.6648,True
+Text S12,"CN2013 no helper vs helper: mean age, mean ADL items with need, % proxy, % living alone",4,19.1,19.1245,True
+Text S12,"CN2013 no helper vs helper: mean age, mean ADL items with need, % proxy, % living alone",6,1.0,1.014,True
+Text S12,"CN2013 no helper vs helper: mean age, mean ADL items with need, % proxy, % living alone",8,7.2,7.1884,True
+Table S2,CN2013 low education % / living alone %,1,94.3,94.2941,True
+Table S2,CN2013 low education % / living alone %,2,8.8,8.7861,True
+Text S12,"CN2015 no helper vs helper: mean age, mean ADL items with need, % proxy, % living alone",1,73.5,73.5033,True
+Text S12,"CN2015 no helper vs helper: mean age, mean ADL items with need, % proxy, % living alone",3,2.6,2.5966,True
+Text S12,"CN2015 no helper vs helper: mean age, mean ADL items with need, % proxy, % living alone",4,16.5,16.4762,True
+Text S12,"CN2015 no helper vs helper: mean age, mean ADL items with need, % proxy, % living alone",5,76.5,76.4988,True
+Text S12,"CN2015 no helper vs helper: mean age, mean ADL items with need, % proxy, % living alone",6,1.0,0.9848,True
+Text S12,"CN2015 no helper vs helper: mean age, mean ADL items with need, % proxy, % living alone",7,8.7,8.7336,True
+Text S12,"CN2015 no helper vs helper: mean age, mean ADL items with need, % proxy, % living alone",8,11.7,11.6769,True
+Table S2,CN2015 low education % / living alone %,1,94.0,94.0139,True
+Table S2,CN2015 low education % / living alone %,2,12.5,12.4823,True
+Text S12,"CN2018 no helper vs helper: mean age, mean ADL items with need, % proxy, % living alone",1,73.4,73.4122,True
+Text S12,"CN2018 no helper vs helper: mean age, mean ADL items with need, % proxy, % living alone",2,0.3,0.3075,True
+Text S12,"CN2018 no helper vs helper: mean age, mean ADL items with need, % proxy, % living alone",4,30.2,30.1866,True
+Text S12,"CN2018 no helper vs helper: mean age, mean ADL items with need, % proxy, % living alone",5,76.8,76.763,True
+Text S12,"CN2018 no helper vs helper: mean age, mean ADL items with need, % proxy, % living alone",6,1.0,1.0026,True
+Text S12,"CN2018 no helper vs helper: mean age, mean ADL items with need, % proxy, % living alone",7,16.2,16.193,True
+Text S12,"CN2018 no helper vs helper: mean age, mean ADL items with need, % proxy, % living alone",8,14.0,13.9537,True
+Table S2,CN2018 low education % / living alone %,1,94.7,94.6848,True
+Table S2,CN2018 low education % / living alone %,2,16.4,16.369,True
+Table S2,CN2020 low education % / living alone %,1,93.1,93.0646,True

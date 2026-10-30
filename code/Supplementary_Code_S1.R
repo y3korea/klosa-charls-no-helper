@@ -23,7 +23,8 @@
 #       Harmonized and identity-card birth years.
 #   Part 3 (optional, only if the CHARLS 2011 files are supplied): the 2011 sample derivation and
 #       no-helper shares with 95% intervals (context wave; Table 3, Supplementary Tables S1 and S4,
-#       Supplementary Text S12).
+#       Supplementary Text S12), and low education and living alone among respondents with need
+#       (Supplementary Table S2).
 #   Each part prints the published value next to the recomputed one.
 #   Without the KLoSA files, Part 1 skips the Korean rows and the gaps and the CHARLS parts still run.
 #   Not recomputed in R: bootstrap intervals, multiple imputation, other sensitivity analyses.
@@ -374,8 +375,9 @@ if (all(sapply(f11, function(p) length(list.files(DIR, pattern = p, ignore.case 
   d <- read_dta(pick(f11[["hsf"]])) %>% mutate(ID = trimws(as.character(ID))) %>% distinct(ID, .keep_all = TRUE)
   W11 <- read_dta(pick(f11[["wt"]])) %>% transmute(ID = trimws(as.character(ID)), w = num(ind_weight_ad2)) %>%
     distinct(ID, .keep_all = TRUE)
-  H11 <- read_dta(H_PATH, col_select = c("ID_w1", "rabyear")) %>%
-    transmute(ID = trimws(as.character(ID_w1)), rabyear = num(rabyear)) %>% filter(ID != "") %>% distinct(ID, .keep_all = TRUE)
+  H11 <- read_dta(H_PATH, col_select = c("ID_w1", "rabyear", "raeducl", "h1hhres")) %>%
+    transmute(ID = trimws(as.character(ID_w1)), rabyear = num(rabyear), loweduc = as.numeric(num(raeducl) == 1),
+              alone = as.numeric(num(h1hhres) == 1)) %>% filter(ID != "") %>% distinct(ID, .keep_all = TRUE)
   adl6 <- paste0("db0", 10:15); iadl <- paste0("db0", 16:20); items <- c(adl6, iadl)
   x <- as.data.frame(lapply(d[items], function(v) { v <- num(v); ifelse(v >= 1 & v <= 4, v, NA) })); names(x) <- items
   mob <- as.data.frame(lapply(d[intersect(paste0("db00", 1:9), names(d))], num))
@@ -397,15 +399,18 @@ if (all(sapply(f11, function(p) length(list.files(DIR, pattern = p, ignore.case 
   aB <- v %>% filter(needB, hans); aB <- aB[wok(aB), ]
   mA <- svymean(~nh, svydesign(ids = ~cl, weights = ~w, data = aA)); ciA <- 100 * confint(mA)
   mB <- svymean(~nh, svydesign(ids = ~cl, weights = ~w, data = aB)); ciB <- 100 * confint(mB)
+  wpct <- function(x, w) { ok <- !is.na(x); 100 * sum(x[ok] * w[ok]) / sum(w[ok]) }   # Supplementary Table S2
   flow <- tibble(
     step = c("Aged 65+ (Harmonized birth year)", "ADL block skipped by design", "Valid items (10 of 11)",
              "Need on any of the 11 items (asked DB022)", "  of whom need on continence only", "Need, definition A (10 items)",
              "  no answer to DB022", "  missing or zero weight", "Analytic sample, A", "% no helper, A", "  95% CI lower", "  95% CI upper",
-             "Need, definition B", "  no answer to DB022", "Analytic sample, B", "% no helper, B", "  95% CI lower ", "  95% CI upper "),
+             "Need, definition B", "  no answer to DB022", "Analytic sample, B", "% no helper, B", "  95% CI lower ", "  95% CI upper ",
+             "Low education %, A (Table S2)", "Living alone %, A (Table S2)"),
     R = c(nrow(g11), sum(g11$skip), nrow(v), sum(v$need11), sum(v$need11 & !v$needA), sum(v$needA),
           sum(v$needA & !v$hans), sum(v$needA & v$hans & !wok(v)), nrow(aA), round(100 * coef(mA), 2), round(ciA[1], 2), round(ciA[2], 2),
-          sum(v$needB), sum(v$needB & !v$hans), nrow(aB), round(100 * coef(mB), 2), round(ciB[1], 2), round(ciB[2], 2)),
-    published = c(4658, 811, 4630, 1269, 28, 1241, 5, 0, 1236, 10.4, 8.3, 12.5, 540, 3, 537, 7.4, 5.2, 9.7)) %>%
+          sum(v$needB), sum(v$needB & !v$hans), nrow(aB), round(100 * coef(mB), 2), round(ciB[1], 2), round(ciB[2], 2),
+          round(wpct(aA$loweduc, aA$w), 2), round(wpct(aA$alone, aA$w), 2)),
+    published = c(4658, 811, 4630, 1269, 28, 1241, 5, 0, 1236, 10.4, 8.3, 12.5, 540, 3, 537, 7.4, 5.2, 9.7, 95.3, 7.7)) %>%
     mutate(match = abs(round(R, ifelse(grepl("%|CI", step), 1, 0)) - published) < 1e-9)
   print(as.data.frame(flow), row.names = FALSE)
   cat(sprintf("\nPART 3: %d of %d published values reproduced at the published precision.\n", sum(flow$match), nrow(flow)))

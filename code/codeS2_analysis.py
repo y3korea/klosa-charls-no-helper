@@ -4,7 +4,7 @@
 import numpy as np
 import pandas as pd
 try:   # outside the notebook (local use of the .py files), take the shared objects from codeS2_core.py
-    from codeS2_core import AGE_CUTS, CHARLS_YEARS, KLOSA_WAVES, charls_items, read_dta, fid, load_klosa, _members
+    from codeS2_core import AGE_CUTS, CHARLS_YEARS, KLOSA_WAVES, charls_items, read_dta, fid, load_klosa, _members, std_gap_from_sums
 except ImportError:   # in the notebook they come from the first code cell of Section 2
     pass
 
@@ -120,11 +120,75 @@ def klosa_diagnostics(W, wmean_ci):
     return pd.DataFrame(rows)
 
 BOOT_WAVES = ('CN2013', 'CN2015', 'CN2018', 'CN2020', 'KR2014', 'KR2018', 'KR2020')
+STRATA = ('iadl_only', 'lim1', 'lim2', 'lim3')   # need on IADL items only; 1, 2, 3 or more limitations (each survey's own items)
 
-def bootstrap(W, gap, crude_gap, B=1000, seed=20261027, progress=None):
+def wave_masks(W):
+    """Subgroup masks used by the extended statistics (computed once per wave)."""
+    out = {}
+    for k, w in W.items():
+        d = w.df
+        out[k] = {'iadl_only': (d['needA'] & ~d['needB']).to_numpy(), 'lim1': (d['n_lim'] == 1).to_numpy(),
+                  'lim2': (d['n_lim'] == 2).to_numpy(), 'lim3': (d['n_lim'] >= 3).to_numpy(), 'age70': (d['age'] >= 70).to_numpy(),
+                  'st20': w.st * 2 + d['alone'].fillna(0).to_numpy(int)}   # living alone added to the strata (missing counted as not alone)
+    return out
+
+def gap_with_standard(nk, dk, nc, dc, std):
+    """Standardized gap with a given standard population (stratum weights)."""
+    ok = (dk > 0) & (dc > 0)
+    ww = std * ok / (std * ok).sum()
+    with np.errstate(invalid='ignore', divide='ignore'):
+        rk, rc = np.where(ok, nk / np.where(dk > 0, dk, 1), 0), np.where(ok, nc / np.where(dc > 0, dc, 1), 0)
+    return 100 * ((rk - rc) * ww).sum()
+
+def crude_sums(kr, cn, need, mk=None, mc=None, ek=None, ec=None, all_adults=False):
+    nk, dk = kr.sums(need, mk, all_adults, ek)
+    nc, dc = cn.sums(need, mc, all_adults, ec)
+    return 100 * (nk.sum() / dk.sum() - nc.sum() / dc.sum())
+
+def extended_stats(r, lab, kr, cn, mk, mc, MK, MC, gap):
+    """Statistics of Supplementary Tables S5, S7 (Panel A), S9, S10 and S15 and Text S13 that the original analysis reported,
+    computed from the same resamples as the main statistics (so differences are paired)."""
+    for need in ('needA', 'needB', 'needC'):
+        k_, c_, g_ = gap(kr, cn, need, mk, mc)
+        r[('krstd', lab, need)], r[('cnstd', lab, need)] = k_, c_
+        if need != 'needA':
+            r[('crude', lab, need)] = crude_sums(kr, cn, need, mk, mc)
+    k_, c_, g_ = gap(kr, cn, 'needA', mk, mc, ek=MK['age70'], ec=MC['age70'])
+    r[('krstd', lab, 'needA|age70')], r[('cnstd', lab, 'needA|age70')] = k_, c_
+    r[('crude', lab, 'needA|age70')] = crude_sums(kr, cn, 'needA', mk, mc, MK['age70'], MC['age70'])
+    for s in STRATA:
+        k_, c_, g_ = gap(kr, cn, 'needA', mk, mc, ek=MK[s], ec=MC[s])
+        r[('gap', lab, f'needA|{s}')], r[('krstd', lab, f'needA|{s}')], r[('cnstd', lab, f'needA|{s}')] = g_, k_, c_
+        r[('crude', lab, f'needA|{s}')] = crude_sums(kr, cn, 'needA', mk, mc, MK[s], MC[s])
+        r[(f'A-{s}', lab, '')] = r[('gap', lab, 'needA')] - g_
+    for n in ('needA11', 'needB6', 'needBk6'):                    # Table S9: continence counted (China) or dropped (Korea)
+        r[('gap', lab, n)] = gap(kr, cn, n, mk, mc)[2]
+        r[('crude', lab, n)] = crude_sums(kr, cn, n, mk, mc)
+    sums = {n: (kr.sums(n, mk), cn.sums(n, mc)) for n in ('needA', 'needB', 'needM')}
+    (nkA, dkA), (ncA, dcA) = sums['needA']
+    std_fixed = (dkA / dkA.sum() + dcA / dcA.sum()) / 2          # Table S15: definition A standard for every definition
+    for n in ('needA', 'needB', 'needM'):
+        (nk, dk), (nc, dc) = sums[n]
+        r[('fixed', lab, n)] = gap_with_standard(nk, dk, nc, dc, std_fixed)
+    r[('A-B fixed', lab, '')] = r[('fixed', lab, 'needA')] - r[('fixed', lab, 'needB')]
+    r[('A-C5 fixed', lab, '')] = r[('fixed', lab, 'needA')] - r[('fixed', lab, 'needM')]
+    r[('std_KR', lab, 'needA')] = gap_with_standard(nkA, dkA, ncA, dcA, dkA / dkA.sum())   # Text S13: Korean standard
+    r[('std_CN', lab, 'needA')] = gap_with_standard(nkA, dkA, ncA, dcA, dcA / dcA.sum())   # Chinese standard
+    if kr.df['alone'].notna().any() and cn.df['alone'].notna().any():
+        def sums20(wv, M, st20):
+            sel, y = wv.sel('needA')
+            m = wv.w * sel if M is None else wv.w * sel * M
+            return np.bincount(st20, weights=m * y, minlength=20), np.bincount(st20, weights=m, minlength=20)
+        nk, dk = sums20(kr, mk, MK['st20']); nc, dc = sums20(cn, mc, MC['st20'])
+        r[('gap_alone20', lab, 'needA')] = std_gap_from_sums(nk, dk, nc, dc)[2]
+    r[('all65_crude', lab, 'needA')] = crude_sums(kr, cn, 'needA', mk, mc, all_adults=True)
+
+
+def bootstrap(W, gap, crude_gap, B=1000, seed=20261027, progress=None, extended=True):
     """Resample communities (China) and respondents (Korea) independently per wave; every statistic in one
     replicate uses the same resamples, so differences between definitions and pairings are paired."""
     rng = np.random.default_rng(seed)
+    MASKS = wave_masks(W) if extended else None
     reps = []
     for b in range(B):
         M = {k: W[k].draw(rng) for k in BOOT_WAVES if k in W}   # fixed order: optional context waves never shift the stream
@@ -147,6 +211,8 @@ def bootstrap(W, gap, crude_gap, B=1000, seed=20261027, progress=None):
             r[('all65', lab, 'needA')] = gap(kr, cn, 'needA', mk, mc, all_adults=True)[2]
             r[('A-B', lab, '')] = r[('gap', lab, 'needA')] - r[('gap', lab, 'needB')]
             r[('A-common', lab, '')] = r[('gap', lab, 'needA')] - r[('gap', lab, 'needC')]
+            if extended:
+                extended_stats(r, lab, kr, cn, mk, mc, MASKS[kk], MASKS[cc], gap)
         for need in (['needA', 'needB'] if ('gap', 'KR2014/CN2013', 'needA') in r and ('gap', 'KR2014/CN2015', 'needA') in r else []):
             r[('pairing', 'CN2013 vs CN2015', need)] = r[('gap', 'KR2014/CN2013', need)] - r[('gap', 'KR2014/CN2015', need)]
         for country, waves in (('CN', [2013, 2015, 2018, 2020]), ('KR', [2014, 2018, 2020])):
@@ -481,8 +547,8 @@ def descriptive_checks(files, H, W, data_dir):
             add('interview months, aged 65+', f'KR{y} {int(yy)}-{int(mm):02d}', int(n))
     parts = lambda n: re.split(r'[/\\]|::', n)
     for y in CHARLS_YEARS:
-        member = 'weights.dta' if y == 2013 else 'sample_infor.dta'
-        hits = [(n, o) for n, o in _members(data_dir) if parts(n)[-1].lower() == member and len(parts(n)) > 1 and str(y) in parts(n)[-2]]
+        hit = find_member(data_dir, y, 'weights.dta' if y == 2013 else 'sample_infor.dta')
+        hits = [hit] if hit else []
         if len(hits) != 1:
             add('interview months, aged 65+', f'CN{y}', 'file not found')
             continue
@@ -549,6 +615,382 @@ def descriptive_checks(files, H, W, data_dir):
                 f'{int(pr.sum())} / {100 * pr.mean():.1f} / {100 * float((m["w"] * pr).sum() / m["w"].sum()):.1f}')
     return pd.DataFrame(rows)
 
+def original_points(files, H, W, data_dir):
+    """Values reported in the article that the original analysis scripts computed and that are not bootstrap statistics
+    (Section 2.3, Supplementary Figure S1, Supplementary Tables S2, S4, S6, S8, S9 and S11; Text S12): Table S4 counts and the
+    numbers of respondents in the wave files; communities among respondents with need; the Harmonized weight check of Table S8; CHARLS respondents whose only need is continence,
+    without a help answer, with fewer than 10 valid items, or outside the weighted cross-sectional sample (and the effect of
+    giving them the mean weight of their age-sex stratum among weighted respondents with need); respondents whose ADL questions
+    were skipped (Table S6 comparison panel; proportion with them excluded); definition D respondents with difficulty only;
+    proxy respondents; KLoSA long-term care insurance users; respondents with no helper against those with a helper; education
+    and living alone (Table S2); the CHARLS share of the pooled weight in the models of Table S11. Shares are weighted unless
+    stated. check_original() compares the values with those printed in the article."""
+    import re
+    rows = []
+    add = lambda topic, item, value: rows.append({'topic': topic, 'item': item, 'value': value})
+    wm = lambda x, w: 100 * float((np.asarray(x, float) * np.asarray(w, float)).sum() / np.asarray(w, float).sum())
+    parts = lambda n: re.split(r'[/\\]|::', n)
+    kr_pct = {}
+    for y in (2014, 2018, 2020):
+        if f'KR{y}' in W:
+            m = W[f'KR{y}'].df; m = m[m['needA'] & m['hans']]
+            kr_pct[y] = (m, wm(m['nh'], m['w']))
+    for y in CHARLS_YEARS:
+        if f'CN{y}' not in W:
+            continue
+        a = load_charls(files, H, y, keep_all=True)
+        a65 = a[a['age'] >= 65]; v = a65[a65['valid']]; nA = v[v['needA']]; hA = nA[nA['hans']]
+        pos = hA['w'] > 0
+        add('Table S4', f'CN{y} aged 65+ / valid items / need A / help answer / positive weight',
+            f'{len(a65)} / {len(v)} / {len(nA)} / {len(hA)} / {int(pos.sum())}')
+        add('Table S4', f'CN{y} fewer than 10 valid items', int((~a65['valid']).sum()))
+        co = v[v['needA11'] & ~v['needA']]
+        add('Text S12', f'CN{y} only need is continence: n / with a help answer and positive weight',
+            f'{len(co)} / {int((co["hans"] & (co["w"] > 0)).sum())}')
+        base = v[v['w'] > 0]
+        add('Text S12', f'CN{y} need A without a help answer (positive weight)', int((base['needA'] & ~base['hans']).sum()))
+        m = base[base['hans']]; c = m[m['needB6'] & ~m['needB']]
+        only, plus = c[~c['needA']], c[c['needA']]
+        add('Table S9', f'CN{y} added by continence (n; no helper n) / only need continence (n; no helper n) / continence plus IADL need only (n; no helper n)',
+            f'{len(c)}; {int(c["nh"].sum())} / {len(only)}; {int(only["nh"].sum())} / {len(plus)}; {int(plus["nh"].sum())}')
+        k = base[base['needA'] & base['hans']]
+        add('Text S12', f'CN{y} % no helper (A), main / skipped respondents excluded',
+            f'{wm(k["nh"], k["w"]):.4f} / {wm(k.loc[~k["skipped"], "nh"], k.loc[~k["skipped"], "w"]):.4f}')
+        d = base[base['needD'] & base['hans']]; do = d[~d['needA']]
+        add('Text S12', f'CN{y} difficulty only: % of definition D respondents / % of them with no helper',
+            f'{wm(~d["needA"], d["w"]):.4f} / {wm(do["nh"], do["w"]):.4f}')
+        pr = k['proxy'].to_numpy(bool)
+        add('Text S12', f'CN{y} proxy respondents among need A, % / % no helper (A) without them',
+            f'{wm(pr, k["w"]):.4f} / {wm(k.loc[~pr, "nh"], k.loc[~pr, "w"]):.4f}')
+        ky = {2015: 2014, 2018: 2018, 2020: 2020}.get(y)
+        if ky in kr_pct:
+            km = kr_pct[ky][0]; kp = km['proxy_c2'] != 4
+            add('Text S12', f'KR{ky}/CN{y} crude gap (A), Korean proxies excluded / proxies excluded in both countries',
+                f'{wm(km.loc[kp, "nh"], km.loc[kp, "w"]) - wm(k["nh"], k["w"]):.4f} / '
+                f'{wm(km.loc[kp, "nh"], km.loc[kp, "w"]) - wm(k.loc[~pr, "nh"], k.loc[~pr, "w"]):.4f}')
+        if y != 2020:
+            g = v[v['skipped'] & v['needA']]
+            add('Text S12', f'CN{y} skipped respondents with need (IADL need): n / positive weight', f'{len(g)} / {int((g["w"] > 0).sum())}')
+            for grp, s in (('asked', v[~v['skipped']]), ('skipped', v[v['skipped']]), ('other incomplete', a65[~a65['valid']])):
+                q = s[s['iadl_need'] & s['hans']]
+                add('Table S6', f'CN{y} {grp}: n / mean age / % female / mean mobility score / % IADL difficulty / % IADL need / n IADL need / % no help among IADL need',
+                    f'{len(s)} / {s["age"].mean():.4f} / {100 * s["fem"].mean():.4f} / {s["mobscore"].mean():.4f} / '
+                    f'{100 * s["iadl_diff"].mean():.4f} / {100 * s["iadl_need"].mean():.4f} / {int(s["iadl_need"].sum())} / '
+                    + (f'{100 * q["nh"].mean():.4f}' if len(q) else '-'))
+        mw, kw = hA[~pos], hA[pos]
+        if len(mw):
+            line = f'{len(mw)}'
+            if y != 2013:
+                member = find_member(data_dir, y, 'sample_infor.dta')
+                if member:
+                    si = read_dta(member, columns=['ID', 'crosssection']); si['ID'] = fid(si['ID'])
+                    cs = mw[['ID']].merge(si.drop_duplicates('ID'), on='ID', how='left')['crosssection']
+                    line += f' (crosssection = 0: {int((pd.to_numeric(cs, errors="coerce") == 0).sum())})'
+            add('Text S12', f'CN{y} need A with a help answer but no positive weight: n', line)
+            add('Text S12', f'CN{y} no positive weight vs analytic sample: mean limitations / % ADL need / unweighted % no helper / change in unweighted % if included',
+                f'{mw["n_lim"].mean():.4f} vs {kw["n_lim"].mean():.4f} / {100 * mw["needB"].mean():.4f} vs {100 * kw["needB"].mean():.4f} / '
+                f'{100 * mw["nh"].mean():.4f} vs {100 * kw["nh"].mean():.4f} / {100 * hA["nh"].mean() - 100 * kw["nh"].mean():.4f}')
+            if ky in kr_pct:
+                h2 = add_strata(hA.copy())
+                means = h2[h2['w'] > 0].groupby('st')['w'].mean()
+                h2['w'] = np.where(h2['w'] > 0, h2['w'], h2['st'].map(means))
+                g = gap(W[f'KR{ky}'], Wave(h2, by_cluster=True), 'needA')[2]
+                add('Text S12', f'CN{y} mean stratum weight given to them: % no helper (A) / standardized gap with KR{ky}',
+                    f'{wm(h2["nh"], h2["w"]):.4f} / {g:.4f}')
+    for y in (2014, 2018, 2020):
+        if f'KR{y}' in W:
+            a = load_klosa(files, y, keep_all=True)
+            a65 = a[a['age'] >= 65]; v = a65[a65['valid']]; nA = v[v['needA']]; hA = nA[nA['hans']]
+            add('Table S4', f'KR{y} aged 65+ / valid items / need A / help answer / positive weight',
+                f'{len(a65)} / {len(v)} / {len(nA)} / {len(hA)} / {int((hA["w"] > 0).sum())}')
+    # Text S12 and Table S6 details: respondents with need on an activity whose help question is unanswered and no 'yes'
+    # (2013, 2015), and asked respondents with no reported mobility difficulty who did not answer DB001
+    shift, pos_n, pos_nodb1 = [], 0, 0
+    for y in (2013, 2015, 2018):
+        if f'CN{y}' not in W:
+            continue
+        adl6, iadl, helpv = charls_items(y)
+        d = read_dta(files[f'CN{y}_hsf']); d['ID'] = fid(d['ID']); d = d.drop_duplicates('ID').reset_index(drop=True)
+        num = lambda c: pd.to_numeric(d[c], errors='coerce')
+        x = pd.DataFrame({c: num(c).where(num(c).between(1, 4)) for c in adl6 + iadl})
+        r, h = x[adl6[:5] + iadl].to_numpy(), np.column_stack([num(c) for c in helpv])
+        q = pd.DataFrame({'ID': d['ID'].values, 'g1': ((r >= 3) & ~np.isin(h, [1, 2])).any(axis=1) & ~(h == 1).any(axis=1)})
+        if y in (2013, 2015):
+            b = W[f'CN{y}'].df.merge(q, on='ID', how='left')
+            for need in ('needA', 'needB'):
+                s = b[b[need] & b['hans']]; g1 = s['g1'].fillna(False).to_numpy(bool)
+                shift.append(abs(wm(s.loc[~g1, 'nh'], s.loc[~g1, 'w']) - wm(s['nh'], s['w'])))
+        mob = pd.DataFrame({f'db00{i}': num(f'db00{i}') for i in range(1, 10)})
+        all_one, any_mob = (mob.isna() | (mob == 1)).all(axis=1), mob.notna().any(axis=1)
+        skip = (x[adl6].notna().sum(axis=1) == 0) & all_one & any_mob & (x[iadl].notna().sum(axis=1) >= len(iadl) - 1)
+        xf = x.copy(); xf.loc[skip, adl6] = 1
+        valid = xf.notna().sum(axis=1) >= len(adl6 + iadl) - 1
+        age65 = ((y - pd.DataFrame({'ID': d['ID']}).merge(H[['ID', 'rabyear']], on='ID', how='left')['rabyear']) >= 65).to_numpy()
+        pos = valid & ~skip & age65 & all_one & any_mob
+        pos_n += int(pos.sum()); pos_nodb1 += int((pos & mob['db001'].isna()).sum())
+    if shift:
+        add('Text S12', 'CN2013 and CN2015 need with an unanswered help question and no yes, set aside: largest change in % no helper (A and B)', f'{max(shift):.4f}')
+    if pos_n:
+        add('Table S6', 'CN2013-2018 asked respondents with no reported mobility difficulty: n / more than half with no answer to DB001 (1 = yes)',
+            f'{pos_n} / {int(pos_nodb1 > pos_n / 2)}')
+    if 'KR2014' in W:
+        k14 = W['KR2014'].df
+        add('Table S3', "KR2014 'don't know' helper answers (C218_01 < 0) among need A / need B",
+            f"{int((k14['needA'] & k14['hans'] & (k14['helper'] < 0)).sum())} / {int((k14['needB'] & k14['hans'] & (k14['helper'] < 0)).sum())}")
+    for y in (2014, 2018, 2020):
+        if f'KR{y}' in W:
+            wv = 'w' + KLOSA_WAVES[y]
+            add('Figure S1', f'KR{y} respondents of any age in the wave file', len(read_dta(files[f'KR{y}'], columns=[wv + 'C201'])))
+    for y in CHARLS_YEARS:
+        if f'CN{y}' in W:
+            add('Figure S1', f'CN{y} respondents of any age in the health-status file', len(load_charls(files, H, y, keep_all=True)))
+    if 'CN2015' in W:      # Table S8 note: the Harmonized weight r3wtrespb gives the same CHARLS 2015 values
+        try:
+            hw = read_dta(files['H'], columns=['ID', 'r3wtrespb']); hw['ID'] = fid(hw['ID'])
+            b15 = W['CN2015'].df.merge(hw.drop_duplicates('ID'), on='ID', how='left')
+            vals = []
+            for need in ('needA11', 'needB', 'needA'):
+                g = b15[b15[need] & b15['hans']]
+                w2 = pd.to_numeric(g['r3wtrespb'], errors='coerce')
+                vals.append(f'{wm(g["nh"], g["w"]):.4f} / {wm(g["nh"], w2):.4f}')
+            add('Table S8', 'CN2015 weighted % no helper with INDV_weight_ad2 / with r3wtrespb (11 items; B; A)', '; '.join(vals))
+        except (ValueError, KeyError):
+            add('Table S8', 'CN2015 weighted % no helper with INDV_weight_ad2 / with r3wtrespb (11 items; B; A)', 'not in file')
+    for y in CHARLS_YEARS:
+        if f'CN{y}' in W:
+            g = W[f'CN{y}'].df
+            add('Section 2.3', f'CN{y} communities among respondents with need A (analytic sample)', int(g.loc[g['needA'] & g['hans'], 'cl'].nunique()))
+    for y, (m, p) in kr_pct.items():
+        lt = (m['ltci'] == 1).to_numpy()
+        cy = {2014: 2015, 2018: 2018, 2020: 2020}[y]
+        cp = wm(W[f'CN{cy}'].df.query('needA and hans')['nh'], W[f'CN{cy}'].df.query('needA and hans')['w']) if f'CN{cy}' in W else np.nan
+        nhg = m['nh'] == 1
+        add('Text S12', f'KR{y} LTCI users in the no-helper group: n / % of the group (weighted)',
+            f'{int((lt & nhg).sum())} / {wm(lt[nhg.to_numpy()], m.loc[nhg, "w"]):.4f}')
+        h1 = wm(m['nh'] * ~lt, m['w']); h2 = wm(m.loc[~lt, 'nh'], m.loc[~lt, 'w'])
+        add('Text S12', f'KR{y} LTCI users counted as helped: % (crude gap) / users excluded: % (crude gap)',
+            f'{h1:.4f} ({h1 - cp:.4f}) / {h2:.4f} ({h2 - cp:.4f})')
+    for key in sorted(W):
+        g = W[key].df; g = g[g['needA'] & g['hans']]
+        ctry, yr = key[:2], int(key[2:])
+        if (ctry, yr) in (('KR', 2014), ('KR', 2018), ('KR', 2020), ('CN', 2013), ('CN', 2015), ('CN', 2018), ('CN', 2020)):
+            vals = []
+            for nhv in (1, 0):
+                z = g[g['nh'] == nhv]; za = z[z['alone'].notna()]
+                lim = z['n_adl7'] if ctry == 'KR' else z['n_adl5']
+                prx = (z['proxy_c2'] == 4) if ctry == 'KR' else z['proxy']
+                vals.append(f'{float((z["age"] * z["w"]).sum() / z["w"].sum()):.4f}, {float((lim * z["w"]).sum() / z["w"].sum()):.4f}, '
+                            f'{wm(prx, z["w"]):.4f}, ' + (f'{wm(za["alone"], za["w"]):.4f}' if len(za) else '-'))
+            add('Text S12', f'{key} no helper vs helper: mean age, mean ADL items with need, % proxy, % living alone', ' vs '.join(vals))
+        e, al = g[g['loweduc'].notna()], g[g['alone'].notna()]
+        add('Table S2', f'{key} low education % / living alone %',
+            f'{wm(e["loweduc"], e["w"]):.4f} / ' + (f'{wm(al["alone"], al["w"]):.4f}' if len(al) else 'not derived'))
+    for lab, (ky, cy, _) in PAIRS.items():
+        if lab == 'KR2014/CN2013' or f'KR{ky}' not in W or f'CN{cy}' not in W:
+            continue
+        sh = []
+        for wv in (W[f'KR{ky}'], W[f'CN{cy}']):
+            g = wv.df[wv.df['needA'] & wv.df['hans'] & wv.df['loweduc'].notna()]
+            if cy != 2020:
+                g = g[g['alone'].notna()]
+            sh.append(g['w'].sum())
+        add('Table S11', f'{lab} CHARLS share of the pooled weight (definition A model sample), %', f'{100 * sh[1] / sum(sh):.4f}')
+    return pd.DataFrame(rows)
+
+# Values of original_points() as printed in the article, token by token (None: computed but not printed; ranges printed in
+# Text S12 are checked at their end points)
+_S4 = 'aged 65+ / valid items / need A / help answer / positive weight'
+_S6 = 'n / mean age / % female / mean mobility score / % IADL difficulty / % IADL need / n IADL need / % no help among IADL need'
+_S9 = 'added by continence (n; no helper n) / only need continence (n; no helper n) / continence plus IADL need only (n; no helper n)'
+_NH = 'no helper vs helper: mean age, mean ADL items with need, % proxy, % living alone'
+PUB_ORIG = {
+    **{f'CN{y} {_S4}': v for y, v in [(2013, [5489, 5427, 1455, 1454, 1425]), (2015, [6466, 6414, 1796, 1792, 1776]),
+                                      (2018, [7627, 7619, 2203, 2203, 2082]), (2020, [8561, 8553, 1999, 1999, 1869])]},
+    **{f'KR{y} {_S4}': v for y, v in [(2014, [4259, 4259, 749, 749, 749]), (2018, [4352, 4352, 739, 739, 739]), (2020, [4405, 4405, 718, 718, 718])]},
+    **{f'CN{y} communities among respondents with need A (analytic sample)': [v] for y, v in [(2013, 394), (2015, 408), (2018, 412), (2020, 411)]},
+    **{f'KR{y} respondents of any age in the wave file': [v] for y, v in [(2014, 7949), (2018, 6940), (2020, 6488)]},
+    **{f'CN{y} respondents of any age in the health-status file': [v] for y, v in [(2013, 18455), (2015, 20967), (2018, 19752), (2020, 19367)]},
+    'CN2015 weighted % no helper with INDV_weight_ad2 / with r3wtrespb (11 items; B; A)': ['17.44', '17.44', '13.17', '13.17', '16.78', '16.78'],
+    'CN2013 and CN2015 need with an unanswered help question and no yes, set aside: largest change in % no helper (A and B)': ['0.1'],
+    'CN2013-2018 asked respondents with no reported mobility difficulty: n / more than half with no answer to DB001 (1 = yes)': [160, 1],
+    "KR2014 'don't know' helper answers (C218_01 < 0) among need A / need B": [2, 1],
+    **{f'CN{y} fewer than 10 valid items': [v] for y, v in [(2013, 62), (2015, 52), (2018, 8), (2020, 8)]},
+    **{f'CN{y} only need is continence: n / with a help answer and positive weight': v
+       for y, v in [(2013, [16, 9]), (2015, [26, 15]), (2018, [21, 12]), (2020, [10, 6])]},
+    **{f'CN{y} need A without a help answer (positive weight)': [v] for y, v in [(2013, 1), (2015, 4), (2018, 0), (2020, 0)]},
+    **{f'CN{y} {_S9}': v for y, v in [(2013, [33, 11, 9, 7, 24, 4]), (2015, [50, 20, 15, 12, 35, 8]), (2018, [46, 15, 12, 11, 34, 4]),
+                                      (2020, [18, 7, 6, 4, 12, 3])]},
+    **{f'CN{y} % no helper (A), main / skipped respondents excluded': v
+       for y, v in [(2013, ['13.4', '13.3']), (2015, ['16.8', '16.7']), (2018, ['14.9', '14.4'])]},
+    **{f'CN{y} difficulty only: % of definition D respondents / % of them with no helper': v
+       for y, v in [(2015, [None, '75.4']), (2018, ['30.3', '75.4']), (2020, ['42.7', '80.7'])]},
+    **{f'CN{y} proxy respondents among need A, % / % no helper (A) without them': v
+       for y, v in [(2015, ['7.7', '17.7']), (2018, ['14.5', '16.6']), (2020, ['22.2', '13.8'])]},
+    **{f'{p} crude gap (A), Korean proxies excluded / proxies excluded in both countries': v
+       for p, v in [('KR2014/CN2015', ['9.3', '8.3']), ('KR2018/CN2018', ['14.1', '12.4']), ('KR2020/CN2020', ['25.2', '22.6'])]},
+    **{f'CN{y} skipped respondents with need (IADL need): n / positive weight': v for y, v in [(2013, [39, 39]), (2015, [37, 36]), (2018, [52, 50])]},
+    **{f'CN{y} {g}: {_S6}': v for (y, g), v in [
+        ((2013, 'asked'), [4478, '72.9', '53.3', '7.47', '38.6', '29.5', 1319, '10.8']),
+        ((2013, 'skipped'), [949, '70.0', '31.0', '0.00', '6.0', '4.1', 39, '20.5']),
+        ((2013, 'other incomplete'), [62, '76.3', '51.6', '10.50', '38.7', '32.3', 20, '5.0']),
+        ((2015, 'asked'), [5237, '72.8', '54.6', '7.77', '40.9', '30.4', 1593, '13.4']),
+        ((2015, 'skipped'), [1177, '70.2', '28.5', '0.00', '7.0', '3.1', 37, '24.3']),
+        ((2015, 'other incomplete'), [52, '75.9', '48.1', '11.03', '34.6', '26.9', 14, '28.6']),
+        ((2018, 'asked'), [6300, '73.0', '55.8', '8.15', '42.2', '31.5', 1987, '12.9']),
+        ((2018, 'skipped'), [1319, '70.3', '30.6', '0.00', '6.8', '3.9', 52, '30.8']),
+        ((2018, 'other incomplete'), [8, '74.0', '37.5', '15.00', '0.0', '0.0', 0])]},
+    'CN2013 need A with a help answer but no positive weight: n': [29],
+    **{f'CN{y} need A with a help answer but no positive weight: n': [v, None, v] for y, v in [(2015, 16), (2018, 121), (2020, 130)]},
+    **{f'CN{y} no positive weight vs analytic sample: mean limitations / % ADL need / unweighted % no helper / change in unweighted % if included': v
+       for y, v in [(2018, ['3.5', '3.0', '52.9', '41.1', '9.1', '15.4', '-0.3']), (2020, ['3.7', '3.4', '56.2', '45.2', '4.6', '12.6', '-0.5'])]},
+    **{f'CN{y} mean stratum weight given to them: % no helper (A) / standardized gap with KR{k}': v
+       for y, k, v in [(2015, 2014, ['16.9', '8.0']), (2018, 2018, ['14.5', '13.8']), (2020, 2020, ['10.8', '24.7'])]},
+    **{f'KR{y} LTCI users in the no-helper group: n / % of the group (weighted)': v for y, v in [(2014, [3, '1.2']), (2018, [6, None]), (2020, [8, '3.4'])]},
+    **{f'KR{y} LTCI users counted as helped: % (crude gap) / users excluded: % (crude gap)': v
+       for y, v in [(2014, ['23.9', '7.2', '25.0', '8.2']), (2018, ['26.7', '11.8', '29.0', '14.2']), (2020, ['33.2', '21.9', '38.6', '27.4'])]},
+    **{f'{k} {_NH}': v for k, v in [
+        ('KR2014', ['77.8', '1.2', '6.5', '30.3', '78.8', '2.0', '15.1', '17.9']),
+        ('KR2018', ['77.9', '0.9', '6.4', '34.7', '79.1', '2.2', '13.1', '17.7']),
+        ('KR2020', ['76.9', '0.6', '4.0', '26.2', '81.3', '2.0', '12.3', '22.0']),
+        ('CN2013', ['73.4', '0.5', '4.7', '19.1', None, '1.0', None, '7.2']),     # Text S12 gives ranges over 2013-2018
+        ('CN2015', ['73.5', None, '2.6', '16.5', '76.5', '1.0', '8.7', '11.7']),
+        ('CN2018', ['73.4', '0.3', None, '30.2', '76.8', '1.0', '16.2', '14.0'])]},
+    **{f'{k} low education % / living alone %': v for k, v in [
+        ('KR2014', ['70.3', '20.9']), ('KR2016', ['63.5', '18.6']), ('KR2018', ['63.4', '22.4']), ('KR2020', ['61.9', '23.5']),
+        ('KR2022', ['56.8', '24.7']), ('KR2024', ['45.6', '27.0']), ('CN2013', ['94.3', '8.8']), ('CN2015', ['94.0', '12.5']),
+        ('CN2018', ['94.7', '16.4']), ('CN2020', ['93.1'])]},
+    **{f'{p} CHARLS share of the pooled weight (definition A model sample), %': [v]
+       for p, v in [('KR2014/CN2015', '98.0'), ('KR2018/CN2018', '98.6'), ('KR2020/CN2020', '98.3')]},
+}
+
+def check_original(op):
+    """Compare original_points() with the values printed in the article (token by token, at the printed precision)."""
+    import re
+    rows = []
+    for r in op.itertuples():
+        pub = PUB_ORIG.get(r.item)
+        if pub is None:
+            continue
+        got = re.findall(r'-?\d+(?:\.\d+)?', str(r.value))
+        for i, p in enumerate(pub):
+            if p is None:
+                continue
+            g = float(got[i]) if i < len(got) else np.nan
+            rows.append({'topic': r.topic, 'item': r.item, 'position': i + 1, 'published': p, 'reproduced': g,
+                         'match': bool(i < len(got) and _matches(g, p))})
+    return pd.DataFrame(rows)
+
+def household_resampling(W, Wave, gap, B=10000, seed=20261027):
+    """Supplementary Table S7, Panel E: Korean intervals with households (KLoSA hhid) instead of respondents resampled; Chinese
+    communities resampled in both runs, with the same Chinese draws (separate random streams for the two countries)."""
+    hh = {k: Wave(W[k].df.assign(cl=W[k].df['hh'].astype(str)), by_cluster=True) for k in W if k.startswith('KR')}
+    res = {}
+    for name, WW in (('respondents', W), ('households', {**W, **hh})):
+        rng_cn, rng_kr = np.random.default_rng(seed), np.random.default_rng(seed + 1)
+        reps = []
+        for _ in range(B):
+            M = {k: WW[k].draw(rng_kr if k.startswith('KR') else rng_cn) for k in BOOT_WAVES if k in WW}
+            reps.append({(lab, n): gap(WW[f'KR{ky}'], WW[f'CN{cy}'], n, M[f'KR{ky}'], M[f'CN{cy}'])[2]
+                         for lab, (ky, cy, _) in PAIRS.items() if f'KR{ky}' in WW and f'CN{cy}' in WW for n in ('needA', 'needB')})
+        res[name] = pd.DataFrame(reps)
+    rows = []
+    for (lab, n) in res['respondents'].columns:
+        ky = PAIRS[lab][0]; d = W[f'KR{ky}'].df; m = d['needA'] & d['hans']
+        row = {'pair': lab, 'definition': n, 'gap': gap(W[f'KR{ky}'], W[f'CN{PAIRS[lab][1]}'], n)[2],
+               'respondents (A)': int(m.sum()), 'households (A)': int(d.loc[m, 'hh'].nunique())}
+        for name in ('respondents', 'households'):
+            lo, hi = _pq(res[name][(lab, n)], 0.95)
+            row[f'{name} resampled, 95% interval'] = f'{lo:.1f} to {hi:.1f}'
+        rows.append(row)
+    return pd.DataFrame(rows)
+
+def tipping_point(W, gap):
+    """Supplementary Table S7, Panel D (hypothetical): a share s of the skipped CHARLS respondents without definition A need
+    (aged 65+, positive weight) is added, stratum by stratum and with weight s x w, as respondents with definition A need who
+    either had no helper ('none helped') or had a helper with the observed rate among Chinese respondents with ADL need
+    (definition B); the Chinese proportion and the standardized gap against the paired Korean wave are recomputed, and the
+    share at which the gap reaches zero is found by bisection."""
+    rows = []
+    for ky, cy in ((2014, 2015), (2018, 2018)):
+        kr, cn = W[f'KR{ky}'], W[f'CN{cy}']
+        d = cn.df
+        add = (d['skipped'] & ~d['needA']).to_numpy()
+        nk, dk = kr.sums('needA')
+        nc, dc = cn.sums('needA')
+        sel_b, _ = cn.sel('needB')
+        b_rate = float((cn.w * sel_b * cn.nh).sum() / (cn.w * sel_b).sum())
+        w_add = np.bincount(cn.st, weights=cn.w * add, minlength=10)
+        def at(s, nhv):
+            nc2, dc2 = nc + s * w_add * nhv, dc + s * w_add
+            g = std_gap_from_sums(nk, dk, nc2, dc2)
+            return 100 * nc2.sum() / dc2.sum(), g[2]
+        for label, nhv in (('observed rate among ADL-need respondents', b_rate), ('none helped', 1.0)):
+            for s in (0.01, 0.02, 0.05, 0.10, 0.15, 0.20):
+                p, g = at(s, nhv)
+                rows.append({'CHARLS year': cy, 'helper rate assumed': label, 'share with ADL need': s, 'Chinese proportion A, %': p, 'standardized gap': g})
+            if label == 'none helped':
+                lo, hi = 0.0, 1.0
+                for _ in range(60):
+                    mid = (lo + hi) / 2
+                    lo, hi = (mid, hi) if at(mid, nhv)[1] > 0 else (lo, mid)
+                rows.append({'CHARLS year': cy, 'helper rate assumed': label, 'share with ADL need': round((lo + hi) / 2, 4),
+                             'Chinese proportion A, %': np.nan, 'standardized gap': 0.0, 'note': 'gap reaches zero'})
+        rows.append({'CHARLS year': cy, 'helper rate assumed': 'n skipped without definition A need (added group)', 'share with ADL need': int(add.sum())})
+    return pd.DataFrame(rows)
+
+def skipped_adl_mi(files, H, W, m=20, n_iter=10, seeds=(20261027,) + tuple(range(1, 10)), wmean_ci=None):
+    """Supplementary Table S6 (multiple imputation): for CHARLS 2013, 2015 and 2018, the five ADL ratings of respondents whose
+    ADL questions were skipped by design are set to missing and imputed by chained equations with predictive mean matching
+    (statsmodels MICEData; m imputations after n_iter cycles each; each variable with missing values is predicted from all
+    other variables: age, female, the five ADL and five IADL ratings, the summed mobility difficulty score and the number of
+    answered mobility items; the few missing items of respondents who were asked are imputed as well). Help status is not imputed: a skipped respondent
+    imputed to have need enters the denominator only if he or she answered a help question, as in the main rule. Each imputed
+    data set gives the weighted share without a helper under definition A with a linearized SE clustered by community; the
+    estimates are pooled with Rubin's rules (normal 95% interval); the share of skipped respondents imputed to have ADL need
+    (rating 3 or 4 on any of the five ADL items) is unweighted and averaged over the imputations. The whole imputation is
+    repeated with ten seeds; the table reports the first seed and the range of the pooled estimate across seeds."""
+    from statsmodels.imputation import mice
+    import warnings
+    rows = []
+    for y in (2013, 2015, 2018):
+        adl6, iadl, helpv = charls_items(y)
+        d = read_dta(files[f'CN{y}_hsf']); d['ID'] = fid(d['ID']); d = d.drop_duplicates('ID')
+        num = lambda c: pd.to_numeric(d[c], errors='coerce')
+        mob = pd.DataFrame({f'db00{i}': num(f'db00{i}') for i in range(1, 10)})
+        x = pd.DataFrame({'ID': d['ID'].values, **{c: num(c).where(num(c).between(1, 4)).values for c in adl6[:5] + iadl},
+                          'mobscore': (mob - 1).clip(lower=0).sum(axis=1).values, 'mobn': mob.notna().sum(axis=1).values})
+        base = W[f'CN{y}'].df[['ID', 'skipped', 'hans', 'nh', 'w', 'cl', 'age', 'fem']].reset_index(drop=True)
+        df = base.merge(x, on='ID', how='left')
+        df.loc[df['skipped'], adl6[:5]] = np.nan
+        cols = ['age', 'fem', 'mobscore', 'mobn'] + adl6[:5] + iadl
+        dat = df[cols].astype(float).rename(columns=lambda c: f'v_{c}')
+        est = []
+        for seed in seeds:
+            np.random.seed(seed)
+            with warnings.catch_warnings():
+                warnings.simplefilter('ignore')
+                imp = mice.MICEData(dat.copy(), k_pmm=5)
+                Q, U, need_share = [], [], []
+                for _ in range(m):
+                    imp.update_all(n_iter)
+                    z = imp.data
+                    need = (z[[f'v_{c}' for c in adl6[:5] + iadl]] >= 3).any(axis=1).to_numpy()
+                    adl_need = (z[[f'v_{c}' for c in adl6[:5]]] >= 3).any(axis=1).to_numpy()
+                    g = df.assign(need=need)
+                    g = g[g['need'] & g['hans']]
+                    p, se, _, _ = wmean_ci(g, 'nh', cluster=True)
+                    Q.append(p); U.append(se ** 2)
+                    need_share.append(float((adl_need & df['skipped'].to_numpy()).sum() / df['skipped'].sum()))
+            Q, U = np.array(Q), np.array(U)
+            qbar, ubar, bvar = Q.mean(), U.mean(), Q.var(ddof=1)
+            T = ubar + (1 + 1 / m) * bvar
+            est.append((seed, qbar, np.sqrt(T), float(np.mean(need_share))))
+        main_seed = est[0]
+        rows.append({'CHARLS year': y, 'MI pooled % no helper': main_seed[1], 'lo': main_seed[1] - 1.96 * main_seed[2], 'hi': main_seed[1] + 1.96 * main_seed[2],
+                     'share of skipped imputed to have ADL need, % (unweighted)': 100 * main_seed[3],
+                     'range across seeds': f'{min(e[1] for e in est):.2f} to {max(e[1] for e in est):.2f}', 'seeds': len(est)})
+    return pd.DataFrame(rows)
+
 # Supplementary Table S11 as published (original Python scripts, weights pooled as supplied): A gap, B gap, A minus B, Korea % (A),
 # China % (A); the models with living alone only report the three gaps
 PUB_S11 = {('KR2014/CN2015', 'age group, sex, low education, living alone'): ('5.7', '4.8', '0.9', '22.5', '16.8'),
@@ -570,12 +1012,80 @@ def check_s11(am):
                          'reproduced': round(g, 2), 'match': _matches(g, p)})
     return pd.DataFrame(rows)
 
+def subgroup_shares(W):
+    """Counts and weighted no-helper percentages behind the extended statistics (Supplementary Tables S5, S9 and S10):
+    respondents with need who answered the help question, by survey wave, definition and subgroup."""
+    MASKS = wave_masks(W)
+    rows = []
+    for k, wv in W.items():
+        for need in ('needA', 'needB', 'needC', 'needM', 'needA11', 'needB6', 'needBk6'):
+            for sub in ('all', 'age70') + STRATA:
+                if sub != 'all' and need != 'needA':
+                    continue
+                sel, y = wv.sel(need)
+                m = sel if sub == 'all' else sel & MASKS[k][sub]
+                rows.append({'wave': k, 'definition': need, 'subgroup': sub, 'n': int(m.sum()),
+                             'weighted % no helper': 100 * float((wv.w * m * y).sum() / (wv.w * m).sum()) if m.any() else np.nan})
+    return pd.DataFrame(rows)
+
+def monte_carlo_check(summary, W, gap, crude_gap, B=10000, seed=20261027 + 1):
+    """Monte Carlo error of the bootstrap limits: the main bootstrap rerun with another seed; largest absolute difference
+    of the 95% limits from those of Section 6, overall and for the gaps and differences of the main tables."""
+    alt = bootstrap(W, gap, crude_gap, B=B, seed=seed, extended=False)
+    s = summary.set_index(['statistic', 'pair_or_change', 'definition'])
+    rows = []
+    for key in alt.columns:
+        if key in s.index:
+            lo, hi = np.percentile(alt[key], 2.5), np.percentile(alt[key], 97.5)
+            rows.append({'statistic': key[0], 'pair_or_change': key[1], 'definition': key[2],
+                         'lo': s.loc[key, 'lo'], 'hi': s.loc[key, 'hi'], 'lo (other seed)': lo, 'hi (other seed)': hi,
+                         'largest difference': max(abs(lo - s.loc[key, 'lo']), abs(hi - s.loc[key, 'hi']))})
+    return pd.DataFrame(rows)
+
+def summarize_extended(reps, W, gap):
+    """Point estimates and 95% percentile intervals of the extended statistics (Supplementary Tables S5, S7 Panel A, S9, S10, S15;
+    Text S13), and for the S5 rows the normal-approximation intervals with the Korean bootstrap variance inflated by 1.5 and 2."""
+    MASKS = wave_masks(W)
+    P = {}
+    for lab, (ky, cy, _) in PAIRS.items():
+        if f'KR{ky}' in W and f'CN{cy}' in W:
+            kr, cn = W[f'KR{ky}'], W[f'CN{cy}']
+            P[('gap', lab, 'needA')] = gap(kr, cn, 'needA')[2]
+            extended_stats(P, lab, kr, cn, None, None, MASKS[f'KR{ky}'], MASKS[f'CN{cy}'], gap)
+    rows = []
+    for key, pe in P.items():
+        kind, lab, need = key
+        if kind in ('krstd', 'cnstd') or key not in reps.columns or (kind == 'gap' and need == 'needA'):
+            continue
+        rows.append({'statistic': kind, 'pair_or_change': lab, 'definition': need, 'estimate': pe,
+                     'lo': np.percentile(reps[key], 2.5), 'hi': np.percentile(reps[key], 97.5)})
+    for lab in [p for p in PAIRS if any(k[1] == p for k in P)]:      # fixed order (pairs as in PAIRS)
+        for need in ('needA', 'needB', 'needC', 'needA|age70') + tuple(f'needA|{s}' for s in STRATA):
+            if ('krstd', lab, need) not in reps.columns:
+                continue
+            ky, cy, _ = PAIRS[lab]
+            kr, cn = W[f'KR{ky}'], W[f'CN{cy}']
+            if need == 'needA|age70':
+                pe = gap(kr, cn, 'needA', ek=MASKS[f'KR{ky}']['age70'], ec=MASKS[f'CN{cy}']['age70'])[2]
+            elif '|' in need:
+                s = need.split('|')[1]
+                pe = gap(kr, cn, 'needA', ek=MASKS[f'KR{ky}'][s], ec=MASKS[f'CN{cy}'][s])[2]
+            else:
+                pe = gap(kr, cn, need)[2]
+            vk, vc = np.var(reps[('krstd', lab, need)], ddof=1), np.var(reps[('cnstd', lab, need)], ddof=1)
+            for deff in (1.5, 2.0):
+                half = 1.96 * np.sqrt(deff * vk + vc)
+                rows.append({'statistic': f'gap_deff{deff:g}', 'pair_or_change': lab, 'definition': need, 'estimate': pe, 'lo': pe - half, 'hi': pe + half})
+    return pd.DataFrame(rows)
+
 def summarize(est, reps, W, gap):
     """Point estimates with 2.5th-97.5th percentile bootstrap intervals."""
     ci = lambda key: (np.percentile(reps[key], 2.5), np.percentile(reps[key], 97.5))
     rows = []
     for key in reps.columns:
         kind, lab, need = key
+        if kind in ('gap', 'all65') and (kind, lab, need) not in est or kind == 'crude' and need != 'needA':
+            continue                                                     # extended statistics: summarize_extended()
         if kind in ('gap', 'gap70', 'gap_men', 'gap_women', 'all65'):
             pe = est[(kind, lab, need)]['gap']
         elif kind == 'crude':
@@ -589,6 +1099,8 @@ def summarize(est, reps, W, gap):
         elif kind == 'change':
             c = lab[:2]; a, b2 = lab[2:].split('->')
             pe = gap(W[f'{c}{b2}'], W[f'{c}{a}'], need)[2]
+        else:          # extended statistics: summarize_extended()
+            continue
         lo, hi = ci(key)
         rows.append({'statistic': kind, 'pair_or_change': lab, 'definition': need, 'estimate': pe, 'lo': lo, 'hi': hi})
     return pd.DataFrame(rows)
@@ -637,36 +1149,33 @@ PUB_POINTS = {
     **{('all_nohelp', w, ''): v for w, v in [('KR2014', '4.0'), ('KR2018', '3.9'), ('KR2020', '4.9'), ('CN2013', '3.7'),
                                               ('CN2015', '4.6'), ('CN2018', '4.4'), ('CN2020', '2.6')]},
 }
-PUB_BOOT = {  # (estimate, lower, upper) for bootstrap statistics
-    ('gap', 'KR2014/CN2015', 'needA'): ('8.11', '3.5', '12.8'), ('gap', 'KR2018/CN2018', 'needA'): ('13.50', '8.7', '18.2'),
-    ('gap', 'KR2020/CN2020', 'needA'): ('24.34', '19.7', '29.3'), ('gap', 'KR2014/CN2013', 'needA'): ('11.82', '8.0', '15.8'),
-    ('crude', 'KR2014/CN2015', 'needA'): ('7.5', '3.0', '11.7'), ('crude', 'KR2018/CN2018', 'needA'): ('12.6', '8.1', '17.0'),
-    ('crude', 'KR2020/CN2020', 'needA'): ('23.1', '18.7', '27.5'), ('crude', 'KR2014/CN2013', 'needA'): ('10.8', '7.0', '14.8'),
-    ('gap', 'KR2014/CN2015', 'needB'): ('4.72', '-0.7', '10.2'), ('gap', 'KR2018/CN2018', 'needB'): ('9.33', '3.3', '15.5'),
-    ('gap', 'KR2020/CN2020', 'needB'): ('14.75', '8.9', '21.4'), ('gap', 'KR2014/CN2013', 'needB'): ('5.63', '0.3', '11.3'),
-    ('gap', 'KR2014/CN2015', 'needC'): ('6.4', '1.8', '11.2'), ('gap', 'KR2018/CN2018', 'needC'): ('9.8', '5.3', '14.9'),
-    ('gap', 'KR2020/CN2020', 'needC'): ('21.8', '16.4', '26.9'), ('gap', 'KR2014/CN2013', 'needC'): ('10.1', '5.8', '14.4'),
-    ('gap', 'KR2014/CN2015', 'needM'): ('4.1', '-1.0', '9.8'), ('gap', 'KR2018/CN2018', 'needM'): ('8.0', '1.9', '14.7'),
-    ('gap', 'KR2020/CN2020', 'needM'): ('13.7', '7.6', '20.2'),
-    ('A-B', 'KR2014/CN2015', ''): ('3.4', '-1.8', '8.7'), ('A-B', 'KR2018/CN2018', ''): ('4.2', '-1.7', '9.9'),
-    ('A-B', 'KR2020/CN2020', ''): ('9.6', '4.6', '15.5'), ('A-B', 'KR2014/CN2013', ''): ('6.2', '1.5', '10.6'),
-    ('A-common', 'KR2014/CN2015', ''): ('1.7', '0.0', '3.4'), ('A-common', 'KR2018/CN2018', ''): ('3.7', '2.0', '5.6'),
-    ('A-common', 'KR2020/CN2020', ''): ('2.6', '0.8', '4.5'),
-    ('pairing', 'CN2013 vs CN2015', 'needA'): ('3.7', '0.2', '7.3'), ('pairing', 'CN2013 vs CN2015', 'needB'): ('0.9', '-3.0', '5.1'),
-    ('gap70', 'KR2014/CN2015', 'needA'): ('11.7', '7.0', '15.9'), ('gap70', 'KR2018/CN2018', 'needA'): ('14.8', '10.8', '19.2'),
-    ('gap70', 'KR2020/CN2020', 'needA'): ('20.4', '15.7', '24.9'), ('gap70', 'KR2014/CN2013', 'needA'): ('14.1', '9.8', '18.5'),
-    ('gap_men', 'KR2014/CN2015', 'needA'): ('2.2', '-5.2', '8.9'), ('gap_men', 'KR2018/CN2018', 'needA'): ('9.9', '3.9', '16.1'),
-    ('gap_men', 'KR2020/CN2020', 'needA'): ('30.6', '23.8', '37.4'),
-    ('gap_women', 'KR2014/CN2015', 'needA'): ('12.1', '6.2', '17.6'), ('gap_women', 'KR2018/CN2018', 'needA'): ('16.2', '10.3', '22.8'),
-    ('gap_women', 'KR2020/CN2020', 'needA'): ('19.6', '13.3', '26.0'),
-    ('all65', 'KR2014/CN2015', 'needA'): ('-1.0', '-2.0', '0.0'), ('all65', 'KR2018/CN2018', 'needA'): ('-0.7', '-1.5', '0.1'),
+PUB_BOOT = {  # (estimate, lower, upper) for bootstrap statistics (intervals: Code S2, 10,000 replicates, seed 20261027)
+    ('gap', 'KR2014/CN2015', 'needA'): ('8.11', '3.6', '12.6'), ('gap', 'KR2018/CN2018', 'needA'): ('13.50', '9.0', '18.3'),
+    ('gap', 'KR2020/CN2020', 'needA'): ('24.34', '19.6', '29.3'), ('gap', 'KR2014/CN2013', 'needA'): ('11.82', '7.9', '15.7'),
+    ('crude', 'KR2014/CN2015', 'needA'): ('7.5', '3.2', '11.6'), ('crude', 'KR2018/CN2018', 'needA'): ('12.6', '8.4', '16.8'),
+    ('crude', 'KR2020/CN2020', 'needA'): ('23.1', '18.6', '27.5'), ('crude', 'KR2014/CN2013', 'needA'): ('10.8', '6.9', '14.8'),
+    ('gap', 'KR2014/CN2015', 'needB'): ('4.72', '-0.8', '10.4'), ('gap', 'KR2018/CN2018', 'needB'): ('9.33', '3.0', '15.6'),
+    ('gap', 'KR2020/CN2020', 'needB'): ('14.75', '8.3', '21.3'), ('gap', 'KR2014/CN2013', 'needB'): ('5.63', '0.1', '11.3'),
+    ('gap', 'KR2014/CN2015', 'needC'): ('6.4', '1.8', '11.0'), ('gap', 'KR2018/CN2018', 'needC'): ('9.8', '5.4', '14.8'),
+    ('gap', 'KR2020/CN2020', 'needC'): ('21.8', '16.7', '26.9'), ('gap', 'KR2014/CN2013', 'needC'): ('10.1', '6.1', '14.1'),
+    ('gap', 'KR2014/CN2015', 'needM'): ('4.1', '-1.3', '9.6'), ('gap', 'KR2018/CN2018', 'needM'): ('8.0', '1.9', '14.2'),
+    ('gap', 'KR2020/CN2020', 'needM'): ('13.7', '7.3', '20.1'), ('A-B', 'KR2014/CN2015', ''): ('3.4', '-1.8', '8.5'),
+    ('A-B', 'KR2018/CN2018', ''): ('4.2', '-1.1', '9.9'), ('A-B', 'KR2020/CN2020', ''): ('9.6', '4.1', '15.4'),
+    ('A-B', 'KR2014/CN2013', ''): ('6.2', '1.5', '10.7'), ('A-common', 'KR2014/CN2015', ''): ('1.7', '0.1', '3.4'),
+    ('A-common', 'KR2018/CN2018', ''): ('3.7', '1.9', '5.7'), ('A-common', 'KR2020/CN2020', ''): ('2.6', '0.8', '4.5'),
+    ('pairing', 'CN2013 vs CN2015', 'needA'): ('3.7', '0.4', '7.2'), ('pairing', 'CN2013 vs CN2015', 'needB'): ('0.9', '-3.4', '5.2'),
+    ('gap70', 'KR2014/CN2015', 'needA'): ('11.7', '7.2', '16.0'), ('gap70', 'KR2018/CN2018', 'needA'): ('14.8', '10.4', '19.1'),
+    ('gap70', 'KR2020/CN2020', 'needA'): ('20.4', '15.8', '25.0'), ('gap70', 'KR2014/CN2013', 'needA'): ('14.1', '9.9', '18.4'),
+    ('gap_men', 'KR2014/CN2015', 'needA'): ('2.2', '-4.7', '9.0'), ('gap_men', 'KR2018/CN2018', 'needA'): ('9.9', '3.8', '16.1'),
+    ('gap_men', 'KR2020/CN2020', 'needA'): ('30.6', '23.7', '37.5'), ('gap_women', 'KR2014/CN2015', 'needA'): ('12.1', '6.5', '17.7'),
+    ('gap_women', 'KR2018/CN2018', 'needA'): ('16.2', '10.0', '23.4'), ('gap_women', 'KR2020/CN2020', 'needA'): ('19.6', '13.3', '26.3'),
+    ('all65', 'KR2014/CN2015', 'needA'): ('-1.0', '-2.0', '-0.04'), ('all65', 'KR2018/CN2018', 'needA'): ('-0.7', '-1.5', '0.2'),
     ('all65', 'KR2020/CN2020', 'needA'): ('2.2', '1.4', '3.1'), ('all65', 'KR2014/CN2013', 'needA'): ('0.0', '-0.8', '0.9'),
-    ('change', 'CN2013->2015', 'needA'): ('3.1', '-0.1', '6.6'), ('change', 'CN2015->2018', 'needA'): ('-1.6', '-4.7', '1.5'),
-    ('change', 'CN2018->2020', 'needA'): ('-3.3', '-5.7', '-0.6'), ('change', 'KR2014->2018', 'needA'): ('3.8', '-1.1', '8.7'),
-    ('change', 'KR2018->2020', 'needA'): ('7.8', '2.5', '12.9'),
-    ('change', 'CN2013->2015', 'needB'): ('0.0', '-4.4', '4.2'), ('change', 'CN2015->2018', 'needB'): ('-3.0', '-6.5', '0.1'),
-    ('change', 'CN2018->2020', 'needB'): ('-3.6', '-6.5', '-0.7'), ('change', 'KR2014->2018', 'needB'): ('1.1', '-5.3', '8.0'),
-    ('change', 'KR2018->2020', 'needB'): ('1.5', '-5.9', '8.8'),
+    ('change', 'CN2013->2015', 'needA'): ('3.1', '-0.2', '6.4'), ('change', 'CN2015->2018', 'needA'): ('-1.6', '-4.8', '1.5'),
+    ('change', 'CN2018->2020', 'needA'): ('-3.3', '-5.9', '-0.7'), ('change', 'KR2014->2018', 'needA'): ('3.8', '-1.0', '8.8'),
+    ('change', 'KR2018->2020', 'needA'): ('7.8', '2.3', '13.1'), ('change', 'CN2013->2015', 'needB'): ('0.0', '-4.2', '4.3'),
+    ('change', 'CN2015->2018', 'needB'): ('-3.0', '-6.6', '0.5'), ('change', 'CN2018->2020', 'needB'): ('-3.6', '-6.5', '-0.7'),
+    ('change', 'KR2014->2018', 'needB'): ('1.1', '-5.6', '7.6'), ('change', 'KR2018->2020', 'needB'): ('1.5', '-6.0', '8.8'),
 }
 
 def _matches(raw, pub):
@@ -744,9 +1253,409 @@ PUB_POSTHOC = {
     **{('ph_nohelp_A_agey', k): v for k, v in [('CN2015', '16.7'), ('CN2018', '14.8')]},
 }
 
+# Every interval printed in the article and supplement, as printed (Code S2, 10,000 replicates, seed 20261027; models of
+# Supplementary Table S11: 1,000 replicates). compare_intervals() checks each number at its printed precision.
+PUB_INTERVALS = {
+    ('boot', 'gap', 'KR2014/CN2015', 'needA'): '8.1 (3.6 to 12.6)',
+    ('boot', 'gap', 'KR2018/CN2018', 'needA'): '13.5 (9.0 to 18.3)',
+    ('boot', 'gap', 'KR2020/CN2020', 'needA'): '24.3 (19.6 to 29.3)',
+    ('boot', 'gap', 'KR2014/CN2013', 'needA'): '11.8 (7.9 to 15.7)',
+    ('boot', 'gap', 'KR2014/CN2015', 'needB'): '4.7 (−0.8 to 10.4)',
+    ('boot', 'gap', 'KR2018/CN2018', 'needB'): '9.3 (3.0 to 15.6)',
+    ('boot', 'gap', 'KR2020/CN2020', 'needB'): '14.7 (8.3 to 21.3)',
+    ('boot', 'gap', 'KR2014/CN2013', 'needB'): '5.6 (0.1 to 11.3)',
+    ('boot', 'gap', 'KR2014/CN2015', 'needC'): '6.4 (1.8 to 11.0)',
+    ('boot', 'gap', 'KR2018/CN2018', 'needC'): '9.8 (5.4 to 14.8)',
+    ('boot', 'gap', 'KR2020/CN2020', 'needC'): '21.8 (16.7 to 26.9)',
+    ('boot', 'gap', 'KR2014/CN2013', 'needC'): '10.1 (6.1 to 14.1)',
+    ('boot', 'gap', 'KR2014/CN2015', 'needM'): '4.1 (−1.3 to 9.6)',
+    ('boot', 'gap', 'KR2018/CN2018', 'needM'): '8.0 (1.9 to 14.2)',
+    ('boot', 'gap', 'KR2020/CN2020', 'needM'): '13.7 (7.3 to 20.1)',
+    ('boot', 'gap', 'KR2014/CN2013', 'needM'): '5.1 (−0.3 to 10.7)',
+    ('boot', 'crude', 'KR2014/CN2015', 'needA'): '7.5 (3.2 to 11.6)',
+    ('boot', 'crude', 'KR2018/CN2018', 'needA'): '12.6 (8.4 to 16.8)',
+    ('boot', 'crude', 'KR2020/CN2020', 'needA'): '23.1 (18.6 to 27.5)',
+    ('boot', 'crude', 'KR2014/CN2013', 'needA'): '10.8 (6.9 to 14.8)',
+    ('boot', 'gap70', 'KR2014/CN2015', 'needA'): '11.7 (7.2 to 16.0)',
+    ('boot', 'gap70', 'KR2018/CN2018', 'needA'): '14.8 (10.4 to 19.1)',
+    ('boot', 'gap70', 'KR2020/CN2020', 'needA'): '20.4 (15.8 to 25.0)',
+    ('boot', 'gap70', 'KR2014/CN2013', 'needA'): '14.1 (9.9 to 18.4)',
+    ('boot', 'all65', 'KR2014/CN2015', 'needA'): '−1.0 (−2.0 to −0.04)',
+    ('boot', 'all65', 'KR2018/CN2018', 'needA'): '−0.7 (−1.5 to 0.2)',
+    ('boot', 'all65', 'KR2020/CN2020', 'needA'): '2.2 (1.4 to 3.1)',
+    ('boot', 'all65', 'KR2014/CN2013', 'needA'): '0.0 (−0.8 to 0.9)',
+    ('boot', 'gap_men', 'KR2014/CN2015', 'needA'): '2.2 (−4.7 to 9.0)',
+    ('boot', 'gap_men', 'KR2018/CN2018', 'needA'): '9.9 (3.8 to 16.1)',
+    ('boot', 'gap_men', 'KR2020/CN2020', 'needA'): '30.6 (23.7 to 37.5)',
+    ('boot', 'gap_women', 'KR2014/CN2015', 'needA'): '12.1 (6.5 to 17.7)',
+    ('boot', 'gap_women', 'KR2018/CN2018', 'needA'): '16.2 (10.0 to 23.4)',
+    ('boot', 'gap_women', 'KR2020/CN2020', 'needA'): '19.6 (13.3 to 26.3)',
+    ('boot', 'A-B', 'KR2014/CN2015', ''): '3.4 (−1.8 to 8.5)',
+    ('boot', 'A-B', 'KR2018/CN2018', ''): '4.2 (−1.1 to 9.9)',
+    ('boot', 'A-B', 'KR2020/CN2020', ''): '9.6 (4.1 to 15.4)',
+    ('boot', 'A-B', 'KR2014/CN2013', ''): '6.2 (1.5 to 10.7)',
+    ('boot', 'A-common', 'KR2014/CN2015', ''): '1.7 (0.1 to 3.4)',
+    ('boot', 'A-common', 'KR2018/CN2018', ''): '3.7 (1.9 to 5.7)',
+    ('boot', 'A-common', 'KR2020/CN2020', ''): '2.6 (0.8 to 4.5)',
+    ('boot', 'A-common', 'KR2014/CN2013', ''): '1.7 (0.2 to 3.4)',
+    ('boot', 'pairing', 'CN2013 vs CN2015', 'needA'): '3.7 (0.4 to 7.2)',
+    ('boot', 'pairing', 'CN2013 vs CN2015', 'needB'): '0.9 (−3.4 to 5.2)',
+    ('boot', 'change', 'CN2013->2015', 'needA'): '3.1 (−0.2 to 6.4)',
+    ('boot', 'change', 'CN2013->2015', 'needB'): '0.0 (−4.2 to 4.3)',
+    ('boot', 'change', 'CN2015->2018', 'needA'): '−1.6 (−4.8 to 1.5)',
+    ('boot', 'change', 'CN2015->2018', 'needB'): '−3.0 (−6.6 to 0.5)',
+    ('boot', 'change', 'CN2018->2020', 'needA'): '−3.3 (−5.9 to −0.7)',
+    ('boot', 'change', 'CN2018->2020', 'needB'): '−3.6 (−6.5 to −0.7)',
+    ('boot', 'change', 'KR2014->2018', 'needA'): '3.8 (−1.0 to 8.8)',
+    ('boot', 'change', 'KR2014->2018', 'needB'): '1.1 (−5.6 to 7.6)',
+    ('boot', 'change', 'KR2018->2020', 'needA'): '7.8 (2.3 to 13.1)',
+    ('boot', 'change', 'KR2018->2020', 'needB'): '1.5 (−6.0 to 8.8)',
+    ('boot', 'gap', 'KR2014/CN2015', 'needC3'): '13.2 (9.1 to 17.4)',
+    ('boot', 'gap', 'KR2018/CN2018', 'needC3'): '13.2 (8.9 to 18.1)',
+    ('boot', 'gap', 'KR2020/CN2020', 'needC3'): '14.1 (8.8 to 19.4)',
+    ('boot', 'gap', 'KR2014/CN2013', 'needC3'): '13.6 (9.3 to 18.0)',
+    ('boot', 'gap', 'KR2014/CN2015', 'needM2'): '12.6 (7.7 to 17.8)',
+    ('boot', 'gap', 'KR2018/CN2018', 'needM2'): '14.2 (8.4 to 20.1)',
+    ('boot', 'gap', 'KR2020/CN2020', 'needM2'): '12.9 (7.3 to 19.5)',
+    ('boot', 'gap', 'KR2014/CN2013', 'needM2'): '12.5 (7.6 to 17.6)',
+    ('boot', 'all65', 'KR2014/CN2015', 'needB'): '−0.6 (−1.1 to −0.1)',
+    ('boot', 'all65', 'KR2018/CN2018', 'needB'): '−0.3 (−0.8 to 0.1)',
+    ('boot', 'all65', 'KR2020/CN2020', 'needB'): '0.4 (−0.04 to 0.8)',
+    ('boot', 'all65', 'KR2014/CN2013', 'needB'): '−0.6 (−1.2 to −0.05)',
+    ('boot', 'all65', 'KR2014/CN2015', 'needC'): '−1.6 (−2.5 to −0.7)',
+    ('boot', 'all65', 'KR2018/CN2018', 'needC'): '−1.4 (−2.3 to −0.7)',
+    ('boot', 'all65', 'KR2020/CN2020', 'needC'): '1.4 (0.6 to 2.2)',
+    ('boot', 'all65', 'KR2014/CN2013', 'needC'): '−0.5 (−1.4 to 0.3)',
+    ('boot', 'all65', 'KR2014/CN2015', 'needM'): '−0.6 (−1.1 to −0.1)',
+    ('boot', 'all65', 'KR2018/CN2018', 'needM'): '−0.4 (−0.8 to −0.01)',
+    ('boot', 'all65', 'KR2020/CN2020', 'needM'): '0.3 (−0.1 to 0.7)',
+    ('boot', 'all65', 'KR2014/CN2013', 'needM'): '−0.6 (−1.2 to −0.1)',
+    ('boot', 'crude', 'KR2014/CN2015', 'needB'): '3.2 (−1.9 to 8.4)',
+    ('boot', 'crude', 'KR2018/CN2018', 'needB'): '7.4 (2.1 to 12.8)',
+    ('boot', 'crude', 'KR2020/CN2020', 'needB'): '13.0 (7.1 to 19.3)',
+    ('boot', 'crude', 'KR2014/CN2013', 'needB'): '3.5 (−2.1 to 9.0)',
+    ('boot', 'crude', 'KR2014/CN2015', 'needC'): '5.5 (1.2 to 9.7)',
+    ('boot', 'crude', 'KR2018/CN2018', 'needC'): '9.2 (5.0 to 13.4)',
+    ('boot', 'crude', 'KR2020/CN2020', 'needC'): '21.0 (16.3 to 25.7)',
+    ('boot', 'crude', 'KR2014/CN2013', 'needC'): '8.9 (4.9 to 12.9)',
+    ('boot', 'crude', 'KR2014/CN2015', 'needA|age70'): '10.5 (6.1 to 14.8)',
+    ('boot', 'crude', 'KR2018/CN2018', 'needA|age70'): '14.4 (10.0 to 18.7)',
+    ('boot', 'crude', 'KR2020/CN2020', 'needA|age70'): '19.6 (15.1 to 24.0)',
+    ('boot', 'crude', 'KR2014/CN2013', 'needA|age70'): '13.0 (8.7 to 17.3)',
+    ('boot', 'crude', 'KR2014/CN2015', 'needA|iadl_only'): '10.3 (3.7 to 16.6)',
+    ('boot', 'crude', 'KR2018/CN2018', 'needA|iadl_only'): '15.5 (9.8 to 21.4)',
+    ('boot', 'crude', 'KR2020/CN2020', 'needA|iadl_only'): '27.7 (21.8 to 33.6)',
+    ('boot', 'crude', 'KR2014/CN2013', 'needA|iadl_only'): '16.0 (10.6 to 21.3)',
+    ('boot', 'crude', 'KR2014/CN2015', 'needA|lim1'): '9.9 (−2.7 to 23.0)',
+    ('boot', 'crude', 'KR2018/CN2018', 'needA|lim1'): '18.0 (7.1 to 28.9)',
+    ('boot', 'crude', 'KR2020/CN2020', 'needA|lim1'): '41.8 (31.5 to 52.0)',
+    ('boot', 'crude', 'KR2014/CN2013', 'needA|lim1'): '15.9 (3.4 to 28.6)',
+    ('boot', 'crude', 'KR2014/CN2015', 'needA|lim2'): '28.5 (15.7 to 42.8)',
+    ('boot', 'crude', 'KR2018/CN2018', 'needA|lim2'): '20.1 (8.0 to 33.0)',
+    ('boot', 'crude', 'KR2020/CN2020', 'needA|lim2'): '45.5 (33.8 to 56.9)',
+    ('boot', 'crude', 'KR2014/CN2013', 'needA|lim2'): '29.2 (16.7 to 43.3)',
+    ('boot', 'crude', 'KR2014/CN2015', 'needA|lim3'): '16.1 (12.5 to 19.8)',
+    ('boot', 'crude', 'KR2018/CN2018', 'needA|lim3'): '18.4 (14.6 to 22.3)',
+    ('boot', 'crude', 'KR2020/CN2020', 'needA|lim3'): '18.9 (14.2 to 23.5)',
+    ('boot', 'crude', 'KR2014/CN2013', 'needA|lim3'): '16.2 (12.0 to 20.2)',
+    ('boot', 'crude', 'KR2014/CN2015', 'needA11'): '6.8 (2.5 to 10.9)',
+    ('boot', 'crude', 'KR2018/CN2018', 'needA11'): '12.2 (8.1 to 16.4)',
+    ('boot', 'crude', 'KR2020/CN2020', 'needA11'): '22.9 (18.4 to 27.3)',
+    ('boot', 'crude', 'KR2014/CN2013', 'needA11'): '10.6 (6.6 to 14.5)',
+    ('boot', 'crude', 'KR2014/CN2015', 'needB6'): '1.3 (−3.8 to 6.6)',
+    ('boot', 'crude', 'KR2018/CN2018', 'needB6'): '6.5 (1.1 to 11.9)',
+    ('boot', 'crude', 'KR2020/CN2020', 'needB6'): '12.4 (6.4 to 18.7)',
+    ('boot', 'crude', 'KR2014/CN2013', 'needB6'): '2.6 (−3.0 to 8.2)',
+    ('boot', 'crude', 'KR2014/CN2015', 'needBk6'): '2.9 (−2.1 to 8.2)',
+    ('boot', 'crude', 'KR2018/CN2018', 'needBk6'): '7.0 (1.7 to 12.4)',
+    ('boot', 'crude', 'KR2020/CN2020', 'needBk6'): '12.1 (6.3 to 18.4)',
+    ('boot', 'crude', 'KR2014/CN2013', 'needBk6'): '3.2 (−2.4 to 8.8)',
+    ('boot', 'gap', 'KR2014/CN2015', 'needA|iadl_only'): '9.6 (2.7 to 16.5)',
+    ('boot', 'gap', 'KR2018/CN2018', 'needA|iadl_only'): '15.1 (9.3 to 22.2)',
+    ('boot', 'gap', 'KR2020/CN2020', 'needA|iadl_only'): '27.9 (21.0 to 34.8)',
+    ('boot', 'gap', 'KR2014/CN2013', 'needA|iadl_only'): '16.0 (10.4 to 21.5)',
+    ('boot', 'gap', 'KR2014/CN2015', 'needA|lim1'): '8.5 (−4.7 to 22.2)',
+    ('boot', 'gap', 'KR2018/CN2018', 'needA|lim1'): '18.3 (5.7 to 30.9)',
+    ('boot', 'gap', 'KR2020/CN2020', 'needA|lim1'): '42.2 (31.3 to 52.0)',
+    ('boot', 'gap', 'KR2014/CN2013', 'needA|lim1'): '14.1 (1.6 to 26.5)',
+    ('boot', 'gap', 'KR2014/CN2015', 'needA|lim2'): '30.4 (18.2 to 44.8)',
+    ('boot', 'gap', 'KR2018/CN2018', 'needA|lim2'): '24.1 (11.6 to 36.2)',
+    ('boot', 'gap', 'KR2020/CN2020', 'needA|lim2'): '45.8 (31.6 to 58.2)',
+    ('boot', 'gap', 'KR2014/CN2013', 'needA|lim2'): '30.0 (16.9 to 44.1)',
+    ('boot', 'gap', 'KR2014/CN2015', 'needA|lim3'): '15.5 (11.8 to 19.2)',
+    ('boot', 'gap', 'KR2018/CN2018', 'needA|lim3'): '17.9 (14.1 to 22.0)',
+    ('boot', 'gap', 'KR2020/CN2020', 'needA|lim3'): '19.7 (14.6 to 24.6)',
+    ('boot', 'gap', 'KR2014/CN2013', 'needA|lim3'): '15.8 (11.9 to 19.7)',
+    ('boot', 'gap', 'KR2014/CN2015', 'needA11'): '7.5 (3.0 to 12.0)',
+    ('boot', 'gap', 'KR2018/CN2018', 'needA11'): '13.2 (8.7 to 18.0)',
+    ('boot', 'gap', 'KR2020/CN2020', 'needA11'): '24.2 (19.4 to 29.1)',
+    ('boot', 'gap', 'KR2014/CN2013', 'needA11'): '11.5 (7.6 to 15.5)',
+    ('boot', 'gap', 'KR2014/CN2015', 'needB6'): '3.3 (−2.3 to 9.1)',
+    ('boot', 'gap', 'KR2018/CN2018', 'needB6'): '8.5 (2.2 to 14.8)',
+    ('boot', 'gap', 'KR2020/CN2020', 'needB6'): '14.1 (7.6 to 20.7)',
+    ('boot', 'gap', 'KR2014/CN2013', 'needB6'): '4.8 (−0.9 to 10.5)',
+    ('boot', 'gap', 'KR2014/CN2015', 'needBk6'): '4.1 (−1.3 to 9.6)',
+    ('boot', 'gap', 'KR2018/CN2018', 'needBk6'): '8.9 (2.6 to 15.1)',
+    ('boot', 'gap', 'KR2020/CN2020', 'needBk6'): '13.7 (7.3 to 20.1)',
+    ('boot', 'gap', 'KR2014/CN2013', 'needBk6'): '5.1 (−0.3 to 10.7)',
+    ('boot', 'A-iadl_only', 'KR2014/CN2015', ''): '−1.5 (−5.6 to 2.3)',
+    ('boot', 'A-iadl_only', 'KR2018/CN2018', ''): '−1.6 (−5.6 to 1.8)',
+    ('boot', 'A-iadl_only', 'KR2020/CN2020', ''): '−3.6 (−8.1 to 1.0)',
+    ('boot', 'A-iadl_only', 'KR2014/CN2013', ''): '−4.2 (−7.6 to −0.8)',
+    ('boot', 'A-lim3', 'KR2014/CN2015', ''): '−7.4 (−11.2 to −3.6)',
+    ('boot', 'A-lim3', 'KR2018/CN2018', ''): '−4.4 (−8.0 to −0.8)',
+    ('boot', 'A-lim3', 'KR2020/CN2020', ''): '4.7 (1.1 to 8.5)',
+    ('boot', 'A-lim3', 'KR2014/CN2013', ''): '−4.0 (−7.3 to −0.7)',
+    ('boot', 'A-lim1', 'KR2014/CN2015', ''): '−0.3 (−12.2 to 10.9)',
+    ('boot', 'A-lim1', 'KR2018/CN2018', ''): '−4.8 (−16.1 to 6.6)',
+    ('boot', 'A-lim1', 'KR2020/CN2020', ''): '−17.8 (−26.8 to −7.9)',
+    ('boot', 'A-lim1', 'KR2014/CN2013', ''): '−2.3 (−13.6 to 8.7)',
+    ('boot', 'A-B fixed', 'KR2014/CN2015', ''): '3.5 (−2.1 to 8.8)',
+    ('boot', 'A-B fixed', 'KR2018/CN2018', ''): '4.1 (−2.5 to 10.9)',
+    ('boot', 'A-B fixed', 'KR2020/CN2020', ''): '8.4 (2.3 to 15.2)',
+    ('boot', 'A-B fixed', 'KR2014/CN2013', ''): '6.6 (1.4 to 11.4)',
+    ('boot', 'A-C5 fixed', 'KR2014/CN2015', ''): '4.2 (−1.5 to 9.6)',
+    ('boot', 'A-C5 fixed', 'KR2018/CN2018', ''): '5.5 (−1.2 to 12.2)',
+    ('boot', 'A-C5 fixed', 'KR2020/CN2020', ''): '9.6 (3.5 to 16.2)',
+    ('boot', 'A-C5 fixed', 'KR2014/CN2013', ''): '7.1 (2.0 to 12.0)',
+    ('boot', 'fixed', 'KR2014/CN2015', 'needA'): '8.1 (3.6 to 12.6)',
+    ('boot', 'fixed', 'KR2018/CN2018', 'needA'): '13.5 (9.0 to 18.3)',
+    ('boot', 'fixed', 'KR2020/CN2020', 'needA'): '24.3 (19.6 to 29.3)',
+    ('boot', 'fixed', 'KR2014/CN2013', 'needA'): '11.8 (7.9 to 15.7)',
+    ('boot', 'fixed', 'KR2014/CN2015', 'needB'): '4.6 (−1.2 to 10.9)',
+    ('boot', 'fixed', 'KR2018/CN2018', 'needB'): '9.4 (1.9 to 17.0)',
+    ('boot', 'fixed', 'KR2020/CN2020', 'needB'): '15.9 (8.4 to 23.3)',
+    ('boot', 'fixed', 'KR2014/CN2013', 'needB'): '5.3 (−0.7 to 11.6)',
+    ('boot', 'fixed', 'KR2014/CN2015', 'needM'): '3.9 (−1.8 to 10.0)',
+    ('boot', 'fixed', 'KR2018/CN2018', 'needM'): '8.0 (0.8 to 15.7)',
+    ('boot', 'fixed', 'KR2020/CN2020', 'needM'): '14.7 (7.4 to 22.1)',
+    ('boot', 'fixed', 'KR2014/CN2013', 'needM'): '4.7 (−1.2 to 10.9)',
+    ('boot', 'std_KR', 'KR2014/CN2015', 'needA'): '8.5 (4.0 to 12.8)',
+    ('boot', 'std_KR', 'KR2018/CN2018', 'needA'): '14.4 (10.1 to 18.6)',
+    ('boot', 'std_KR', 'KR2020/CN2020', 'needA'): '24.1 (19.6 to 28.5)',
+    ('boot', 'std_CN', 'KR2014/CN2015', 'needA'): '7.7 (2.9 to 12.8)',
+    ('boot', 'std_CN', 'KR2018/CN2018', 'needA'): '12.6 (7.4 to 19.0)',
+    ('boot', 'std_CN', 'KR2020/CN2020', 'needA'): '24.6 (19.1 to 30.7)',
+    ('boot', 'gap_alone20', 'KR2014/CN2015', 'needA'): '8.1 (3.7 to 12.5)',
+    ('boot', 'gap_alone20', 'KR2018/CN2018', 'needA'): '12.6 (8.4 to 17.7)',
+    ('boot', 'all65_crude', 'KR2014/CN2015', 'needA'): '−0.6 (−1.6 to 0.3)',
+    ('boot', 'all65_crude', 'KR2018/CN2018', 'needA'): '−0.5 (−1.3 to 0.4)',
+    ('boot', 'all65_crude', 'KR2020/CN2020', 'needA'): '2.3 (1.5 to 3.2)',
+    ('boot', 'all65_crude', 'KR2014/CN2013', 'needA'): '0.4 (−0.5 to 1.2)',
+    ('boot', 'gap_deff1.5', 'KR2014/CN2015', 'needA'): '3.0 to 13.2',
+    ('boot', 'gap_deff1.5', 'KR2018/CN2018', 'needA'): '8.0 to 19.0',
+    ('boot', 'gap_deff1.5', 'KR2020/CN2020', 'needA'): '18.5 to 30.1',
+    ('boot', 'gap_deff1.5', 'KR2014/CN2013', 'needA'): '7.1 to 16.5',
+    ('boot', 'gap_deff1.5', 'KR2014/CN2015', 'needB'): '−1.9 to 11.3',
+    ('boot', 'gap_deff1.5', 'KR2018/CN2018', 'needB'): '1.7 to 16.9',
+    ('boot', 'gap_deff1.5', 'KR2020/CN2020', 'needB'): '6.9 to 22.6',
+    ('boot', 'gap_deff1.5', 'KR2014/CN2013', 'needB'): '−0.9 to 12.2',
+    ('boot', 'gap_deff1.5', 'KR2014/CN2015', 'needC'): '1.0 to 11.7',
+    ('boot', 'gap_deff1.5', 'KR2018/CN2018', 'needC'): '4.3 to 15.3',
+    ('boot', 'gap_deff1.5', 'KR2020/CN2020', 'needC'): '15.7 to 27.8',
+    ('boot', 'gap_deff1.5', 'KR2014/CN2013', 'needC'): '5.3 to 14.9',
+    ('boot', 'gap_deff1.5', 'KR2014/CN2015', 'needA|age70'): '6.4 to 16.9',
+    ('boot', 'gap_deff1.5', 'KR2018/CN2018', 'needA|age70'): '9.7 to 19.9',
+    ('boot', 'gap_deff1.5', 'KR2020/CN2020', 'needA|age70'): '14.9 to 25.9',
+    ('boot', 'gap_deff1.5', 'KR2014/CN2013', 'needA|age70'): '9.1 to 19.2',
+    ('boot', 'gap_deff1.5', 'KR2014/CN2015', 'needA|iadl_only'): '2.0 to 17.3',
+    ('boot', 'gap_deff1.5', 'KR2018/CN2018', 'needA|iadl_only'): '7.4 to 22.7',
+    ('boot', 'gap_deff1.5', 'KR2020/CN2020', 'needA|iadl_only'): '19.8 to 36.1',
+    ('boot', 'gap_deff1.5', 'KR2014/CN2013', 'needA|iadl_only'): '9.5 to 22.5',
+    ('boot', 'gap_deff1.5', 'KR2014/CN2015', 'needA|lim1'): '−6.8 to 23.7',
+    ('boot', 'gap_deff1.5', 'KR2018/CN2018', 'needA|lim1'): '2.9 to 33.6',
+    ('boot', 'gap_deff1.5', 'KR2020/CN2020', 'needA|lim1'): '29.7 to 54.6',
+    ('boot', 'gap_deff1.5', 'KR2014/CN2013', 'needA|lim1'): '−0.7 to 28.9',
+    ('boot', 'gap_deff1.5', 'KR2014/CN2015', 'needA|lim2'): '14.3 to 46.5',
+    ('boot', 'gap_deff1.5', 'KR2018/CN2018', 'needA|lim2'): '9.8 to 38.4',
+    ('boot', 'gap_deff1.5', 'KR2020/CN2020', 'needA|lim2'): '29.5 to 62.0',
+    ('boot', 'gap_deff1.5', 'KR2014/CN2013', 'needA|lim2'): '14.0 to 45.9',
+    ('boot', 'gap_deff1.5', 'KR2014/CN2015', 'needA|lim3'): '11.0 to 20.0',
+    ('boot', 'gap_deff1.5', 'KR2018/CN2018', 'needA|lim3'): '13.1 to 22.7',
+    ('boot', 'gap_deff1.5', 'KR2020/CN2020', 'needA|lim3'): '13.6 to 25.7',
+    ('boot', 'gap_deff1.5', 'KR2014/CN2013', 'needA|lim3'): '11.2 to 20.4',
+    ('boot', 'gap_deff2', 'KR2014/CN2015', 'needA'): '2.4 to 13.8',
+    ('boot', 'gap_deff2', 'KR2018/CN2018', 'needA'): '7.2 to 19.8',
+    ('boot', 'gap_deff2', 'KR2020/CN2020', 'needA'): '17.7 to 30.9',
+    ('boot', 'gap_deff2', 'KR2014/CN2013', 'needA'): '6.5 to 17.1',
+    ('boot', 'gap_deff2', 'KR2014/CN2015', 'needB'): '−2.7 to 12.2',
+    ('boot', 'gap_deff2', 'KR2018/CN2018', 'needB'): '0.7 to 18.0',
+    ('boot', 'gap_deff2', 'KR2020/CN2020', 'needB'): '5.7 to 23.8',
+    ('boot', 'gap_deff2', 'KR2014/CN2013', 'needB'): '−1.7 to 13.0',
+    ('boot', 'gap_deff2', 'KR2014/CN2015', 'needC'): '0.4 to 12.3',
+    ('boot', 'gap_deff2', 'KR2018/CN2018', 'needC'): '3.5 to 16.1',
+    ('boot', 'gap_deff2', 'KR2020/CN2020', 'needC'): '14.8 to 28.7',
+    ('boot', 'gap_deff2', 'KR2014/CN2013', 'needC'): '4.6 to 15.5',
+    ('boot', 'gap_deff2', 'KR2014/CN2015', 'needA|age70'): '5.8 to 17.5',
+    ('boot', 'gap_deff2', 'KR2018/CN2018', 'needA|age70'): '9.0 to 20.5',
+    ('boot', 'gap_deff2', 'KR2020/CN2020', 'needA|age70'): '14.1 to 26.6',
+    ('boot', 'gap_deff2', 'KR2014/CN2013', 'needA|age70'): '8.4 to 19.9',
+    ('boot', 'gap_deff2', 'KR2014/CN2015', 'needA|iadl_only'): '1.2 to 18.1',
+    ('boot', 'gap_deff2', 'KR2018/CN2018', 'needA|iadl_only'): '6.3 to 23.8',
+    ('boot', 'gap_deff2', 'KR2020/CN2020', 'needA|iadl_only'): '18.7 to 37.2',
+    ('boot', 'gap_deff2', 'KR2014/CN2013', 'needA|iadl_only'): '8.7 to 23.4',
+    ('boot', 'gap_deff2', 'KR2014/CN2015', 'needA|lim1'): '−8.8 to 25.7',
+    ('boot', 'gap_deff2', 'KR2018/CN2018', 'needA|lim1'): '0.7 to 35.8',
+    ('boot', 'gap_deff2', 'KR2020/CN2020', 'needA|lim1'): '28.0 to 56.3',
+    ('boot', 'gap_deff2', 'KR2014/CN2013', 'needA|lim1'): '−2.8 to 30.9',
+    ('boot', 'gap_deff2', 'KR2014/CN2015', 'needA|lim2'): '12.0 to 48.8',
+    ('boot', 'gap_deff2', 'KR2018/CN2018', 'needA|lim2'): '7.8 to 40.4',
+    ('boot', 'gap_deff2', 'KR2020/CN2020', 'needA|lim2'): '27.1 to 64.4',
+    ('boot', 'gap_deff2', 'KR2014/CN2013', 'needA|lim2'): '11.7 to 48.2',
+    ('boot', 'gap_deff2', 'KR2014/CN2015', 'needA|lim3'): '10.4 to 20.6',
+    ('boot', 'gap_deff2', 'KR2018/CN2018', 'needA|lim3'): '12.4 to 23.4',
+    ('boot', 'gap_deff2', 'KR2020/CN2020', 'needA|lim3'): '12.7 to 26.6',
+    ('boot', 'gap_deff2', 'KR2014/CN2013', 'needA|lim3'): '10.6 to 21.0',
+    ('help', 'needrule', 'KR2014/CN2015', 'crude'): '5.5 (1.2 to 9.7)',
+    ('help', 'needrule', 'KR2014/CN2015', 'standardized'): '6.4 (1.9 to 11.0)',
+    ('help', 'needrule', 'KR2018/CN2018', 'crude'): '10.8 (6.6 to 15.0)',
+    ('help', 'needrule', 'KR2018/CN2018', 'standardized'): '11.9 (7.4 to 16.7)',
+    ('help', 'needrule, common', 'KR2014/CN2015', 'crude'): '3.5 (−0.8 to 7.8)',
+    ('help', 'needrule, common', 'KR2014/CN2015', 'standardized'): '4.7 (0.1 to 9.4)',
+    ('help', 'needrule, common', 'KR2018/CN2018', 'crude'): '7.4 (3.2 to 11.6)',
+    ('help', 'needrule, common', 'KR2018/CN2018', 'standardized'): '8.2 (3.7 to 13.1)',
+    ('help', 'phone', 'KR2014/CN2015', 'crude'): '9.6 (5.3 to 13.7)',
+    ('help', 'phone', 'KR2014/CN2015', 'standardized'): '10.1 (5.6 to 14.6)',
+    ('help', 'phone', 'KR2018/CN2018', 'crude'): '14.1 (9.9 to 18.2)',
+    ('help', 'phone', 'KR2018/CN2018', 'standardized'): '14.9 (10.4 to 19.7)',
+    ('help', 'main rule, common', 'KR2014/CN2015', 'crude'): '5.5 (1.2 to 9.7)',
+    ('help', 'main rule, common', 'KR2014/CN2015', 'standardized'): '6.4 (1.8 to 11.0)',
+    ('help', 'main rule, common', 'KR2018/CN2018', 'crude'): '9.2 (5.0 to 13.4)',
+    ('help', 'main rule, common', 'KR2018/CN2018', 'standardized'): '9.8 (5.4 to 14.8)',
+    ('pm', 'KR2014/CN2015', '2+ of 10 items'): '3.2 (2.5 to 3.9)',
+    ('pm', 'KR2014/CN2015', '3+ of 10 items'): '3.7 (3.1 to 4.3)',
+    ('pm', 'KR2018/CN2018', '2+ of 10 items'): '2.8 (2.2 to 3.5)',
+    ('pm', 'KR2018/CN2018', '3+ of 10 items'): '3.6 (3.0 to 4.2)',
+    ('pm', 'KR2020/CN2020', '2+ of 10 items'): '4.2 (3.5 to 5.0)',
+    ('pm', 'KR2020/CN2020', '3+ of 10 items'): '4.6 (3.9 to 5.3)',
+    ('pm', 'KR2014/CN2013', '2+ of 10 items'): '3.2 (2.5 to 3.9)',
+    ('pm', 'KR2014/CN2013', '3+ of 10 items'): '3.7 (3.0 to 4.4)',
+    ('s11', 'KR2014/CN2015', 'age group, sex, low education, living alone', 'as supplied', 'A gap'): '5.7 (0.2 to 15.4)',
+    ('s11', 'KR2014/CN2015', 'age group, sex, low education, living alone', 'as supplied', 'B gap'): '4.8 (−1.3 to 12.2)',
+    ('s11', 'KR2014/CN2015', 'age group, sex, low education, living alone', 'as supplied', 'A minus B'): '0.9 (−6.7 to 10.4)',
+    ('s11', 'KR2014/CN2015', 'age group, sex, low education, living alone', 'equal', 'A gap'): '7.5 (2.8 to 12.5)',
+    ('s11', 'KR2014/CN2015', 'age group, sex, low education, living alone', 'equal', 'B gap'): '5.3 (−0.8 to 11.4)',
+    ('s11', 'KR2014/CN2015', 'age group, sex, low education, living alone', 'equal', 'A minus B'): '2.3 (−3.3 to 7.9)',
+    ('s11', 'KR2018/CN2018', 'age group, sex, low education, living alone', 'as supplied', 'A gap'): '18.3 (11.4 to 25.9)',
+    ('s11', 'KR2018/CN2018', 'age group, sex, low education, living alone', 'as supplied', 'B gap'): '9.4 (2.7 to 17.2)',
+    ('s11', 'KR2018/CN2018', 'age group, sex, low education, living alone', 'as supplied', 'A minus B'): '8.9 (2.0 to 15.5)',
+    ('s11', 'KR2018/CN2018', 'age group, sex, low education, living alone', 'equal', 'A gap'): '12.5 (7.8 to 17.1)',
+    ('s11', 'KR2018/CN2018', 'age group, sex, low education, living alone', 'equal', 'B gap'): '7.9 (2.3 to 14.3)',
+    ('s11', 'KR2018/CN2018', 'age group, sex, low education, living alone', 'equal', 'A minus B'): '4.6 (−0.9 to 9.0)',
+    ('s11', 'KR2020/CN2020', 'age group, sex, low education', 'as supplied', 'A gap'): '25.8 (19.4 to 32.6)',
+    ('s11', 'KR2020/CN2020', 'age group, sex, low education', 'as supplied', 'B gap'): '14.7 (6.3 to 25.9)',
+    ('s11', 'KR2020/CN2020', 'age group, sex, low education', 'as supplied', 'A minus B'): '11.0 (1.3 to 17.8)',
+    ('s11', 'KR2020/CN2020', 'age group, sex, low education', 'equal', 'A gap'): '23.1 (18.0 to 28.4)',
+    ('s11', 'KR2020/CN2020', 'age group, sex, low education', 'equal', 'B gap'): '13.0 (5.4 to 20.3)',
+    ('s11', 'KR2020/CN2020', 'age group, sex, low education', 'equal', 'A minus B'): '10.1 (3.7 to 16.9)',
+    ('s11', 'KR2014/CN2015', 'age group, sex, living alone', 'as supplied', 'A gap'): '8.8 (4.2 to 13.0)',
+    ('s11', 'KR2014/CN2015', 'age group, sex, living alone', 'as supplied', 'B gap'): '4.8 (−1.3 to 11.0)',
+    ('s11', 'KR2014/CN2015', 'age group, sex, living alone', 'as supplied', 'A minus B'): '4.0 (−1.9 to 9.5)',
+    ('s11', 'KR2014/CN2015', 'age group, sex, living alone', 'equal', 'A gap'): '8.0 (3.8 to 12.1)',
+    ('s11', 'KR2014/CN2015', 'age group, sex, living alone', 'equal', 'B gap'): '4.6 (−1.1 to 10.2)',
+    ('s11', 'KR2014/CN2015', 'age group, sex, living alone', 'equal', 'A minus B'): '3.4 (−1.5 to 8.5)',
+    ('s11', 'KR2018/CN2018', 'age group, sex, living alone', 'as supplied', 'A gap'): '14.6 (9.9 to 18.9)',
+    ('s11', 'KR2018/CN2018', 'age group, sex, living alone', 'as supplied', 'B gap'): '9.7 (3.3 to 16.4)',
+    ('s11', 'KR2018/CN2018', 'age group, sex, living alone', 'as supplied', 'A minus B'): '4.8 (−1.6 to 10.1)',
+    ('s11', 'KR2018/CN2018', 'age group, sex, living alone', 'equal', 'A gap'): '13.4 (9.0 to 17.5)',
+    ('s11', 'KR2018/CN2018', 'age group, sex, living alone', 'equal', 'B gap'): '8.4 (2.6 to 14.1)',
+    ('s11', 'KR2018/CN2018', 'age group, sex, living alone', 'equal', 'A minus B'): '5.0 (−0.9 to 10.0)',
+    ('bonf', 'KR2014/CN2015', 'A gap'): '8.1 (2.4 to 13.7)',
+    ('bonf', 'KR2014/CN2015', 'A minus B'): '3.4 (−3.1 to 10.0)',
+    ('bonf', 'KR2018/CN2018', 'A gap'): '13.5 (7.9 to 19.8)',
+    ('bonf', 'KR2018/CN2018', 'A minus B'): '4.2 (−2.7 to 11.4)',
+    ('hh', 'KR2014/CN2015', 'needA', 'respondents'): '8.1 (3.6 to 12.7)',
+    ('hh', 'KR2014/CN2015', 'needA', 'households'): '8.1 (3.6 to 12.8)',
+    ('hh', 'KR2014/CN2015', 'needB', 'respondents'): '4.7 (−0.8 to 10.4)',
+    ('hh', 'KR2014/CN2015', 'needB', 'households'): '4.7 (−0.8 to 10.5)',
+    ('hh', 'KR2018/CN2018', 'needA', 'respondents'): '13.5 (9.0 to 18.4)',
+    ('hh', 'KR2018/CN2018', 'needA', 'households'): '13.5 (9.0 to 18.5)',
+    ('hh', 'KR2018/CN2018', 'needB', 'respondents'): '9.3 (3.1 to 15.7)',
+    ('hh', 'KR2018/CN2018', 'needB', 'households'): '9.3 (3.0 to 15.7)',
+    ('hh', 'KR2020/CN2020', 'needA', 'respondents'): '24.3 (19.5 to 29.1)',
+    ('hh', 'KR2020/CN2020', 'needA', 'households'): '24.3 (19.5 to 29.3)',
+    ('hh', 'KR2020/CN2020', 'needB', 'respondents'): '14.7 (8.2 to 21.2)',
+    ('hh', 'KR2020/CN2020', 'needB', 'households'): '14.7 (8.3 to 21.4)',
+    ('hh', 'KR2014/CN2013', 'needA', 'respondents'): '11.8 (7.8 to 15.7)',
+    ('hh', 'KR2014/CN2013', 'needA', 'households'): '11.8 (7.8 to 15.9)',
+    ('hh', 'KR2014/CN2013', 'needB', 'respondents'): '5.6 (0.3 to 11.3)',
+    ('hh', 'KR2014/CN2013', 'needB', 'households'): '5.6 (0.2 to 11.2)',
+    ('mi', 2013): '13.4 (11.3 to 15.6)',
+    ('mi', 2015): '16.8 (14.2 to 19.5)',
+    ('mi', 2018): '14.9 (12.9 to 16.9)',
+    # design-based (linearized) intervals of Table 3 and Supplementary Table S1 (CHARLS 2011: Supplementary Code S1, Part 3)
+    ('lin', 'KR2014', 'needA'): '24.2 (20.9 to 27.6)',
+    ('lin', 'KR2014', 'needB'): '16.3 (12.0 to 20.7)',
+    ('lin', 'KR2016', 'needA'): '32.3 (28.6 to 35.9)',
+    ('lin', 'KR2016', 'needB'): '14.7 (10.7 to 18.7)',
+    ('lin', 'KR2018', 'needA'): '27.5 (23.8 to 31.2)',
+    ('lin', 'KR2018', 'needB'): '17.1 (12.1 to 22.1)',
+    ('lin', 'KR2020', 'needA'): '34.3 (30.2 to 38.4)',
+    ('lin', 'KR2020', 'needB'): '18.8 (13.0 to 24.5)',
+    ('lin', 'KR2022', 'needA'): '27.4 (23.8 to 31.0)',
+    ('lin', 'KR2022', 'needB'): '14.5 (9.6 to 19.4)',
+    ('lin', 'KR2024', 'needA'): '29.1 (25.9 to 32.4)',
+    ('lin', 'KR2024', 'needB'): '22.2 (17.3 to 27.1)',
+    ('lin', 'CN2013', 'needA'): '13.4 (11.2 to 15.5)',
+    ('lin', 'CN2013', 'needB'): '12.9 (9.4 to 16.3)',
+    ('lin', 'CN2013', 'needD'): '31.8 (29.3 to 34.2)',
+    ('lin', 'CN2015', 'needA'): '16.8 (14.1 to 19.4)',
+    ('lin', 'CN2015', 'needB'): '13.2 (10.2 to 16.1)',
+    ('lin', 'CN2015', 'needD'): '37.3 (34.6 to 40.0)',
+    ('lin', 'CN2018', 'needA'): '14.9 (12.9 to 16.8)',
+    ('lin', 'CN2018', 'needB'): '9.7 (7.4 to 11.9)',
+    ('lin', 'CN2018', 'needD'): '33.2 (31.0 to 35.4)',
+    ('lin', 'CN2020', 'needA'): '11.2 (9.4 to 13.1)',
+    ('lin', 'CN2020', 'needB'): '5.7 (3.8 to 7.6)',
+    ('lin', 'CN2020', 'needD'): '40.9 (37.6 to 44.3)',
+}
+
+def compare_intervals(summary, summary_ext, rules=None, pm=None, am=None, pa=None, hhr=None, mi=None, est=None):
+    """Compare every interval printed in the article and supplement (PUB_INTERVALS: bootstrap intervals, the design-based
+    intervals of Table 3 and Supplementary Table S1, the normal-approximation intervals of Supplementary Table S5 and the
+    multiple-imputation intervals of Table S6) with the reproduced one: the point estimate and both limits must match at the
+    printed precision. CHARLS 2011 is checked by Supplementary Code S1, Part 3. Run with the article's settings (10,000 replicates,
+    seed 20261027; 1,000 replicates for the models of Supplementary Table S11)."""
+    import re
+    num = lambda s: [float(x) for x in re.findall(r'-?\d+(?:\.\d+)?', str(s).replace('−', '-'))]
+    tab = pd.concat([summary, summary_ext]).drop_duplicates(['statistic', 'pair_or_change', 'definition'])
+    T = {(r.statistic, r.pair_or_change, r.definition if isinstance(r.definition, str) else ''): (r.estimate, r.lo, r.hi) for r in tab.itertuples()}
+    def got(key):
+        src, k = key[0], key[1:]
+        try:
+            if src == 'boot':
+                return T.get(k)
+            if src == 'lin':
+                v = est[('prop', k[0], k[1])]; return (v['pct'], v['lo'], v['hi'])
+            if src == 'help':
+                x = rules[(rules.rule == k[0]) & (rules.pair == k[1]) & (rules.statistic == k[2])].iloc[0]; return (x.estimate, x.lo, x.hi)
+            if src == 'pm':
+                x = pm[(pm.pair == k[0]) & (pm['Chinese need threshold'] == k[1])].iloc[0]; return (x.difference, x.lo, x.hi)
+            if src == 's11':
+                x = am[(am.pair == k[0]) & (am.covariates == k[1]) & (am.weights == k[2])].iloc[0]; return tuple(num(x[k[3]]))
+            if src == 'bonf':
+                x = pa[(pa.pair == k[0]) & (pa.quantity == k[1])].iloc[0]; return (x.estimate, *num(x['98.75% CI (Bonferroni, 4 quantities)']))
+            if src == 'hh':
+                x = hhr[(hhr.pair == k[0]) & (hhr.definition == k[1])].iloc[0]; return (x.gap, *num(x[f'{k[2]} resampled, 95% interval']))
+            if src == 'mi':
+                x = mi[mi['CHARLS year'] == k[0]].iloc[0]; return (x['MI pooled % no helper'], x.lo, x.hi)
+        except (TypeError, IndexError, KeyError, AttributeError):
+            return None
+    rows = []
+    for key, pub in PUB_INTERVALS.items():
+        g = got(key)
+        p = [t for t in re.findall(r'-?\d+(?:\.\d+)?', pub.replace('−', '-'))]
+        if g is not None and len(p) == 2:          # interval printed without its point estimate
+            g = g[1:]
+        ok = g is not None and len(g) == len(p) and all(_matches(a, b) for a, b in zip(g, p))
+        rows.append({'source': key[0], 'key': ' | '.join(str(x) for x in key[1:]), 'published': pub,
+                     'reproduced': '' if g is None else ' / '.join(f'{x:.2f}' for x in g), 'match': bool(ok)})
+    return pd.DataFrame(rows)
+
 def compare(summary, est, t2=None, t_all=None, ph=None):
-    """Side-by-side table of reproduced and published values. Point estimates should match at the published
-    precision; bootstrap limits use a different random-number stream (up to 1.1 points apart in the authors' run)."""
+    """Side-by-side table of reproduced and published values. Point estimates should match at the published precision;
+    bootstrap limits match at the printed precision when the notebook is run on both surveys with the article's settings
+    (10,000 replicates, seed 20261027)."""
     rows = []
     t2_rows = {'t2_age': 'Mean age, years', 't2_female': 'Female, %', 't2_75plus': 'Aged 75 or older, %'}
     for key, pub in PUB_POINTS.items():
@@ -772,9 +1681,10 @@ def compare(summary, est, t2=None, t_all=None, ph=None):
         if key not in s.index:
             continue
         r = s.loc[key]
+        rep_ci = f'{r.lo:.2f} to {r.hi:.2f}'
         rows.append({'statistic': key[0], 'item': key[1], 'definition': key[2], 'published': pe, 'reproduced': r.estimate,
                      'match': _matches(r.estimate, pe), 'published_CI': f'{lo} to {hi}' if lo else '',
-                     'reproduced_CI': f'{r.lo:.1f} to {r.hi:.1f}'})
+                     'reproduced_CI': rep_ci, 'CI_match': (_matches(r.lo, lo) and _matches(r.hi, hi)) if lo else None})
     for key, pub in PUB_POSTHOC.items():
         if ph is None or key not in ph:
             continue

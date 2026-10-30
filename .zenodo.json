@@ -1,0 +1,12 @@
+{
+  "title": "klosa-charls-no-helper: reproduction code for a KLoSA-CHARLS comparison of older adults with care needs and no helper",
+  "upload_type": "software",
+  "description": "Python (Supplementary Code S2) and R (Supplementary Code S1) code that recomputes, from the original KLoSA and CHARLS files, every value reported in the article \"Older adults with care needs and no helper in South Korea and China, 2013-2020: how measurement shapes the comparison\", with aggregate outputs of a run on both surveys. No survey data are included; the files must be obtained from the Korea Employment Information Service (KLoSA) and Peking University (CHARLS) under their terms of use.",
+  "creators": [
+    {"name": "Xie, Sha", "affiliation": "Chongqing University of Humanities, Science & Technology; Kyungwoon University"},
+    {"name": "Li, Dali", "affiliation": "College of Applied Technology, Hunan Open University"},
+    {"name": "Choi, Wansuk", "affiliation": "Department of Physical Therapy, College of Health Sciences, Kyungwoon University"}
+  ],
+  "license": "MIT",
+  "keywords": ["functional limitation", "personal assistance", "care poverty", "long-term care", "KLoSA", "CHARLS", "reproducibility"]
+}

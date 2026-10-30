@@ -1,0 +1,30 @@
+cff-version: 1.2.0
+message: "If you use this code, please cite the article and this software archive."
+title: "klosa-charls-no-helper: reproduction code for a KLoSA-CHARLS comparison of older adults with care needs and no helper"
+type: software
+version: 1.0.0
+license: MIT
+repository-code: "https://github.com/y3korea/klosa-charls-no-helper"
+authors:
+  - family-names: Xie
+    given-names: Sha
+    affiliation: "Chongqing University of Humanities, Science & Technology; Kyungwoon University"
+  - family-names: Li
+    given-names: Dali
+    affiliation: "College of Applied Technology, Hunan Open University"
+  - family-names: Choi
+    given-names: Wansuk
+    affiliation: "Department of Physical Therapy, College of Health Sciences, Kyungwoon University"
+keywords:
+  - functional limitation
+  - personal assistance
+  - care poverty
+  - long-term care
+  - KLoSA
+  - CHARLS
+  - reproducibility
+abstract: >-
+  Python (Supplementary Code S2) and R (Supplementary Code S1) code that recomputes, from the
+  original KLoSA and CHARLS files, every value reported in the article "Older adults with care
+  needs and no helper in South Korea and China, 2013-2020: how measurement shapes the comparison",
+  with aggregate outputs of a run on both surveys. No survey data are included.

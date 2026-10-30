@@ -1,0 +1,103 @@
+topic,item,value
+Table S4,CN2013 aged 65+ / valid items / need A / help answer / positive weight,5489 / 5427 / 1455 / 1454 / 1425
+Table S4,CN2013 fewer than 10 valid items,62
+Text S12,CN2013 only need is continence: n / with a help answer and positive weight,16 / 9
+Text S12,CN2013 need A without a help answer (positive weight),1
+Table S9,CN2013 added by continence (n; no helper n) / only need continence (n; no helper n) / continence plus IADL need only (n; no helper n),33; 11 / 9; 7 / 24; 4
+Text S12,"CN2013 % no helper (A), main / skipped respondents excluded",13.3857 / 13.2809
+Text S12,CN2013 difficulty only: % of definition D respondents / % of them with no helper,31.8374 / 71.0912
+Text S12,"CN2013 proxy respondents among need A, % / % no helper (A) without them",8.9696 / 14.0187
+Text S12,CN2013 skipped respondents with need (IADL need): n / positive weight,39 / 39
+Table S6,CN2013 asked: n / mean age / % female / mean mobility score / % IADL difficulty / % IADL need / n IADL need / % no help among IADL need,4478 / 72.8904 / 53.2604 / 7.4697 / 38.6333 / 29.4551 / 1319 / 10.8498
+Table S6,CN2013 skipped: n / mean age / % female / mean mobility score / % IADL difficulty / % IADL need / n IADL need / % no help among IADL need,949 / 69.9852 / 30.9800 / 0.0000 / 6.0063 / 4.1096 / 39 / 20.5128
+Table S6,CN2013 other incomplete: n / mean age / % female / mean mobility score / % IADL difficulty / % IADL need / n IADL need / % no help among IADL need,62 / 76.3226 / 51.6129 / 10.5000 / 38.7097 / 32.2581 / 20 / 5.0000
+Text S12,CN2013 need A with a help answer but no positive weight: n,29
+Text S12,CN2013 no positive weight vs analytic sample: mean limitations / % ADL need / unweighted % no helper / change in unweighted % if included,2.4138 vs 3.0161 / 31.0345 vs 41.1930 / 6.8966 vs 14.4561 / -0.1508
+Table S4,CN2015 aged 65+ / valid items / need A / help answer / positive weight,6466 / 6414 / 1796 / 1792 / 1776
+Table S4,CN2015 fewer than 10 valid items,52
+Text S12,CN2015 only need is continence: n / with a help answer and positive weight,26 / 15
+Text S12,CN2015 need A without a help answer (positive weight),4
+Table S9,CN2015 added by continence (n; no helper n) / only need continence (n; no helper n) / continence plus IADL need only (n; no helper n),50; 20 / 15; 12 / 35; 8
+Text S12,"CN2015 % no helper (A), main / skipped respondents excluded",16.7811 / 16.6900
+Text S12,CN2015 difficulty only: % of definition D respondents / % of them with no helper,35.0184 / 75.4475
+Text S12,"CN2015 proxy respondents among need A, % / % no helper (A) without them",7.7037 / 17.7096
+Text S12,"KR2014/CN2015 crude gap (A), Korean proxies excluded / proxies excluded in both countries",9.2668 / 8.3383
+Text S12,CN2015 skipped respondents with need (IADL need): n / positive weight,37 / 36
+Table S6,CN2015 asked: n / mean age / % female / mean mobility score / % IADL difficulty / % IADL need / n IADL need / % no help among IADL need,5237 / 72.8421 / 54.6305 / 7.7735 / 40.9204 / 30.4182 / 1593 / 13.3962
+Table S6,CN2015 skipped: n / mean age / % female / mean mobility score / % IADL difficulty / % IADL need / n IADL need / % no help among IADL need,1177 / 70.1759 / 28.5472 / 0.0000 / 6.9669 / 3.1436 / 37 / 24.3243
+Table S6,CN2015 other incomplete: n / mean age / % female / mean mobility score / % IADL difficulty / % IADL need / n IADL need / % no help among IADL need,52 / 75.8846 / 48.0769 / 11.0250 / 34.6154 / 26.9231 / 14 / 28.5714
+Text S12,CN2015 need A with a help answer but no positive weight: n,16 (crosssection = 0: 16)
+Text S12,CN2015 no positive weight vs analytic sample: mean limitations / % ADL need / unweighted % no helper / change in unweighted % if included,2.5000 vs 2.9471 / 37.5000 vs 42.8491 / 31.2500 vs 17.0045 / 0.1272
+Text S12,CN2015 mean stratum weight given to them: % no helper (A) / standardized gap with KR2014,16.8840 / 8.0468
+Table S4,CN2018 aged 65+ / valid items / need A / help answer / positive weight,7627 / 7619 / 2203 / 2203 / 2082
+Table S4,CN2018 fewer than 10 valid items,8
+Text S12,CN2018 only need is continence: n / with a help answer and positive weight,21 / 12
+Text S12,CN2018 need A without a help answer (positive weight),0
+Table S9,CN2018 added by continence (n; no helper n) / only need continence (n; no helper n) / continence plus IADL need only (n; no helper n),46; 15 / 12; 11 / 34; 4
+Text S12,"CN2018 % no helper (A), main / skipped respondents excluded",14.8794 / 14.3631
+Text S12,CN2018 difficulty only: % of definition D respondents / % of them with no helper,30.3141 / 75.4375
+Text S12,"CN2018 proxy respondents among need A, % / % no helper (A) without them",14.4639 / 16.6001
+Text S12,"KR2018/CN2018 crude gap (A), Korean proxies excluded / proxies excluded in both countries",14.1349 / 12.4142
+Text S12,CN2018 skipped respondents with need (IADL need): n / positive weight,52 / 50
+Table S6,CN2018 asked: n / mean age / % female / mean mobility score / % IADL difficulty / % IADL need / n IADL need / % no help among IADL need,6300 / 72.9938 / 55.7778 / 8.1529 / 42.1746 / 31.5397 / 1987 / 12.8837
+Table S6,CN2018 skipped: n / mean age / % female / mean mobility score / % IADL difficulty / % IADL need / n IADL need / % no help among IADL need,1319 / 70.2972 / 30.6293 / 0.0000 / 6.8234 / 3.9424 / 52 / 30.7692
+Table S6,CN2018 other incomplete: n / mean age / % female / mean mobility score / % IADL difficulty / % IADL need / n IADL need / % no help among IADL need,8 / 74.0000 / 37.5000 / 15.0000 / 0.0000 / 0.0000 / 0 / -
+Text S12,CN2018 need A with a help answer but no positive weight: n,121 (crosssection = 0: 121)
+Text S12,CN2018 no positive weight vs analytic sample: mean limitations / % ADL need / unweighted % no helper / change in unweighted % if included,3.4876 vs 3.0312 / 52.8926 vs 41.0663 / 9.0909 vs 15.3698 / -0.3449
+Text S12,CN2018 mean stratum weight given to them: % no helper (A) / standardized gap with KR2018,14.5104 / 13.8237
+Table S4,CN2020 aged 65+ / valid items / need A / help answer / positive weight,8561 / 8553 / 1999 / 1999 / 1869
+Table S4,CN2020 fewer than 10 valid items,8
+Text S12,CN2020 only need is continence: n / with a help answer and positive weight,10 / 6
+Text S12,CN2020 need A without a help answer (positive weight),0
+Table S9,CN2020 added by continence (n; no helper n) / only need continence (n; no helper n) / continence plus IADL need only (n; no helper n),18; 7 / 6; 4 / 12; 3
+Text S12,"CN2020 % no helper (A), main / skipped respondents excluded",11.2281 / 11.2281
+Text S12,CN2020 difficulty only: % of definition D respondents / % of them with no helper,42.7387 / 80.7497
+Text S12,"CN2020 proxy respondents among need A, % / % no helper (A) without them",22.2427 / 13.7837
+Text S12,"KR2020/CN2020 crude gap (A), Korean proxies excluded / proxies excluded in both countries",25.1843 / 22.6287
+Text S12,CN2020 need A with a help answer but no positive weight: n,130 (crosssection = 0: 130)
+Text S12,CN2020 no positive weight vs analytic sample: mean limitations / % ADL need / unweighted % no helper / change in unweighted % if included,3.7000 vs 3.3505 / 56.1538 vs 45.1578 / 4.6154 vs 12.5736 / -0.5175
+Text S12,CN2020 mean stratum weight given to them: % no helper (A) / standardized gap with KR2020,10.7562 / 24.7368
+Table S4,KR2014 aged 65+ / valid items / need A / help answer / positive weight,4259 / 4259 / 749 / 749 / 749
+Table S4,KR2018 aged 65+ / valid items / need A / help answer / positive weight,4352 / 4352 / 739 / 739 / 739
+Table S4,KR2020 aged 65+ / valid items / need A / help answer / positive weight,4405 / 4405 / 718 / 718 / 718
+Text S12,"CN2013 and CN2015 need with an unanswered help question and no yes, set aside: largest change in % no helper (A and B)",0.1201
+Table S6,CN2013-2018 asked respondents with no reported mobility difficulty: n / more than half with no answer to DB001 (1 = yes),160 / 1
+Table S3,KR2014 'don't know' helper answers (C218_01 < 0) among need A / need B,2 / 1
+Figure S1,KR2014 respondents of any age in the wave file,7949
+Figure S1,KR2018 respondents of any age in the wave file,6940
+Figure S1,KR2020 respondents of any age in the wave file,6488
+Figure S1,CN2013 respondents of any age in the health-status file,18455
+Figure S1,CN2015 respondents of any age in the health-status file,20967
+Figure S1,CN2018 respondents of any age in the health-status file,19752
+Figure S1,CN2020 respondents of any age in the health-status file,19367
+Table S8,CN2015 weighted % no helper with INDV_weight_ad2 / with r3wtrespb (11 items; B; A),17.4429 / 17.4429; 13.1664 / 13.1664; 16.7811 / 16.7811
+Section 2.3,CN2013 communities among respondents with need A (analytic sample),394
+Section 2.3,CN2015 communities among respondents with need A (analytic sample),408
+Section 2.3,CN2018 communities among respondents with need A (analytic sample),412
+Section 2.3,CN2020 communities among respondents with need A (analytic sample),411
+Text S12,KR2014 LTCI users in the no-helper group: n / % of the group (weighted),3 / 1.2232
+Text S12,KR2014 LTCI users counted as helped: % (crude gap) / users excluded: % (crude gap),23.9391 (7.1580) / 25.0028 (8.2217)
+Text S12,KR2018 LTCI users in the no-helper group: n / % of the group (weighted),6 / 2.7935
+Text S12,KR2018 LTCI users counted as helped: % (crude gap) / users excluded: % (crude gap),26.7279 (11.8485) / 29.0326 (14.1532)
+Text S12,KR2020 LTCI users in the no-helper group: n / % of the group (weighted),8 / 3.3759
+Text S12,KR2020 LTCI users counted as helped: % (crude gap) / users excluded: % (crude gap),33.1675 (21.9394) / 38.5782 (27.3501)
+Text S12,"CN2013 no helper vs helper: mean age, mean ADL items with need, % proxy, % living alone","73.4041, 0.4788, 4.6648, 19.1245 vs 76.7188, 1.0140, 9.6349, 7.1884"
+Table S2,CN2013 low education % / living alone %,94.2941 / 8.7861
+Text S12,"CN2015 no helper vs helper: mean age, mean ADL items with need, % proxy, % living alone","73.5033, 0.3590, 2.5966, 16.4762 vs 76.4988, 0.9848, 8.7336, 11.6769"
+Table S2,CN2015 low education % / living alone %,94.0139 / 12.4823
+Text S12,"CN2018 no helper vs helper: mean age, mean ADL items with need, % proxy, % living alone","73.4122, 0.3075, 4.5722, 30.1866 vs 76.7630, 1.0026, 16.1930, 13.9537"
+Table S2,CN2018 low education % / living alone %,94.6848 / 16.3690
+Text S12,"CN2020 no helper vs helper: mean age, mean ADL items with need, % proxy, % living alone","75.6153, 0.3214, 4.5447, - vs 77.4097, 1.2249, 24.4812, -"
+Table S2,CN2020 low education % / living alone %,93.0646 / not derived
+Text S12,"KR2014 no helper vs helper: mean age, mean ADL items with need, % proxy, % living alone","77.8069, 1.2006, 6.5179, 30.3237 vs 78.7539, 2.0178, 15.1027, 17.8849"
+Table S2,KR2014 low education % / living alone %,70.3325 / 20.8995
+Table S2,KR2016 low education % / living alone %,63.4654 / 18.5531
+Text S12,"KR2018 no helper vs helper: mean age, mean ADL items with need, % proxy, % living alone","77.9239, 0.8710, 6.3585, 34.7240 vs 79.0887, 2.2186, 13.1169, 17.6638"
+Table S2,KR2018 low education % / living alone %,63.3908 / 22.3547
+Text S12,"KR2020 no helper vs helper: mean age, mean ADL items with need, % proxy, % living alone","76.9217, 0.6419, 3.9570, 26.2247 vs 81.2502, 1.9524, 12.3355, 22.0152"
+Table S2,KR2020 low education % / living alone %,61.9089 / 23.4602
+Table S2,KR2022 low education % / living alone %,56.7679 / 24.6865
+Table S2,KR2024 low education % / living alone %,45.5607 / 27.0041
+Table S11,"KR2014/CN2015 CHARLS share of the pooled weight (definition A model sample), %",97.9774
+Table S11,"KR2018/CN2018 CHARLS share of the pooled weight (definition A model sample), %",98.6148
+Table S11,"KR2020/CN2020 CHARLS share of the pooled weight (definition A model sample), %",98.3170

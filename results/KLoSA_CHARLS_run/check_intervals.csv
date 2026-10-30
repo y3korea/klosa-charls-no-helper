@@ -1,0 +1,352 @@
+source,key,published,reproduced,match
+boot,gap | KR2014/CN2015 | needA,8.1 (3.6 to 12.6),8.11 / 3.58 / 12.60,True
+boot,gap | KR2018/CN2018 | needA,13.5 (9.0 to 18.3),13.50 / 9.01 / 18.33,True
+boot,gap | KR2020/CN2020 | needA,24.3 (19.6 to 29.3),24.34 / 19.62 / 29.34,True
+boot,gap | KR2014/CN2013 | needA,11.8 (7.9 to 15.7),11.82 / 7.88 / 15.72,True
+boot,gap | KR2014/CN2015 | needB,4.7 (−0.8 to 10.4),4.72 / -0.78 / 10.43,True
+boot,gap | KR2018/CN2018 | needB,9.3 (3.0 to 15.6),9.33 / 2.98 / 15.60,True
+boot,gap | KR2020/CN2020 | needB,14.7 (8.3 to 21.3),14.75 / 8.25 / 21.30,True
+boot,gap | KR2014/CN2013 | needB,5.6 (0.1 to 11.3),5.63 / 0.11 / 11.29,True
+boot,gap | KR2014/CN2015 | needC,6.4 (1.8 to 11.0),6.36 / 1.75 / 11.05,True
+boot,gap | KR2018/CN2018 | needC,9.8 (5.4 to 14.8),9.80 / 5.41 / 14.75,True
+boot,gap | KR2020/CN2020 | needC,21.8 (16.7 to 26.9),21.75 / 16.72 / 26.89,True
+boot,gap | KR2014/CN2013 | needC,10.1 (6.1 to 14.1),10.07 / 6.08 / 14.11,True
+boot,gap | KR2014/CN2015 | needM,4.1 (−1.3 to 9.6),4.06 / -1.28 / 9.57,True
+boot,gap | KR2018/CN2018 | needM,8.0 (1.9 to 14.2),8.04 / 1.92 / 14.16,True
+boot,gap | KR2020/CN2020 | needM,13.7 (7.3 to 20.1),13.67 / 7.35 / 20.08,True
+boot,gap | KR2014/CN2013 | needM,5.1 (−0.3 to 10.7),5.13 / -0.35 / 10.74,True
+boot,crude | KR2014/CN2015 | needA,7.5 (3.2 to 11.6),7.45 / 3.17 / 11.62,True
+boot,crude | KR2018/CN2018 | needA,12.6 (8.4 to 16.8),12.62 / 8.45 / 16.76,True
+boot,crude | KR2020/CN2020 | needA,23.1 (18.6 to 27.5),23.10 / 18.64 / 27.54,True
+boot,crude | KR2014/CN2013 | needA,10.8 (6.9 to 14.8),10.85 / 6.91 / 14.75,True
+boot,gap70 | KR2014/CN2015 | needA,11.7 (7.2 to 16.0),11.65 / 7.19 / 15.99,True
+boot,gap70 | KR2018/CN2018 | needA,14.8 (10.4 to 19.1),14.78 / 10.40 / 19.11,True
+boot,gap70 | KR2020/CN2020 | needA,20.4 (15.8 to 25.0),20.38 / 15.79 / 25.03,True
+boot,gap70 | KR2014/CN2013 | needA,14.1 (9.9 to 18.4),14.15 / 9.86 / 18.41,True
+boot,all65 | KR2014/CN2015 | needA,−1.0 (−2.0 to −0.04),-0.98 / -1.99 / -0.04,True
+boot,all65 | KR2018/CN2018 | needA,−0.7 (−1.5 to 0.2),-0.67 / -1.53 / 0.16,True
+boot,all65 | KR2020/CN2020 | needA,2.2 (1.4 to 3.1),2.23 / 1.37 / 3.10,True
+boot,all65 | KR2014/CN2013 | needA,0.0 (−0.8 to 0.9),0.04 / -0.83 / 0.90,True
+boot,gap_men | KR2014/CN2015 | needA,2.2 (−4.7 to 9.0),2.18 / -4.67 / 8.96,True
+boot,gap_men | KR2018/CN2018 | needA,9.9 (3.8 to 16.1),9.91 / 3.80 / 16.15,True
+boot,gap_men | KR2020/CN2020 | needA,30.6 (23.7 to 37.5),30.64 / 23.66 / 37.52,True
+boot,gap_women | KR2014/CN2015 | needA,12.1 (6.5 to 17.7),12.11 / 6.46 / 17.73,True
+boot,gap_women | KR2018/CN2018 | needA,16.2 (10.0 to 23.4),16.20 / 10.01 / 23.36,True
+boot,gap_women | KR2020/CN2020 | needA,19.6 (13.3 to 26.3),19.63 / 13.28 / 26.27,True
+boot,A-B | KR2014/CN2015 | ,3.4 (−1.8 to 8.5),3.39 / -1.82 / 8.49,True
+boot,A-B | KR2018/CN2018 | ,4.2 (−1.1 to 9.9),4.17 / -1.09 / 9.91,True
+boot,A-B | KR2020/CN2020 | ,9.6 (4.1 to 15.4),9.59 / 4.09 / 15.37,True
+boot,A-B | KR2014/CN2013 | ,6.2 (1.5 to 10.7),6.19 / 1.53 / 10.69,True
+boot,A-common | KR2014/CN2015 | ,1.7 (0.1 to 3.4),1.75 / 0.11 / 3.44,True
+boot,A-common | KR2018/CN2018 | ,3.7 (1.9 to 5.7),3.70 / 1.93 / 5.66,True
+boot,A-common | KR2020/CN2020 | ,2.6 (0.8 to 4.5),2.59 / 0.84 / 4.52,True
+boot,A-common | KR2014/CN2013 | ,1.7 (0.2 to 3.4),1.75 / 0.25 / 3.35,True
+boot,pairing | CN2013 vs CN2015 | needA,3.7 (0.4 to 7.2),3.71 / 0.35 / 7.20,True
+boot,pairing | CN2013 vs CN2015 | needB,0.9 (−3.4 to 5.2),0.91 / -3.42 / 5.23,True
+boot,change | CN2013->2015 | needA,3.1 (−0.2 to 6.4),3.07 / -0.17 / 6.39,True
+boot,change | CN2013->2015 | needB,0.0 (−4.2 to 4.3),0.00 / -4.18 / 4.26,True
+boot,change | CN2015->2018 | needA,−1.6 (−4.8 to 1.5),-1.61 / -4.80 / 1.50,True
+boot,change | CN2015->2018 | needB,−3.0 (−6.6 to 0.5),-3.04 / -6.64 / 0.46,True
+boot,change | CN2018->2020 | needA,−3.3 (−5.9 to −0.7),-3.27 / -5.88 / -0.68,True
+boot,change | CN2018->2020 | needB,−3.6 (−6.5 to −0.7),-3.63 / -6.50 / -0.73,True
+boot,change | KR2014->2018 | needA,3.8 (−1.0 to 8.8),3.83 / -1.05 / 8.79,True
+boot,change | KR2014->2018 | needB,1.1 (−5.6 to 7.6),1.07 / -5.58 / 7.60,True
+boot,change | KR2018->2020 | needA,7.8 (2.3 to 13.1),7.78 / 2.28 / 13.14,True
+boot,change | KR2018->2020 | needB,1.5 (−6.0 to 8.8),1.51 / -5.97 / 8.79,True
+boot,gap | KR2014/CN2015 | needC3,13.2 (9.1 to 17.4),13.20 / 9.13 / 17.44,True
+boot,gap | KR2018/CN2018 | needC3,13.2 (8.9 to 18.1),13.18 / 8.91 / 18.12,True
+boot,gap | KR2020/CN2020 | needC3,14.1 (8.8 to 19.4),14.08 / 8.77 / 19.45,True
+boot,gap | KR2014/CN2013 | needC3,13.6 (9.3 to 18.0),13.58 / 9.30 / 17.99,True
+boot,gap | KR2014/CN2015 | needM2,12.6 (7.7 to 17.8),12.61 / 7.71 / 17.80,True
+boot,gap | KR2018/CN2018 | needM2,14.2 (8.4 to 20.1),14.22 / 8.43 / 20.13,True
+boot,gap | KR2020/CN2020 | needM2,12.9 (7.3 to 19.5),12.93 / 7.27 / 19.51,True
+boot,gap | KR2014/CN2013 | needM2,12.5 (7.6 to 17.6),12.52 / 7.56 / 17.65,True
+boot,all65 | KR2014/CN2015 | needB,−0.6 (−1.1 to −0.1),-0.58 / -1.10 / -0.10,True
+boot,all65 | KR2018/CN2018 | needB,−0.3 (−0.8 to 0.1),-0.34 / -0.76 / 0.07,True
+boot,all65 | KR2020/CN2020 | needB,0.4 (−0.04 to 0.8),0.36 / -0.04 / 0.79,True
+boot,all65 | KR2014/CN2013 | needB,−0.6 (−1.2 to −0.05),-0.59 / -1.17 / -0.05,True
+boot,all65 | KR2014/CN2015 | needC,−1.6 (−2.5 to −0.7),-1.57 / -2.55 / -0.66,True
+boot,all65 | KR2018/CN2018 | needC,−1.4 (−2.3 to −0.7),-1.45 / -2.28 / -0.67,True
+boot,all65 | KR2020/CN2020 | needC,1.4 (0.6 to 2.2),1.42 / 0.59 / 2.25,True
+boot,all65 | KR2014/CN2013 | needC,−0.5 (−1.4 to 0.3),-0.54 / -1.39 / 0.28,True
+boot,all65 | KR2014/CN2015 | needM,−0.6 (−1.1 to −0.1),-0.61 / -1.12 / -0.12,True
+boot,all65 | KR2018/CN2018 | needM,−0.4 (−0.8 to −0.01),-0.41 / -0.82 / -0.01,True
+boot,all65 | KR2020/CN2020 | needM,0.3 (−0.1 to 0.7),0.30 / -0.09 / 0.72,True
+boot,all65 | KR2014/CN2013 | needM,−0.6 (−1.2 to −0.1),-0.62 / -1.19 / -0.08,True
+boot,crude | KR2014/CN2015 | needB,3.2 (−1.9 to 8.4),3.18 / -1.93 / 8.43,True
+boot,crude | KR2018/CN2018 | needB,7.4 (2.1 to 12.8),7.42 / 2.07 / 12.83,True
+boot,crude | KR2020/CN2020 | needB,13.0 (7.1 to 19.3),13.04 / 7.05 / 19.28,True
+boot,crude | KR2014/CN2013 | needB,3.5 (−2.1 to 9.0),3.48 / -2.11 / 8.97,True
+boot,crude | KR2014/CN2015 | needC,5.5 (1.2 to 9.7),5.47 / 1.19 / 9.70,True
+boot,crude | KR2018/CN2018 | needC,9.2 (5.0 to 13.4),9.19 / 5.00 / 13.37,True
+boot,crude | KR2020/CN2020 | needC,21.0 (16.3 to 25.7),20.97 / 16.25 / 25.70,True
+boot,crude | KR2014/CN2013 | needC,8.9 (4.9 to 12.9),8.87 / 4.94 / 12.85,True
+boot,crude | KR2014/CN2015 | needA|age70,10.5 (6.1 to 14.8),10.45 / 6.06 / 14.85,True
+boot,crude | KR2018/CN2018 | needA|age70,14.4 (10.0 to 18.7),14.44 / 10.02 / 18.68,True
+boot,crude | KR2020/CN2020 | needA|age70,19.6 (15.1 to 24.0),19.58 / 15.09 / 24.04,True
+boot,crude | KR2014/CN2013 | needA|age70,13.0 (8.7 to 17.3),13.01 / 8.73 / 17.25,True
+boot,crude | KR2014/CN2015 | needA|iadl_only,10.3 (3.7 to 16.6),10.33 / 3.72 / 16.61,True
+boot,crude | KR2018/CN2018 | needA|iadl_only,15.5 (9.8 to 21.4),15.47 / 9.76 / 21.35,True
+boot,crude | KR2020/CN2020 | needA|iadl_only,27.7 (21.8 to 33.6),27.70 / 21.77 / 33.63,True
+boot,crude | KR2014/CN2013 | needA|iadl_only,16.0 (10.6 to 21.3),15.98 / 10.59 / 21.34,True
+boot,crude | KR2014/CN2015 | needA|lim1,9.9 (−2.7 to 23.0),9.89 / -2.71 / 22.98,True
+boot,crude | KR2018/CN2018 | needA|lim1,18.0 (7.1 to 28.9),18.01 / 7.06 / 28.89,True
+boot,crude | KR2020/CN2020 | needA|lim1,41.8 (31.5 to 52.0),41.82 / 31.50 / 51.97,True
+boot,crude | KR2014/CN2013 | needA|lim1,15.9 (3.4 to 28.6),15.91 / 3.36 / 28.59,True
+boot,crude | KR2014/CN2015 | needA|lim2,28.5 (15.7 to 42.8),28.52 / 15.70 / 42.79,True
+boot,crude | KR2018/CN2018 | needA|lim2,20.1 (8.0 to 33.0),20.11 / 7.99 / 32.98,True
+boot,crude | KR2020/CN2020 | needA|lim2,45.5 (33.8 to 56.9),45.50 / 33.79 / 56.93,True
+boot,crude | KR2014/CN2013 | needA|lim2,29.2 (16.7 to 43.3),29.25 / 16.72 / 43.30,True
+boot,crude | KR2014/CN2015 | needA|lim3,16.1 (12.5 to 19.8),16.13 / 12.47 / 19.76,True
+boot,crude | KR2018/CN2018 | needA|lim3,18.4 (14.6 to 22.3),18.42 / 14.59 / 22.27,True
+boot,crude | KR2020/CN2020 | needA|lim3,18.9 (14.2 to 23.5),18.89 / 14.19 / 23.51,True
+boot,crude | KR2014/CN2013 | needA|lim3,16.2 (12.0 to 20.2),16.18 / 12.03 / 20.22,True
+boot,crude | KR2014/CN2015 | needA11,6.8 (2.5 to 10.9),6.79 / 2.54 / 10.94,True
+boot,crude | KR2018/CN2018 | needA11,12.2 (8.1 to 16.4),12.24 / 8.05 / 16.40,True
+boot,crude | KR2020/CN2020 | needA11,22.9 (18.4 to 27.3),22.91 / 18.44 / 27.33,True
+boot,crude | KR2014/CN2013 | needA11,10.6 (6.6 to 14.5),10.59 / 6.62 / 14.53,True
+boot,crude | KR2014/CN2015 | needB6,1.3 (−3.8 to 6.6),1.34 / -3.81 / 6.59,True
+boot,crude | KR2018/CN2018 | needB6,6.5 (1.1 to 11.9),6.53 / 1.12 / 11.93,True
+boot,crude | KR2020/CN2020 | needB6,12.4 (6.4 to 18.7),12.40 / 6.40 / 18.74,True
+boot,crude | KR2014/CN2013 | needB6,2.6 (−3.0 to 8.2),2.63 / -3.02 / 8.21,True
+boot,crude | KR2014/CN2015 | needBk6,2.9 (−2.1 to 8.2),2.94 / -2.15 / 8.22,True
+boot,crude | KR2018/CN2018 | needBk6,7.0 (1.7 to 12.4),7.01 / 1.69 / 12.37,True
+boot,crude | KR2020/CN2020 | needBk6,12.1 (6.3 to 18.4),12.12 / 6.30 / 18.37,True
+boot,crude | KR2014/CN2013 | needBk6,3.2 (−2.4 to 8.8),3.24 / -2.36 / 8.75,True
+boot,gap | KR2014/CN2015 | needA|iadl_only,9.6 (2.7 to 16.5),9.64 / 2.74 / 16.55,True
+boot,gap | KR2018/CN2018 | needA|iadl_only,15.1 (9.3 to 22.2),15.05 / 9.30 / 22.22,True
+boot,gap | KR2020/CN2020 | needA|iadl_only,27.9 (21.0 to 34.8),27.95 / 20.96 / 34.78,True
+boot,gap | KR2014/CN2013 | needA|iadl_only,16.0 (10.4 to 21.5),16.03 / 10.43 / 21.47,True
+boot,gap | KR2014/CN2015 | needA|lim1,8.5 (−4.7 to 22.2),8.45 / -4.71 / 22.22,True
+boot,gap | KR2018/CN2018 | needA|lim1,18.3 (5.7 to 30.9),18.26 / 5.72 / 30.92,True
+boot,gap | KR2020/CN2020 | needA|lim1,42.2 (31.3 to 52.0),42.16 / 31.27 / 52.01,True
+boot,gap | KR2014/CN2013 | needA|lim1,14.1 (1.6 to 26.5),14.09 / 1.59 / 26.55,True
+boot,gap | KR2014/CN2015 | needA|lim2,30.4 (18.2 to 44.8),30.42 / 18.17 / 44.85,True
+boot,gap | KR2018/CN2018 | needA|lim2,24.1 (11.6 to 36.2),24.13 / 11.65 / 36.21,True
+boot,gap | KR2020/CN2020 | needA|lim2,45.8 (31.6 to 58.2),45.76 / 31.57 / 58.21,True
+boot,gap | KR2014/CN2013 | needA|lim2,30.0 (16.9 to 44.1),29.96 / 16.92 / 44.11,True
+boot,gap | KR2014/CN2015 | needA|lim3,15.5 (11.8 to 19.2),15.49 / 11.84 / 19.18,True
+boot,gap | KR2018/CN2018 | needA|lim3,17.9 (14.1 to 22.0),17.89 / 14.11 / 21.97,True
+boot,gap | KR2020/CN2020 | needA|lim3,19.7 (14.6 to 24.6),19.65 / 14.64 / 24.57,True
+boot,gap | KR2014/CN2013 | needA|lim3,15.8 (11.9 to 19.7),15.78 / 11.89 / 19.70,True
+boot,gap | KR2014/CN2015 | needA11,7.5 (3.0 to 12.0),7.49 / 3.00 / 11.98,True
+boot,gap | KR2018/CN2018 | needA11,13.2 (8.7 to 18.0),13.17 / 8.68 / 17.98,True
+boot,gap | KR2020/CN2020 | needA11,24.2 (19.4 to 29.1),24.15 / 19.42 / 29.12,True
+boot,gap | KR2014/CN2013 | needA11,11.5 (7.6 to 15.5),11.55 / 7.56 / 15.47,True
+boot,gap | KR2014/CN2015 | needB6,3.3 (−2.3 to 9.1),3.26 / -2.29 / 9.06,True
+boot,gap | KR2018/CN2018 | needB6,8.5 (2.2 to 14.8),8.52 / 2.22 / 14.77,True
+boot,gap | KR2020/CN2020 | needB6,14.1 (7.6 to 20.7),14.15 / 7.62 / 20.70,True
+boot,gap | KR2014/CN2013 | needB6,4.8 (−0.9 to 10.5),4.80 / -0.86 / 10.49,True
+boot,gap | KR2014/CN2015 | needBk6,4.1 (−1.3 to 9.6),4.06 / -1.28 / 9.57,True
+boot,gap | KR2018/CN2018 | needBk6,8.9 (2.6 to 15.1),8.92 / 2.64 / 15.12,True
+boot,gap | KR2020/CN2020 | needBk6,13.7 (7.3 to 20.1),13.67 / 7.35 / 20.08,True
+boot,gap | KR2014/CN2013 | needBk6,5.1 (−0.3 to 10.7),5.13 / -0.35 / 10.74,True
+boot,A-iadl_only | KR2014/CN2015 | ,−1.5 (−5.6 to 2.3),-1.53 / -5.56 / 2.28,True
+boot,A-iadl_only | KR2018/CN2018 | ,−1.6 (−5.6 to 1.8),-1.55 / -5.57 / 1.84,True
+boot,A-iadl_only | KR2020/CN2020 | ,−3.6 (−8.1 to 1.0),-3.61 / -8.10 / 1.00,True
+boot,A-iadl_only | KR2014/CN2013 | ,−4.2 (−7.6 to −0.8),-4.21 / -7.59 / -0.80,True
+boot,A-lim3 | KR2014/CN2015 | ,−7.4 (−11.2 to −3.6),-7.39 / -11.18 / -3.64,True
+boot,A-lim3 | KR2018/CN2018 | ,−4.4 (−8.0 to −0.8),-4.39 / -7.97 / -0.79,True
+boot,A-lim3 | KR2020/CN2020 | ,4.7 (1.1 to 8.5),4.69 / 1.10 / 8.55,True
+boot,A-lim3 | KR2014/CN2013 | ,−4.0 (−7.3 to −0.7),-3.96 / -7.25 / -0.72,True
+boot,A-lim1 | KR2014/CN2015 | ,−0.3 (−12.2 to 10.9),-0.34 / -12.15 / 10.92,True
+boot,A-lim1 | KR2018/CN2018 | ,−4.8 (−16.1 to 6.6),-4.76 / -16.11 / 6.61,True
+boot,A-lim1 | KR2020/CN2020 | ,−17.8 (−26.8 to −7.9),-17.82 / -26.81 / -7.89,True
+boot,A-lim1 | KR2014/CN2013 | ,−2.3 (−13.6 to 8.7),-2.27 / -13.56 / 8.69,True
+boot,A-B fixed | KR2014/CN2015 | ,3.5 (−2.1 to 8.8),3.46 / -2.12 / 8.84,True
+boot,A-B fixed | KR2018/CN2018 | ,4.1 (−2.5 to 10.9),4.07 / -2.46 / 10.86,True
+boot,A-B fixed | KR2020/CN2020 | ,8.4 (2.3 to 15.2),8.45 / 2.29 / 15.15,True
+boot,A-B fixed | KR2014/CN2013 | ,6.6 (1.4 to 11.4),6.56 / 1.36 / 11.38,True
+boot,A-C5 fixed | KR2014/CN2015 | ,4.2 (−1.5 to 9.6),4.18 / -1.51 / 9.56,True
+boot,A-C5 fixed | KR2018/CN2018 | ,5.5 (−1.2 to 12.2),5.48 / -1.19 / 12.20,True
+boot,A-C5 fixed | KR2020/CN2020 | ,9.6 (3.5 to 16.2),9.61 / 3.53 / 16.16,True
+boot,A-C5 fixed | KR2014/CN2013 | ,7.1 (2.0 to 12.0),7.12 / 1.95 / 11.99,True
+boot,fixed | KR2014/CN2015 | needA,8.1 (3.6 to 12.6),8.11 / 3.58 / 12.60,True
+boot,fixed | KR2018/CN2018 | needA,13.5 (9.0 to 18.3),13.50 / 9.01 / 18.33,True
+boot,fixed | KR2020/CN2020 | needA,24.3 (19.6 to 29.3),24.34 / 19.62 / 29.34,True
+boot,fixed | KR2014/CN2013 | needA,11.8 (7.9 to 15.7),11.82 / 7.88 / 15.72,True
+boot,fixed | KR2014/CN2015 | needB,4.6 (−1.2 to 10.9),4.65 / -1.20 / 10.86,True
+boot,fixed | KR2018/CN2018 | needB,9.4 (1.9 to 17.0),9.43 / 1.95 / 17.04,True
+boot,fixed | KR2020/CN2020 | needB,15.9 (8.4 to 23.3),15.89 / 8.41 / 23.35,True
+boot,fixed | KR2014/CN2013 | needB,5.3 (−0.7 to 11.6),5.26 / -0.73 / 11.60,True
+boot,fixed | KR2014/CN2015 | needM,3.9 (−1.8 to 10.0),3.93 / -1.81 / 10.00,True
+boot,fixed | KR2018/CN2018 | needM,8.0 (0.8 to 15.7),8.02 / 0.79 / 15.66,True
+boot,fixed | KR2020/CN2020 | needM,14.7 (7.4 to 22.1),14.73 / 7.44 / 22.07,True
+boot,fixed | KR2014/CN2013 | needM,4.7 (−1.2 to 10.9),4.70 / -1.25 / 10.91,True
+boot,std_KR | KR2014/CN2015 | needA,8.5 (4.0 to 12.8),8.50 / 3.95 / 12.84,True
+boot,std_KR | KR2018/CN2018 | needA,14.4 (10.1 to 18.6),14.39 / 10.15 / 18.55,True
+boot,std_KR | KR2020/CN2020 | needA,24.1 (19.6 to 28.5),24.07 / 19.58 / 28.53,True
+boot,std_CN | KR2014/CN2015 | needA,7.7 (2.9 to 12.8),7.72 / 2.86 / 12.78,True
+boot,std_CN | KR2018/CN2018 | needA,12.6 (7.4 to 19.0),12.61 / 7.39 / 18.99,True
+boot,std_CN | KR2020/CN2020 | needA,24.6 (19.1 to 30.7),24.61 / 19.08 / 30.65,True
+boot,gap_alone20 | KR2014/CN2015 | needA,8.1 (3.7 to 12.5),8.12 / 3.67 / 12.47,True
+boot,gap_alone20 | KR2018/CN2018 | needA,12.6 (8.4 to 17.7),12.64 / 8.40 / 17.68,True
+boot,all65_crude | KR2014/CN2015 | needA,−0.6 (−1.6 to 0.3),-0.62 / -1.62 / 0.33,True
+boot,all65_crude | KR2018/CN2018 | needA,−0.5 (−1.3 to 0.4),-0.46 / -1.31 / 0.36,True
+boot,all65_crude | KR2020/CN2020 | needA,2.3 (1.5 to 3.2),2.31 / 1.46 / 3.16,True
+boot,all65_crude | KR2014/CN2013 | needA,0.4 (−0.5 to 1.2),0.36 / -0.51 / 1.22,True
+boot,gap_deff1.5 | KR2014/CN2015 | needA,3.0 to 13.2,2.99 / 13.23,True
+boot,gap_deff1.5 | KR2018/CN2018 | needA,8.0 to 19.0,7.99 / 19.01,True
+boot,gap_deff1.5 | KR2020/CN2020 | needA,18.5 to 30.1,18.55 / 30.13,True
+boot,gap_deff1.5 | KR2014/CN2013 | needA,7.1 to 16.5,7.12 / 16.52,True
+boot,gap_deff1.5 | KR2014/CN2015 | needB,−1.9 to 11.3,-1.91 / 11.35,True
+boot,gap_deff1.5 | KR2018/CN2018 | needB,1.7 to 16.9,1.75 / 16.92,True
+boot,gap_deff1.5 | KR2020/CN2020 | needB,6.9 to 22.6,6.85 / 22.64,True
+boot,gap_deff1.5 | KR2014/CN2013 | needB,−0.9 to 12.2,-0.90 / 12.17,True
+boot,gap_deff1.5 | KR2014/CN2015 | needC,1.0 to 11.7,1.04 / 11.68,True
+boot,gap_deff1.5 | KR2018/CN2018 | needC,4.3 to 15.3,4.28 / 15.32,True
+boot,gap_deff1.5 | KR2020/CN2020 | needC,15.7 to 27.8,15.67 / 27.84,True
+boot,gap_deff1.5 | KR2014/CN2013 | needC,5.3 to 14.9,5.25 / 14.89,True
+boot,gap_deff1.5 | KR2014/CN2015 | needA|age70,6.4 to 16.9,6.42 / 16.88,True
+boot,gap_deff1.5 | KR2018/CN2018 | needA|age70,9.7 to 19.9,9.70 / 19.86,True
+boot,gap_deff1.5 | KR2020/CN2020 | needA|age70,14.9 to 25.9,14.87 / 25.89,True
+boot,gap_deff1.5 | KR2014/CN2013 | needA|age70,9.1 to 19.2,9.07 / 19.22,True
+boot,gap_deff1.5 | KR2014/CN2015 | needA|iadl_only,2.0 to 17.3,1.98 / 17.30,True
+boot,gap_deff1.5 | KR2018/CN2018 | needA|iadl_only,7.4 to 22.7,7.36 / 22.75,True
+boot,gap_deff1.5 | KR2020/CN2020 | needA|iadl_only,19.8 to 36.1,19.77 / 36.12,True
+boot,gap_deff1.5 | KR2014/CN2013 | needA|iadl_only,9.5 to 22.5,9.52 / 22.53,True
+boot,gap_deff1.5 | KR2014/CN2015 | needA|lim1,−6.8 to 23.7,-6.78 / 23.69,True
+boot,gap_deff1.5 | KR2018/CN2018 | needA|lim1,2.9 to 33.6,2.89 / 33.63,True
+boot,gap_deff1.5 | KR2020/CN2020 | needA|lim1,29.7 to 54.6,29.74 / 54.59,True
+boot,gap_deff1.5 | KR2014/CN2013 | needA|lim1,−0.7 to 28.9,-0.71 / 28.88,True
+boot,gap_deff1.5 | KR2014/CN2015 | needA|lim2,14.3 to 46.5,14.33 / 46.50,True
+boot,gap_deff1.5 | KR2018/CN2018 | needA|lim2,9.8 to 38.4,9.81 / 38.44,True
+boot,gap_deff1.5 | KR2020/CN2020 | needA|lim2,29.5 to 62.0,29.49 / 62.02,True
+boot,gap_deff1.5 | KR2014/CN2013 | needA|lim2,14.0 to 45.9,14.02 / 45.90,True
+boot,gap_deff1.5 | KR2014/CN2015 | needA|lim3,11.0 to 20.0,11.02 / 19.97,True
+boot,gap_deff1.5 | KR2018/CN2018 | needA|lim3,13.1 to 22.7,13.07 / 22.71,True
+boot,gap_deff1.5 | KR2020/CN2020 | needA|lim3,13.6 to 25.7,13.64 / 25.67,True
+boot,gap_deff1.5 | KR2014/CN2013 | needA|lim3,11.2 to 20.4,11.17 / 20.39,True
+boot,gap_deff2 | KR2014/CN2015 | needA,2.4 to 13.8,2.41 / 13.81,True
+boot,gap_deff2 | KR2018/CN2018 | needA,7.2 to 19.8,7.23 / 19.77,True
+boot,gap_deff2 | KR2020/CN2020 | needA,17.7 to 30.9,17.74 / 30.94,True
+boot,gap_deff2 | KR2014/CN2013 | needA,6.5 to 17.1,6.52 / 17.12,True
+boot,gap_deff2 | KR2014/CN2015 | needB,−2.7 to 12.2,-2.74 / 12.18,True
+boot,gap_deff2 | KR2018/CN2018 | needB,0.7 to 18.0,0.67 / 18.00,True
+boot,gap_deff2 | KR2020/CN2020 | needB,5.7 to 23.8,5.69 / 23.80,True
+boot,gap_deff2 | KR2014/CN2013 | needB,−1.7 to 13.0,-1.70 / 12.96,True
+boot,gap_deff2 | KR2014/CN2015 | needC,0.4 to 12.3,0.43 / 12.29,True
+boot,gap_deff2 | KR2018/CN2018 | needC,3.5 to 16.1,3.52 / 16.09,True
+boot,gap_deff2 | KR2020/CN2020 | needC,14.8 to 28.7,14.81 / 28.69,True
+boot,gap_deff2 | KR2014/CN2013 | needC,4.6 to 15.5,4.63 / 15.52,True
+boot,gap_deff2 | KR2014/CN2015 | needA|age70,5.8 to 17.5,5.79 / 17.51,True
+boot,gap_deff2 | KR2018/CN2018 | needA|age70,9.0 to 20.5,9.02 / 20.54,True
+boot,gap_deff2 | KR2020/CN2020 | needA|age70,14.1 to 26.6,14.14 / 26.63,True
+boot,gap_deff2 | KR2014/CN2013 | needA|age70,8.4 to 19.9,8.43 / 19.86,True
+boot,gap_deff2 | KR2014/CN2015 | needA|iadl_only,1.2 to 18.1,1.19 / 18.09,True
+boot,gap_deff2 | KR2018/CN2018 | needA|iadl_only,6.3 to 23.8,6.31 / 23.80,True
+boot,gap_deff2 | KR2020/CN2020 | needA|iadl_only,18.7 to 37.2,18.68 / 37.21,True
+boot,gap_deff2 | KR2014/CN2013 | needA|iadl_only,8.7 to 23.4,8.66 / 23.39,True
+boot,gap_deff2 | KR2014/CN2015 | needA|lim1,−8.8 to 25.7,-8.83 / 25.73,True
+boot,gap_deff2 | KR2018/CN2018 | needA|lim1,0.7 to 35.8,0.68 / 35.83,True
+boot,gap_deff2 | KR2020/CN2020 | needA|lim1,28.0 to 56.3,28.03 / 56.29,True
+boot,gap_deff2 | KR2014/CN2013 | needA|lim1,−2.8 to 30.9,-2.76 / 30.94,True
+boot,gap_deff2 | KR2014/CN2015 | needA|lim2,12.0 to 48.8,12.00 / 48.83,True
+boot,gap_deff2 | KR2018/CN2018 | needA|lim2,7.8 to 40.4,7.85 / 40.40,True
+boot,gap_deff2 | KR2020/CN2020 | needA|lim2,27.1 to 64.4,27.15 / 64.37,True
+boot,gap_deff2 | KR2014/CN2013 | needA|lim2,11.7 to 48.2,11.73 / 48.19,True
+boot,gap_deff2 | KR2014/CN2015 | needA|lim3,10.4 to 20.6,10.40 / 20.59,True
+boot,gap_deff2 | KR2018/CN2018 | needA|lim3,12.4 to 23.4,12.35 / 23.43,True
+boot,gap_deff2 | KR2020/CN2020 | needA|lim3,12.7 to 26.6,12.75 / 26.56,True
+boot,gap_deff2 | KR2014/CN2013 | needA|lim3,10.6 to 21.0,10.58 / 20.98,True
+help,needrule | KR2014/CN2015 | crude,5.5 (1.2 to 9.7),5.50 / 1.22 / 9.70,True
+help,needrule | KR2014/CN2015 | standardized,6.4 (1.9 to 11.0),6.44 / 1.93 / 11.00,True
+help,needrule | KR2018/CN2018 | crude,10.8 (6.6 to 15.0),10.85 / 6.62 / 15.04,True
+help,needrule | KR2018/CN2018 | standardized,11.9 (7.4 to 16.7),11.85 / 7.38 / 16.70,True
+help,"needrule, common | KR2014/CN2015 | crude",3.5 (−0.8 to 7.8),3.52 / -0.79 / 7.78,True
+help,"needrule, common | KR2014/CN2015 | standardized",4.7 (0.1 to 9.4),4.71 / 0.10 / 9.44,True
+help,"needrule, common | KR2018/CN2018 | crude",7.4 (3.2 to 11.6),7.42 / 3.19 / 11.60,True
+help,"needrule, common | KR2018/CN2018 | standardized",8.2 (3.7 to 13.1),8.15 / 3.73 / 13.13,True
+help,phone | KR2014/CN2015 | crude,9.6 (5.3 to 13.7),9.60 / 5.34 / 13.72,True
+help,phone | KR2014/CN2015 | standardized,10.1 (5.6 to 14.6),10.11 / 5.61 / 14.58,True
+help,phone | KR2018/CN2018 | crude,14.1 (9.9 to 18.2),14.06 / 9.91 / 18.18,True
+help,phone | KR2018/CN2018 | standardized,14.9 (10.4 to 19.7),14.92 / 10.45 / 19.72,True
+help,"main rule, common | KR2014/CN2015 | crude",5.5 (1.2 to 9.7),5.47 / 1.19 / 9.70,True
+help,"main rule, common | KR2014/CN2015 | standardized",6.4 (1.8 to 11.0),6.36 / 1.75 / 11.05,True
+help,"main rule, common | KR2018/CN2018 | crude",9.2 (5.0 to 13.4),9.19 / 5.00 / 13.37,True
+help,"main rule, common | KR2018/CN2018 | standardized",9.8 (5.4 to 14.8),9.80 / 5.41 / 14.75,True
+pm,KR2014/CN2015 | 2+ of 10 items,3.2 (2.5 to 3.9),3.21 / 2.53 / 3.89,True
+pm,KR2014/CN2015 | 3+ of 10 items,3.7 (3.1 to 4.3),3.69 / 3.07 / 4.34,True
+pm,KR2018/CN2018 | 2+ of 10 items,2.8 (2.2 to 3.5),2.80 / 2.15 / 3.45,True
+pm,KR2018/CN2018 | 3+ of 10 items,3.6 (3.0 to 4.2),3.62 / 3.02 / 4.23,True
+pm,KR2020/CN2020 | 2+ of 10 items,4.2 (3.5 to 5.0),4.24 / 3.51 / 5.00,True
+pm,KR2020/CN2020 | 3+ of 10 items,4.6 (3.9 to 5.3),4.60 / 3.88 / 5.35,True
+pm,KR2014/CN2013 | 2+ of 10 items,3.2 (2.5 to 3.9),3.21 / 2.51 / 3.91,True
+pm,KR2014/CN2013 | 3+ of 10 items,3.7 (3.0 to 4.4),3.69 / 3.01 / 4.36,True
+s11,"KR2014/CN2015 | age group, sex, low education, living alone | as supplied | A gap",5.7 (0.2 to 15.4),5.70 / 0.20 / 15.40,True
+s11,"KR2014/CN2015 | age group, sex, low education, living alone | as supplied | B gap",4.8 (−1.3 to 12.2),4.80 / -1.30 / 12.20,True
+s11,"KR2014/CN2015 | age group, sex, low education, living alone | as supplied | A minus B",0.9 (−6.7 to 10.4),0.90 / -6.70 / 10.40,True
+s11,"KR2014/CN2015 | age group, sex, low education, living alone | equal | A gap",7.5 (2.8 to 12.5),7.50 / 2.80 / 12.50,True
+s11,"KR2014/CN2015 | age group, sex, low education, living alone | equal | B gap",5.3 (−0.8 to 11.4),5.30 / -0.80 / 11.40,True
+s11,"KR2014/CN2015 | age group, sex, low education, living alone | equal | A minus B",2.3 (−3.3 to 7.9),2.30 / -3.30 / 7.90,True
+s11,"KR2018/CN2018 | age group, sex, low education, living alone | as supplied | A gap",18.3 (11.4 to 25.9),18.30 / 11.40 / 25.90,True
+s11,"KR2018/CN2018 | age group, sex, low education, living alone | as supplied | B gap",9.4 (2.7 to 17.2),9.40 / 2.70 / 17.20,True
+s11,"KR2018/CN2018 | age group, sex, low education, living alone | as supplied | A minus B",8.9 (2.0 to 15.5),8.90 / 2.00 / 15.50,True
+s11,"KR2018/CN2018 | age group, sex, low education, living alone | equal | A gap",12.5 (7.8 to 17.1),12.50 / 7.80 / 17.10,True
+s11,"KR2018/CN2018 | age group, sex, low education, living alone | equal | B gap",7.9 (2.3 to 14.3),7.90 / 2.30 / 14.30,True
+s11,"KR2018/CN2018 | age group, sex, low education, living alone | equal | A minus B",4.6 (−0.9 to 9.0),4.60 / -0.90 / 9.00,True
+s11,"KR2020/CN2020 | age group, sex, low education | as supplied | A gap",25.8 (19.4 to 32.6),25.80 / 19.40 / 32.60,True
+s11,"KR2020/CN2020 | age group, sex, low education | as supplied | B gap",14.7 (6.3 to 25.9),14.70 / 6.30 / 25.90,True
+s11,"KR2020/CN2020 | age group, sex, low education | as supplied | A minus B",11.0 (1.3 to 17.8),11.00 / 1.30 / 17.80,True
+s11,"KR2020/CN2020 | age group, sex, low education | equal | A gap",23.1 (18.0 to 28.4),23.10 / 18.00 / 28.40,True
+s11,"KR2020/CN2020 | age group, sex, low education | equal | B gap",13.0 (5.4 to 20.3),13.00 / 5.40 / 20.30,True
+s11,"KR2020/CN2020 | age group, sex, low education | equal | A minus B",10.1 (3.7 to 16.9),10.10 / 3.70 / 16.90,True
+s11,"KR2014/CN2015 | age group, sex, living alone | as supplied | A gap",8.8 (4.2 to 13.0),8.80 / 4.20 / 13.00,True
+s11,"KR2014/CN2015 | age group, sex, living alone | as supplied | B gap",4.8 (−1.3 to 11.0),4.80 / -1.30 / 11.00,True
+s11,"KR2014/CN2015 | age group, sex, living alone | as supplied | A minus B",4.0 (−1.9 to 9.5),4.00 / -1.90 / 9.50,True
+s11,"KR2014/CN2015 | age group, sex, living alone | equal | A gap",8.0 (3.8 to 12.1),8.00 / 3.80 / 12.10,True
+s11,"KR2014/CN2015 | age group, sex, living alone | equal | B gap",4.6 (−1.1 to 10.2),4.60 / -1.10 / 10.20,True
+s11,"KR2014/CN2015 | age group, sex, living alone | equal | A minus B",3.4 (−1.5 to 8.5),3.40 / -1.50 / 8.50,True
+s11,"KR2018/CN2018 | age group, sex, living alone | as supplied | A gap",14.6 (9.9 to 18.9),14.60 / 9.90 / 18.90,True
+s11,"KR2018/CN2018 | age group, sex, living alone | as supplied | B gap",9.7 (3.3 to 16.4),9.70 / 3.30 / 16.40,True
+s11,"KR2018/CN2018 | age group, sex, living alone | as supplied | A minus B",4.8 (−1.6 to 10.1),4.80 / -1.60 / 10.10,True
+s11,"KR2018/CN2018 | age group, sex, living alone | equal | A gap",13.4 (9.0 to 17.5),13.40 / 9.00 / 17.50,True
+s11,"KR2018/CN2018 | age group, sex, living alone | equal | B gap",8.4 (2.6 to 14.1),8.40 / 2.60 / 14.10,True
+s11,"KR2018/CN2018 | age group, sex, living alone | equal | A minus B",5.0 (−0.9 to 10.0),5.00 / -0.90 / 10.00,True
+bonf,KR2014/CN2015 | A gap,8.1 (2.4 to 13.7),8.11 / 2.40 / 13.70,True
+bonf,KR2014/CN2015 | A minus B,3.4 (−3.1 to 10.0),3.39 / -3.10 / 10.00,True
+bonf,KR2018/CN2018 | A gap,13.5 (7.9 to 19.8),13.50 / 7.90 / 19.80,True
+bonf,KR2018/CN2018 | A minus B,4.2 (−2.7 to 11.4),4.17 / -2.70 / 11.40,True
+hh,KR2014/CN2015 | needA | respondents,8.1 (3.6 to 12.7),8.11 / 3.60 / 12.70,True
+hh,KR2014/CN2015 | needA | households,8.1 (3.6 to 12.8),8.11 / 3.60 / 12.80,True
+hh,KR2014/CN2015 | needB | respondents,4.7 (−0.8 to 10.4),4.72 / -0.80 / 10.40,True
+hh,KR2014/CN2015 | needB | households,4.7 (−0.8 to 10.5),4.72 / -0.80 / 10.50,True
+hh,KR2018/CN2018 | needA | respondents,13.5 (9.0 to 18.4),13.50 / 9.00 / 18.40,True
+hh,KR2018/CN2018 | needA | households,13.5 (9.0 to 18.5),13.50 / 9.00 / 18.50,True
+hh,KR2018/CN2018 | needB | respondents,9.3 (3.1 to 15.7),9.33 / 3.10 / 15.70,True
+hh,KR2018/CN2018 | needB | households,9.3 (3.0 to 15.7),9.33 / 3.00 / 15.70,True
+hh,KR2020/CN2020 | needA | respondents,24.3 (19.5 to 29.1),24.34 / 19.50 / 29.10,True
+hh,KR2020/CN2020 | needA | households,24.3 (19.5 to 29.3),24.34 / 19.50 / 29.30,True
+hh,KR2020/CN2020 | needB | respondents,14.7 (8.2 to 21.2),14.75 / 8.20 / 21.20,True
+hh,KR2020/CN2020 | needB | households,14.7 (8.3 to 21.4),14.75 / 8.30 / 21.40,True
+hh,KR2014/CN2013 | needA | respondents,11.8 (7.8 to 15.7),11.82 / 7.80 / 15.70,True
+hh,KR2014/CN2013 | needA | households,11.8 (7.8 to 15.9),11.82 / 7.80 / 15.90,True
+hh,KR2014/CN2013 | needB | respondents,5.6 (0.3 to 11.3),5.63 / 0.30 / 11.30,True
+hh,KR2014/CN2013 | needB | households,5.6 (0.2 to 11.2),5.63 / 0.20 / 11.20,True
+mi,2013,13.4 (11.3 to 15.6),13.44 / 11.29 / 15.60,True
+mi,2015,16.8 (14.2 to 19.5),16.84 / 14.18 / 19.50,True
+mi,2018,14.9 (12.9 to 16.9),14.89 / 12.93 / 16.86,True
+lin,KR2014 | needA,24.2 (20.9 to 27.6),24.24 / 20.89 / 27.58,True
+lin,KR2014 | needB,16.3 (12.0 to 20.7),16.34 / 12.02 / 20.67,True
+lin,KR2016 | needA,32.3 (28.6 to 35.9),32.26 / 28.62 / 35.90,True
+lin,KR2016 | needB,14.7 (10.7 to 18.7),14.72 / 10.71 / 18.73,True
+lin,KR2018 | needA,27.5 (23.8 to 31.2),27.50 / 23.77 / 31.22,True
+lin,KR2018 | needB,17.1 (12.1 to 22.1),17.08 / 12.10 / 22.06,True
+lin,KR2020 | needA,34.3 (30.2 to 38.4),34.33 / 30.23 / 38.42,True
+lin,KR2020 | needB,18.8 (13.0 to 24.5),18.77 / 13.00 / 24.55,True
+lin,KR2022 | needA,27.4 (23.8 to 31.0),27.42 / 23.82 / 31.01,True
+lin,KR2022 | needB,14.5 (9.6 to 19.4),14.53 / 9.64 / 19.41,True
+lin,KR2024 | needA,29.1 (25.9 to 32.4),29.14 / 25.92 / 32.37,True
+lin,KR2024 | needB,22.2 (17.3 to 27.1),22.17 / 17.26 / 27.07,True
+lin,CN2013 | needA,13.4 (11.2 to 15.5),13.39 / 11.23 / 15.54,True
+lin,CN2013 | needB,12.9 (9.4 to 16.3),12.86 / 9.41 / 16.32,True
+lin,CN2013 | needD,31.8 (29.3 to 34.2),31.76 / 29.27 / 34.25,True
+lin,CN2015 | needA,16.8 (14.1 to 19.4),16.78 / 14.12 / 19.44,True
+lin,CN2015 | needB,13.2 (10.2 to 16.1),13.17 / 10.25 / 16.08,True
+lin,CN2015 | needD,37.3 (34.6 to 40.0),37.33 / 34.62 / 40.03,True
+lin,CN2018 | needA,14.9 (12.9 to 16.8),14.88 / 12.92 / 16.84,True
+lin,CN2018 | needB,9.7 (7.4 to 11.9),9.66 / 7.43 / 11.90,True
+lin,CN2018 | needD,33.2 (31.0 to 35.4),33.24 / 31.03 / 35.44,True
+lin,CN2020 | needA,11.2 (9.4 to 13.1),11.23 / 9.39 / 13.07,True
+lin,CN2020 | needB,5.7 (3.8 to 7.6),5.74 / 3.84 / 7.64,True
+lin,CN2020 | needD,40.9 (37.6 to 44.3),40.94 / 37.58 / 44.31,True
