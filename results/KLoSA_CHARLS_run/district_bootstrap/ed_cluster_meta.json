@@ -1,0 +1,28 @@
+{
+ "B": 10000,
+ "seed": 20261027,
+ "ed": {
+  "KR2014": {
+   "respondents 65+": 4259,
+   "ed missing": 0,
+   "districts (all 65+)": 924,
+   "districts (need A)": 437,
+   "respondents (need A)": 749
+  },
+  "KR2018": {
+   "respondents 65+": 4352,
+   "ed missing": 0,
+   "districts (all 65+)": 920,
+   "districts (need A)": 441,
+   "respondents (need A)": 739
+  },
+  "KR2020": {
+   "respondents 65+": 4405,
+   "ed missing": 0,
+   "districts (all 65+)": 933,
+   "districts (need A)": 414,
+   "respondents (need A)": 718
+  }
+ },
+ "seconds": 161.16556000709534
+}

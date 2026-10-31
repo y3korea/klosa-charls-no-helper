@@ -7,6 +7,12 @@ CONTENTS
   codeS2_analysis.py  Same code as the second code cell of notebook Section 2 (point estimates, bootstrap, further analyses, published values,
                       comparison). For reading or local use.
   The notebook does not import the .py files.
+  codeS2_ed_bootstrap.py  Post hoc bootstrap with the Korean enumeration districts (ed) resampled instead of respondents
+                      (Supplementary Text S13, item 5). Imports the two .py files: python codeS2_ed_bootstrap.py FOLDER_WITH_THE_PY_FILES
+                      DATA_FOLDER OUTPUT_FOLDER (optionally the number of replicates, default 10000); needs the KLoSA files of 2014,
+                      2018 and 2020 and the CHARLS files. Writes ed_cluster_bootstrap.csv (76 statistics with respondent- and
+                      district-resampled intervals), ed_cluster_design_based.csv (Korean no-helper shares with independent and
+                      district-clustered design-based intervals) and ed_cluster_meta.json; about 3 minutes on a laptop.
   make_figures.py     Draws Figures 1 to 3 of the article; make_figS1.py draws Supplementary Figure S1 (python make_figures.py
                       OUTPUT_FOLDER and python make_figS1.py OUTPUT_FOLDER; matplotlib and the Arial font). The plotted values are typed in from the published tables
                       (all bootstrap intervals from this notebook; CHARLS 2011 values from Supplementary Code S1);
